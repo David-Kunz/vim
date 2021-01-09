@@ -70,7 +70,7 @@ fun! GotoWindow(id)
   :call win_gotoid(a:id)
 endfun
 
-let g:vimspector_base_dir = '/Users/d065023/.config/vimspector-config'
+let g:vimspector_base_dir = expand('$HOME/.config/vimspector-config')
 
 "func! CustomiseUI()
     "call win_gotoid( g:vimspector_session_windows.code )
@@ -160,7 +160,7 @@ local lspconfig = require'lspconfig'
 local configs = require'lspconfig/configs'
 configs.sapcds_lsp = {
   default_config = {
-    cmd = {"/users/d065023/projects/startcdslsp"};
+    cmd = {"$HOME/projects/startcdslsp"};
     filetypes = {'cds'};
     root_dir = function(fname)
       return lspconfig.util.find_git_ancestor(fname) or vim.loop.os_homedir()
