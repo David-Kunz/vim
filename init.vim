@@ -155,7 +155,7 @@ local lspconfig = require'lspconfig'
 local configs = require'lspconfig/configs'
 configs.sapcds_lsp = {
   default_config = {
-    cmd = {"$HOME/projects/startcdslsp"};
+    cmd = {vim.fn.expand("$HOME/projects/startcdslsp")};
     filetypes = {'cds'};
     root_dir = function(fname)
       return lspconfig.util.find_git_ancestor(fname) or vim.loop.os_homedir()
