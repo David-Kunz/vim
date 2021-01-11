@@ -20,6 +20,7 @@ call plug#begin('~/.vim/plugged')
    Plug 'tpope/vim-fugitive'
    Plug 'nicwest/vim-http'
    Plug 'Lenovsky/nuake'
+   Plug 'christoomey/vim-tmux-navigator'
 call plug#end()
  
 set completeopt=menuone,noinsert,noselect
@@ -59,12 +60,6 @@ let test#neovim#term_position = "vertical"
 
 
 nnoremap <leader>e :Http<CR>
-
-" Window mappings
-nnoremap <leader>h :wincmd h<CR>
-nnoremap <leader>j :wincmd j<CR>
-nnoremap <leader>k :wincmd k<CR>
-nnoremap <leader>l :wincmd l<CR>
 
 fun! GotoWindow(id)
   :call win_gotoid(a:id)
@@ -213,6 +208,5 @@ augroup MyCDSCode
     autocmd BufReadPre,FileReadPre *.cds set ft=cds
 augroup END
  
-
 endif
 
