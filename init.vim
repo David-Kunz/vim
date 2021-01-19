@@ -10,7 +10,6 @@ call plug#begin('~/.vim/plugged')
    Plug 'scrooloose/nerdcommenter'
    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
    Plug 'junegunn/fzf.vim'
-   Plug 'morhetz/gruvbox'
    Plug 'neovim/nvim-lspconfig'
    Plug 'nvim-lua/completion-nvim'
    Plug 'puremourning/vimspector'
@@ -21,28 +20,37 @@ call plug#begin('~/.vim/plugged')
    Plug 'nicwest/vim-http'
    Plug 'Lenovsky/nuake'
    Plug 'christoomey/vim-tmux-navigator'
+   Plug 'vimwiki/vimwiki'
+   Plug 'itchyny/lightline.vim'
+   Plug 'itchyny/vim-gitbranch'
+   Plug 'https://github.com/tomasiser/vim-code-dark'
+   Plug 'christianchiarulli/nvcode-color-schemes.vim'
+   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 call plug#end()
  
 set completeopt=menuone,noinsert,noselect
 set mouse=a
 set splitright
 set splitbelow
-set termguicolors
 set tabstop=2
 set shiftwidth=2
 set expandtab
 set statusline=%f
+set number
 set ignorecase
-set number relativenumber
 set smartcase
 set diffopt+=vertical
 set hidden
 set nobackup
 set nowritebackup
 set cmdheight=1
-set updatetime=300
+"set updatetime=300
 set shortmess+=c
 set signcolumn=yes
+
+if (has("termguicolors"))
+ set termguicolors
+endif
 
 let g:netrw_banner=0
 let g:vim_http_split_vertically=1
@@ -51,7 +59,7 @@ let g:markdown_fenced_languages = ['javascript', 'js=javascript', 'json=javascri
 
 filetype plugin indent on
 
-colorscheme gruvbox
+colorscheme nvcode
 
 let mapleader = " "
  
@@ -112,15 +120,15 @@ nmap <leader>ec :vs $MYVIMRC<CR>
 
 nnoremap <leader>F :Neoformat prettier<CR>
  
-nnoremap <leader>gs :G<cr>
+nnoremap <leader>gg :G<cr>
 nnoremap <leader>gb :G branch<cr>
 nnoremap <leader>gd :G diff<cr>
 nnoremap <leader>gl :G log -100<cr>
  
-nmap <silent> tn :TestNearest<CR>
+nmap <silent> tt :TestNearest<CR>
 nmap <silent> tf :TestFile<CR>
 nmap <silent> ts :TestSuite<CR>
-nmap <silent> tl :TestLast<CR>
+nmap <silent> t_ :TestLast<CR>
 
 function! JestStrategy(cmd)
   let testName = matchlist(a:cmd, '\v -t ''(.*)''')[1]
@@ -133,7 +141,9 @@ let g:test#custom_strategies = {'jest': function('JestStrategy')}
  
 " Maps ESC to exit terminal's insert mode
 if has('nvim')
- tnoremap <Esc> <C-\><C-n>
+ "tnoremap <Esc> <C-\><C-n>
+ au! TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
+ au! FileType fzf tunmap <buffer> <Esc>
 endif
  
 " Maps ctrl-b + % to open a new vertical split with a terminal
@@ -141,11 +151,12 @@ endif
 "
 let g:nuake_position = "right"
 let g:nuake_per_tab = 1
-let g:nuake_start_insert = 1
+let g:nuake_start_insert = 0
 nnoremap <leader><cr> :Nuake<CR>
 
 nnoremap <leader><space> :GFiles<CR>
-nnoremap <leader>b :Buffers<CR>
+nnoremap <leader>fb :Buffers<CR>
+nnoremap <leader>ff :Ag<CR>
 
 " " Enter Terminal-mode (insert) automatically
 "autocmd TermOpen * startinsert
@@ -186,27 +197,54 @@ let g:neoformat_javascript_prettierstandard = {
             \ 'replace': 1
             \ }
 
-" Statusline
-"function! GitBranch()
-    "return system("git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d '\n'")
-"endfunction
-
-"function! StatuslineGit()
-  "let l:branchname = GitBranch()
-  "return strlen(l:branchname) > 0?'  '.l:branchname.' ':''
-"endfunction
-
-set statusline+=%m
-set statusline+=%=
-set statusline+=%#CursorColumn#
-set statusline+=\%p%%
-set statusline+=\ %l:%c
+let g:lightline = {
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+      \ },
+      \ 'component_function': {
+      \   'gitbranch': 'gitbranch#name'
+      \ },
+      \ 'colorscheme': 'codedark',
+      \ }
 
 augroup MyCDSCode
 " Files with extension .cds are processed as cds code
     autocmd!
     autocmd BufReadPre,FileReadPre *.cds set ft=cds
 augroup END
- 
+
+inoremap <expr> <c-x><c-f> fzf#vim#complete#path(
+    \ "find . -path '*/\.*' -prune -o -print \| sed '1d;s:^..::'",
+    \ fzf#wrap({'dir': expand('%:p:h')}))
+
+
+
+nmap <Leader>tl <Plug>VimwikiToggleListItem
+vmap <Leader>tl <Plug>VimwikiToggleListItem
+nmap <Leader>wn <Plug>VimwikiNextLink
+
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  highlight = {
+    enable = true,
+  },
+  incremental_selection = {
+    enable = true,
+    keymaps = {
+      init_selection = "gnn",
+      node_incremental = "gni",
+    },
+  },
+  indent = {
+    enable = true
+  }
+}
+EOF
+
+set foldmethod=expr
+setlocal foldlevelstart=99
+set foldexpr=nvim_treesitter#foldexpr()
+
 endif
 
