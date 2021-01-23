@@ -44,7 +44,7 @@ if (has("termguicolors"))
 endif
 let g:netrw_banner=0
 let g:markdown_fenced_languages = ['javascript', 'js=javascript', 'json=javascript']
-nnoremap <leader>v :vs $MYVIMRC<CR>
+nnoremap <leader>v :e $MYVIMRC<CR>
 
 " tomasiser/vim-code-dark
 colorscheme codedark
