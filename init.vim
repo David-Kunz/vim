@@ -11,6 +11,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
   Plug 'junegunn/fzf.vim'
   Plug 'tpope/vim-fugitive'
+  Plug 'airblade/vim-gitgutter'
   Plug 'neovim/nvim-lspconfig'
   Plug 'nvim-lua/completion-nvim'
   Plug 'janko/vim-test'
@@ -20,30 +21,32 @@ call plug#begin('~/.vim/plugged')
 call plug#end()
  
 " default options
-set completeopt=menuone,noinsert,noselect
-set mouse=a
-set splitright
-set splitbelow
-set tabstop=2
-set shiftwidth=2
-set expandtab
-set number
-set ignorecase
-set smartcase
-set diffopt+=vertical
-set hidden
-set nobackup
-set nowritebackup
-set cmdheight=1
-set shortmess+=c
-set signcolumn=yes
-filetype plugin indent on
-let mapleader = " "
+set completeopt=menuone,noinsert,noselect " better autocomplete options
+set mouse=a " if I accidentally use the mouse
+set splitright " splits to the right
+set splitbelow " splits below
+set expandtab " space characters instead of tab
+set tabstop=2 " tab equals 2 spaces
+set shiftwidth=2 " indentation
+set number " show absolute line numbers
+set ignorecase " search case insensitive
+set smartcase " search via smartcase
+set incsearch " search incremental
+set diffopt+=vertical " starts diff mode in vertical split
+set hidden " allow hidden files
+set nobackup " don't create backup files
+set nowritebackup " don't create backup files
+set cmdheight=1 " only one line for commands
+set shortmess+=c " don't need to press enter so often
+set signcolumn=yes " add a column for sings (e.g. GitGutter, LSP, ...)
+set updatetime=750 " time until update
+filetype plugin indent on " enable detection, plugins and indents
+let mapleader = " " " space as leader key
 if (has("termguicolors"))
- set termguicolors
+  set termguicolors " better colors
 endif
-let g:netrw_banner=0
-let g:markdown_fenced_languages = ['javascript', 'js=javascript', 'json=javascript']
+let g:netrw_banner=0 " disable banner in netrw
+let g:markdown_fenced_languages = ['javascript', 'js=javascript', 'json=javascript'] " syntax highlighting in markdown
 nnoremap <leader>v :e $MYVIMRC<CR>
 
 " tomasiser/vim-code-dark
