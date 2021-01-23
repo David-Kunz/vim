@@ -1,19 +1,19 @@
 call plug#begin('~/.vim/plugged')
-  Plug 'janko/vim-test'
-  Plug 'scrooloose/nerdcommenter'
+  Plug 'szw/vim-maximizer'
+  Plug 'christoomey/vim-tmux-navigator'
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
   Plug 'junegunn/fzf.vim'
+  Plug 'tpope/vim-commentary'
+  Plug 'sbdchd/neoformat'
+  Plug 'kassio/neoterm'
+  Plug 'itchyny/vim-gitbranch'
+  Plug 'itchyny/lightline.vim'
+  Plug 'tpope/vim-fugitive'
   Plug 'neovim/nvim-lspconfig'
   Plug 'nvim-lua/completion-nvim'
+  Plug 'janko/vim-test'
   Plug 'puremourning/vimspector'
-  Plug 'szw/vim-maximizer'
-  Plug 'sbdchd/neoformat'
-  Plug 'tpope/vim-fugitive'
-  Plug 'kassio/neoterm'
-  Plug 'christoomey/vim-tmux-navigator'
   Plug 'vimwiki/vimwiki'
-  Plug 'itchyny/lightline.vim'
-  Plug 'itchyny/vim-gitbranch'
   Plug 'https://github.com/tomasiser/vim-code-dark'
   Plug 'pangloss/vim-javascript'
   "Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " Once tree sitter works better:
@@ -144,7 +144,6 @@ EOF
 
 nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> gh     <cmd>lua vim.lsp.buf.hover()<CR>
-nnoremap <silent> gc     <cmd>lua vim.lsp.buf.completion()<CR>
 nnoremap <silent> gH    <cmd>lua vim.lsp.buf.code_action()<CR>
 nnoremap <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
 nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
