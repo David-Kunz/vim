@@ -27,7 +27,6 @@ set splitbelow
 set tabstop=2
 set shiftwidth=2
 set expandtab
-set statusline=%f
 set number
 set ignorecase
 set smartcase
@@ -45,7 +44,7 @@ if (has("termguicolors"))
 endif
 let g:netrw_banner=0
 let g:markdown_fenced_languages = ['javascript', 'js=javascript', 'json=javascript']
-nmap <leader>v :vs $MYVIMRC<CR>
+nnoremap <leader>v :vs $MYVIMRC<CR>
 
 " tomasiser/vim-code-dark
 colorscheme codedark
