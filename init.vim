@@ -17,15 +17,16 @@ call plug#begin('~/.vim/plugged')
    Plug 'sonph/onehalf', {'rtp': 'vim/'}
    Plug 'sbdchd/neoformat'
    Plug 'tpope/vim-fugitive'
-   Plug 'nicwest/vim-http'
-   Plug 'Lenovsky/nuake'
+   Plug 'kassio/neoterm'
    Plug 'christoomey/vim-tmux-navigator'
    Plug 'vimwiki/vimwiki'
    Plug 'itchyny/lightline.vim'
    Plug 'itchyny/vim-gitbranch'
-   Plug 'https://github.com/tomasiser/vim-code-dark'
    Plug 'christianchiarulli/nvcode-color-schemes.vim'
-   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+   "Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+   " Remove once tree sitter works better:
+   Plug 'https://github.com/tomasiser/vim-code-dark'
+   Plug 'pangloss/vim-javascript'
 call plug#end()
  
 set completeopt=menuone,noinsert,noselect
@@ -48,6 +49,8 @@ set cmdheight=1
 set shortmess+=c
 set signcolumn=yes
 
+let mapleader = " "
+
 if (has("termguicolors"))
  set termguicolors
 endif
@@ -57,23 +60,31 @@ let g:vim_http_split_vertically=1
 
 let g:markdown_fenced_languages = ['javascript', 'js=javascript', 'json=javascript']
 
+let g:neoterm_default_mod = 'vertical'
+let g:neoterm_size = 100
+let g:neoterm_autoinsert = 1
+
+nnoremap <c-f> :Ttoggle<CR>
+inoremap <c-f> <Esc>:Ttoggle<CR>
+tnoremap <c-f> <c-\><c-n>:Ttoggle<CR>
+
 filetype plugin indent on
 
-colorscheme nvcode
 
-let mapleader = " "
  
 let test#strategy = "neovim"
 let test#neovim#term_position = "vertical"
 
-
-nnoremap <leader>e :Http<CR>
 
 fun! GotoWindow(id)
   :call win_gotoid(a:id)
 endfun
 
 let g:vimspector_base_dir = expand('$HOME/.config/vimspector-config')
+let g:vimspector_sidebar_width = 120
+let g:vimspector_bottombar_height = 0
+
+
 
 "func! CustomiseUI()
     "call win_gotoid( g:vimspector_session_windows.code )
@@ -116,7 +127,7 @@ nmap <leader>de <Plug>VimspectorToggleConditionalBreakpoint
 
 
 
-nmap <leader>ec :vs $MYVIMRC<CR>
+nmap <leader>v :vs $MYVIMRC<CR>
 
 nnoremap <leader>F :Neoformat prettier<CR>
  
@@ -146,15 +157,8 @@ if has('nvim')
  au! FileType fzf tunmap <buffer> <Esc>
 endif
  
-" Maps ctrl-b + % to open a new vertical split with a terminal
-"nnoremap <leader><cr> :vnew +terminal<CR>
-"
-let g:nuake_position = "right"
-let g:nuake_per_tab = 1
-let g:nuake_start_insert = 0
-nnoremap <leader><cr> :Nuake<CR>
-
 nnoremap <leader><space> :GFiles<CR>
+nnoremap <leader>fh :History:<CR>
 nnoremap <leader>fb :Buffers<CR>
 nnoremap <leader>ff :Ag<CR>
 
@@ -174,10 +178,12 @@ configs.sapcds_lsp = {
     settings = {};
   };
 }
-lspconfig.sapcds_lsp.setup{ on_attach=require'completion'.on_attach }
-EOF
+if lspconfig.sapcds_lsp.setup then
+  lspconfig.sapcds_lsp.setup{ on_attach=require'completion'.on_attach }
+end
 
-lua require'lspconfig'.tsserver.setup{ on_attach=require'completion'.on_attach }
+lspconfig.tsserver.setup{ on_attach=require'completion'.on_attach }
+EOF
 
 
 
@@ -224,27 +230,30 @@ nmap <Leader>tl <Plug>VimwikiToggleListItem
 vmap <Leader>tl <Plug>VimwikiToggleListItem
 nmap <Leader>wn <Plug>VimwikiNextLink
 
-lua <<EOF
-require'nvim-treesitter.configs'.setup {
-  highlight = {
-    enable = true,
-  },
-  incremental_selection = {
-    enable = true,
-    keymaps = {
-      init_selection = "gnn",
-      node_incremental = "gni",
-    },
-  },
-  indent = {
-    enable = true
-  }
-}
-EOF
+colorscheme codedark
+" colorscheme nvcode
+" Enable once tree sitter works better
+"lua <<EOF
+"require'nvim-treesitter.configs'.setup {
+  "highlight = {
+    "enable = true,
+  "},
+  "incremental_selection = {
+    "enable = true,
+    "keymaps = {
+      "init_selection = "gnn",
+      "node_incremental = "gni",
+    "},
+  "},
+  "indent = {
+    "enable = true
+  "}
+"}
+"EOF
 
-set foldmethod=expr
-setlocal foldlevelstart=99
-set foldexpr=nvim_treesitter#foldexpr()
+"set foldmethod=expr
+"setlocal foldlevelstart=99
+"set foldexpr=nvim_treesitter#foldexpr()
 
 endif
 
