@@ -39,7 +39,7 @@ set nowritebackup " don't create backup files
 set cmdheight=1 " only one line for commands
 set shortmess+=c " don't need to press enter so often
 set signcolumn=yes " add a column for sings (e.g. GitGutter, LSP, ...)
-set updatetime=750 " time until update
+set updatetime=1200 " time until update
 filetype plugin indent on " enable detection, plugins and indents
 let mapleader = " " " space as leader key
 if (has("termguicolors"))
@@ -71,17 +71,13 @@ nnoremap <leader>m :MaximizerToggle!<CR>
 let g:neoterm_default_mod = 'vertical'
 let g:neoterm_size = 100
 let g:neoterm_autoinsert = 1
-nnoremap <c-f> :Ttoggle<CR>
-inoremap <c-f> <Esc>:Ttoggle<CR>
-tnoremap <c-f> <c-\><c-n>:Ttoggle<CR>
+let g:neoterm_term_per_tab = 1
+nnoremap <c-q> :Ttoggle<CR>
+inoremap <c-q> <Esc>:Ttoggle<CR>
+tnoremap <c-q> <c-\><c-n>:Ttoggle<CR>
 
 " sbdchd/neoformat
 nnoremap <leader>F :Neoformat prettier<CR>
-let g:neoformat_enabled_python = ['prettierstandard']
-let g:neoformat_javascript_prettierstandard = {
-            \ 'exe': 'prettier-standard',
-            \ 'replace': 1
-            \ }
  
 " junegunn/fzf.vim
 nnoremap <leader><space> :GFiles<CR>
@@ -122,8 +118,9 @@ lua << EOF
     lspconfig.sapcds_lsp.setup{ on_attach=require'completion'.on_attach }
   end
 
-  lspconfig.tsserver.setup{ on_attach=require'completion'.on_attach }
 EOF
+lua require'lspconfig'.tsserver.setup{ on_attach=require'completion'.on_attach }
+ 
 nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> gh     <cmd>lua vim.lsp.buf.hover()<CR>
 nnoremap <silent> gH    <cmd>lua vim.lsp.buf.code_action()<CR>
@@ -144,13 +141,13 @@ let test#neovim#term_position = "vertical"
 fun! GotoWindow(id)
   :call win_gotoid(a:id)
 endfun
-let g:vimspector_base_dir = expand('$HOME/.config/vimspector-config')
-let g:vimspector_sidebar_width = 120
-let g:vimspector_bottombar_height = 0
 func! AddToWatch()
   let word = expand("<cexpr>")
   call vimspector#AddWatch(word)
 endfunction
+let g:vimspector_base_dir = expand('$HOME/.config/vimspector-config')
+let g:vimspector_sidebar_width = 120
+let g:vimspector_bottombar_height = 0
 nnoremap <leader>da :call vimspector#Launch()<CR>
 nnoremap <leader>dd :TestNearest -strategy=jest<CR>
 nnoremap <leader>dc :call GotoWindow(g:vimspector_session_windows.code)<CR>
@@ -161,14 +158,14 @@ nnoremap <leader>do :call GotoWindow(g:vimspector_session_windows.output)<CR>
 nnoremap <leader>d? :call AddToWatch()<CR>
 nnoremap <leader>dx :call vimspector#Reset()<CR>
 nnoremap <leader>dX :call vimspector#ClearBreakpoints()<CR>
-nnoremap <S-k> <Plug>VimspectorStepOut
-nnoremap <S-l> <Plug>VimspectorStepInto
-nnoremap <S-j> <Plug>VimspectorStepOver
-nnoremap <leader>d_ <Plug>VimspectorRestart
+nnoremap <S-k> :call vimspector#StepOut()<CR>
+nnoremap <S-l> :call vimspector#StepInto()<CR>
+nnoremap <S-j> :call vimspector#StepOver()<CR>
+nnoremap <leader>d_ :call vimspector#Restart()<CR>
 nnoremap <leader>dn :call vimspector#Continue()<CR>
-nnoremap <leader>drc <Plug>VimspectorRunToCursor
-nnoremap <leader>dh <Plug>VimspectorToggleBreakpoint
-nnoremap <leader>de <Plug>VimspectorToggleConditionalBreakpoint
+nnoremap <leader>drc :call vimspector#RunToCursor()<CR>
+nnoremap <leader>dh :call vimspector#ToggleBreakpoint()<CR>
+nnoremap <leader>de :call vimspector#ToggleConditionalBreakpoint()<CR>
 
 " janko/vim-test and puremourning/vimspector
 function! JestStrategy(cmd)
