@@ -39,13 +39,15 @@ set nowritebackup " don't create backup files
 set cmdheight=1 " only one line for commands
 set shortmess+=c " don't need to press enter so often
 set signcolumn=yes " add a column for sings (e.g. GitGutter, LSP, ...)
-set updatetime=1200 " time until update
+set updatetime=120 " time until update
+set undofile " persists undo tree
 filetype plugin indent on " enable detection, plugins and indents
 let mapleader = " " " space as leader key
-if (has("termguicolors"))
-  set termguicolors " better colors
-endif
+" if (has("termguicolors"))
+"   set termguicolors " better colors, but makes it very slow!
+" endif
 let g:netrw_banner=0 " disable banner in netrw
+let g:netrw_liststyle=3 " tree view in netrw
 let g:markdown_fenced_languages = ['javascript', 'js=javascript', 'json=javascript'] " syntax highlighting in markdown
 nnoremap <leader>v :e $MYVIMRC<CR>
 
@@ -71,6 +73,7 @@ nnoremap <leader>m :MaximizerToggle!<CR>
 let g:neoterm_default_mod = 'vertical'
 let g:neoterm_size = 100
 let g:neoterm_autoinsert = 1
+let g:neoterm_autoscroll = 1
 let g:neoterm_term_per_tab = 1
 nnoremap <c-q> :Ttoggle<CR>
 inoremap <c-q> <Esc>:Ttoggle<CR>
@@ -78,12 +81,12 @@ tnoremap <c-q> <c-\><c-n>:Ttoggle<CR>
 
 " sbdchd/neoformat
 nnoremap <leader>F :Neoformat prettier<CR>
- 
+
 " junegunn/fzf.vim
 nnoremap <leader><space> :GFiles<CR>
 nnoremap <leader>cc :History:<CR>
 nnoremap <leader>fb :Buffers<CR>
-nnoremap <leader>ff :Ag<CR>
+nnoremap <leader>ff :Rg<CR>
 inoremap <expr> <c-x><c-f> fzf#vim#complete#path(
     \ "find . -path '*/\.*' -prune -o -print \| sed '1d;s:^..::'",
     \ fzf#wrap({'dir': expand('%:p:h')}))
@@ -96,8 +99,7 @@ endif
 
 " tpope/vim-fugitive
 nnoremap <leader>gg :G<cr>
-nnoremap <leader>gb :G branch<cr>
-nnoremap <leader>gd :G diff<cr>
+nnoremap <leader>gd :Gdiff master<cr>
 nnoremap <leader>gl :G log -100<cr>
 
 " neovim/nvim-lspconfig and nvim-lua/completion-nvim
@@ -120,7 +122,7 @@ lua << EOF
 
 EOF
 lua require'lspconfig'.tsserver.setup{ on_attach=require'completion'.on_attach }
- 
+
 nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> gh     <cmd>lua vim.lsp.buf.hover()<CR>
 nnoremap <silent> gH    <cmd>lua vim.lsp.buf.code_action()<CR>
@@ -166,6 +168,12 @@ nnoremap <leader>dn :call vimspector#Continue()<CR>
 nnoremap <leader>drc :call vimspector#RunToCursor()<CR>
 nnoremap <leader>dh :call vimspector#ToggleBreakpoint()<CR>
 nnoremap <leader>de :call vimspector#ToggleConditionalBreakpoint()<CR>
+let g:vimspector_sign_priority = {
+  \    'vimspectorBP':         998,
+  \    'vimspectorBPCond':     997,
+  \    'vimspectorBPDisabled': 996,
+  \    'vimspectorPC':         999,
+  \ }
 
 " janko/vim-test and puremourning/vimspector
 function! JestStrategy(cmd)
