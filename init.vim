@@ -78,12 +78,15 @@ let g:neoterm_term_per_tab = 1
 nnoremap <c-q> :Ttoggle<CR>
 inoremap <c-q> <Esc>:Ttoggle<CR>
 tnoremap <c-q> <c-\><c-n>:Ttoggle<CR>
+nnoremap <leader>x :TREPLSendLine<CR>
+vnoremap <leader>x :TREPLSendSelection<CR>
 
 " sbdchd/neoformat
 nnoremap <leader>F :Neoformat prettier<CR>
 
 " junegunn/fzf.vim
 nnoremap <leader><space> :GFiles<CR>
+nnoremap <leader>FF :Files<CR>
 nnoremap <leader>cc :History:<CR>
 nnoremap <leader>ff :Rg<CR>
 nnoremap <leader>fb :Buffers<CR>
@@ -101,24 +104,6 @@ nnoremap <leader>gd :Gdiff master<cr>
 nnoremap <leader>gl :G log -100<cr>
 
 " neovim/nvim-lspconfig and nvim-lua/completion-nvim
-lua << EOF
-  local lspconfig = require'lspconfig'
-  local configs = require'lspconfig/configs'
-  configs.sapcds_lsp = {
-    default_config = {
-      cmd = {vim.fn.expand("$HOME/projects/startcdslsp")};
-      filetypes = {'cds'};
-      root_dir = function(fname)
-        return lspconfig.util.find_git_ancestor(fname) or vim.loop.os_homedir()
-      end;
-      settings = {};
-    };
-  }
-  if lspconfig.sapcds_lsp.setup then
-    lspconfig.sapcds_lsp.setup{ on_attach=require'completion'.on_attach }
-  end
-
-EOF
 lua require'lspconfig'.tsserver.setup{ on_attach=require'completion'.on_attach }
 
 nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
@@ -185,7 +170,23 @@ augroup MyCDSCode
     autocmd!
     autocmd BufReadPre,FileReadPre *.cds set ft=cds
 augroup END
-
+lua << EOF
+  local lspconfig = require'lspconfig'
+  local configs = require'lspconfig/configs'
+  configs.sapcds_lsp = {
+    default_config = {
+      cmd = {vim.fn.expand("$HOME/projects/startcdslsp")};
+      filetypes = {'cds'};
+      root_dir = function(fname)
+        return lspconfig.util.find_git_ancestor(fname) or vim.loop.os_homedir()
+      end;
+      settings = {};
+    };
+  }
+  if lspconfig.sapcds_lsp.setup then
+    lspconfig.sapcds_lsp.setup{ on_attach=require'completion'.on_attach }
+  end
+EOF
 " vimwiki/vimwiki
 nnoremap <Leader>tl <Plug>VimwikiToggleListItem
 vnoremap <Leader>tl <Plug>VimwikiToggleListItem
