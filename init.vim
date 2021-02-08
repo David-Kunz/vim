@@ -1,6 +1,6 @@
 call plug#begin('~/.vim/plugged')
   Plug 'tomasiser/vim-code-dark'
-  Plug 'pangloss/vim-javascript'
+  " Plug 'pangloss/vim-javascript'
   Plug 'itchyny/vim-gitbranch'
   Plug 'itchyny/lightline.vim'
   Plug 'szw/vim-maximizer'
@@ -17,7 +17,8 @@ call plug#begin('~/.vim/plugged')
   Plug 'janko/vim-test'
   Plug 'puremourning/vimspector'
   Plug 'vimwiki/vimwiki'
-  "Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  [Once tree sitter works better]
+  Plug 'ChristianChiarulli/nvcode-color-schemes.vim'
+  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 call plug#end()
  
 " default options
@@ -52,7 +53,7 @@ let g:markdown_fenced_languages = ['javascript', 'js=javascript', 'json=javascri
 nnoremap <leader>v :e $MYVIMRC<CR>
 
 " tomasiser/vim-code-dark
-colorscheme codedark
+"colorscheme codedark
 
 " itchyny/lightline.vim and itchyny/vim-gitbranch
 let g:lightline = {
@@ -212,26 +213,26 @@ let wiki = {}
 let wiki.nested_syntaxes = { 'js': 'javascript' }
 let g:vimwiki_list = [wiki] 
 
-" colorscheme nvcode
+colorscheme onedark
 " Enable once tree sitter works better
-"lua <<EOF
-"require'nvim-treesitter.configs'.setup {
-  "highlight = {
-    "enable = true,
-  "},
-  "incremental_selection = {
-    "enable = true,
-    "keymaps = {
-      "init_selection = "gnn",
-      "node_incremental = "gni",
-    "},
-  "},
-  "indent = {
-    "enable = true
-  "}
-"}
-"EOF
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  highlight = {
+    enable = true,
+  },
+  incremental_selection = {
+    enable = true,
+    keymaps = {
+      init_selection = "gnn",
+      node_incremental = "gni",
+    },
+  },
+  indent = {
+    enable = true
+  }
+}
+EOF
 
-"set foldmethod=expr
-"setlocal foldlevelstart=99
-"set foldexpr=nvim_treesitter#foldexpr()
+set foldmethod=expr
+setlocal foldlevelstart=99
+set foldexpr=nvim_treesitter#foldexpr()
