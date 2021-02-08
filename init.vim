@@ -13,7 +13,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'tpope/vim-fugitive'
   Plug 'airblade/vim-gitgutter'
   Plug 'neovim/nvim-lspconfig'
-  Plug 'nvim-lua/completion-nvim'
+  Plug 'hrsh7th/nvim-compe'
   Plug 'janko/vim-test'
   Plug 'puremourning/vimspector'
   Plug 'vimwiki/vimwiki'
@@ -21,7 +21,7 @@ call plug#begin('~/.vim/plugged')
 call plug#end()
  
 " default options
-set completeopt=menuone,noinsert,noselect " better autocomplete options
+set completeopt=menu,menuone,noselect " better autocomplete options
 set mouse=a " if I accidentally use the mouse
 set splitright " splits to the right
 set splitbelow " splits below
@@ -104,7 +104,7 @@ nnoremap <leader>gd :Gdiff master<cr>
 nnoremap <leader>gl :G log -100<cr>
 
 " neovim/nvim-lspconfig and nvim-lua/completion-nvim
-lua require'lspconfig'.tsserver.setup{ on_attach=require'completion'.on_attach }
+lua require'lspconfig'.tsserver.setup{}
 
 nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> gh     <cmd>lua vim.lsp.buf.hover()<CR>
@@ -113,6 +113,22 @@ nnoremap <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
 nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
 nnoremap <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
 nnoremap <silent> gR    <cmd>lua vim.lsp.buf.rename()<CR>
+
+" 'hrsh7th/nvim-compe'
+lua << EOF
+require'compe'.setup {
+  enabled = true;
+  autocomplete = true;
+  source = {
+    path = true;
+    buffer = true;
+    nvim_lsp = true;
+    nvim_lua = true;
+  };
+}
+EOF
+inoremap <silent><expr> <C-Space> compe#complete()
+inoremap <silent><expr> <CR>      compe#confirm('<CR>')
 
 " janko/vim-test
 nnoremap <silent> tt :TestNearest<CR>
@@ -134,7 +150,6 @@ let g:vimspector_base_dir = expand('$HOME/.config/vimspector-config')
 let g:vimspector_sidebar_width = 120
 let g:vimspector_bottombar_height = 0
 nnoremap <leader>da :call vimspector#Launch()<CR>
-nnoremap <leader>dd :TestNearest -strategy=jest<CR>
 nnoremap <leader>dc :call GotoWindow(g:vimspector_session_windows.code)<CR>
 nnoremap <leader>dv :call GotoWindow(g:vimspector_session_windows.variables)<CR>
 nnoremap <leader>dw :call GotoWindow(g:vimspector_session_windows.watches)<CR>
@@ -159,6 +174,7 @@ let g:vimspector_sign_priority = {
   \ }
 
 " janko/vim-test and puremourning/vimspector
+nnoremap <leader>dd :TestNearest -strategy=jest<CR>
 function! JestStrategy(cmd)
   let testName = matchlist(a:cmd, '\v -t ''(.*)''')[1]
   call vimspector#LaunchWithSettings( #{ configuration: 'jest', TestName: testName } )
@@ -184,7 +200,7 @@ lua << EOF
     };
   }
   if lspconfig.sapcds_lsp.setup then
-    lspconfig.sapcds_lsp.setup{ on_attach=require'completion'.on_attach }
+    lspconfig.sapcds_lsp.setup{ }
   end
 EOF
 " vimwiki/vimwiki
