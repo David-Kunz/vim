@@ -19,6 +19,8 @@ call plug#begin('~/.vim/plugged')
   Plug 'vimwiki/vimwiki'
   Plug 'ChristianChiarulli/nvcode-color-schemes.vim'
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+  Plug 'junegunn/goyo.vim'
+  Plug 'junegunn/limelight.vim'
 call plug#end()
  
 " default options
@@ -40,13 +42,13 @@ set nowritebackup " don't create backup files
 set cmdheight=1 " only one line for commands
 set shortmess+=c " don't need to press enter so often
 set signcolumn=yes " add a column for sings (e.g. GitGutter, LSP, ...)
-set updatetime=120 " time until update
+set updatetime=520 " time until update
 set undofile " persists undo tree
 filetype plugin indent on " enable detection, plugins and indents
 let mapleader = " " " space as leader key
-" if (has("termguicolors"))
-"   set termguicolors " better colors, but makes it very slow!
-" endif
+if (has("termguicolors"))
+  set termguicolors " better colors, but makes it very slow!
+endif
 let g:netrw_banner=0 " disable banner in netrw
 let g:netrw_liststyle=3 " tree view in netrw
 let g:markdown_fenced_languages = ['javascript', 'js=javascript', 'json=javascript'] " syntax highlighting in markdown
@@ -125,6 +127,7 @@ require'compe'.setup {
     buffer = true;
     nvim_lsp = true;
     nvim_lua = true;
+    -- treesitter = true;
   };
 }
 EOF
@@ -213,7 +216,7 @@ let wiki = {}
 let wiki.nested_syntaxes = { 'js': 'javascript' }
 let g:vimwiki_list = [wiki] 
 
-colorscheme onedark
+colorscheme nvcode
 " Enable once tree sitter works better
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
@@ -236,3 +239,7 @@ EOF
 set foldmethod=expr
 setlocal foldlevelstart=99
 set foldexpr=nvim_treesitter#foldexpr()
+
+" 'junegunn/goyo.vim' and 'junegunn/limelight.vim'
+let g:goyo_width = 100
+nmap <silent> <Leader>l :Goyo<CR>:Limelight!!<CR>
