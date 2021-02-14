@@ -1,0 +1,12 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhistcnt =2
+let g:netrw_dirhist_2='/Users/d065023/.config/vimspector-config/configurations/macos/_all'
+let g:netrw_dirhist_1='/Users/d065023/.config/vimspector-config/configurations/macos'
+let g:netrw_dirhist_0='/Users/d065023/.config/vimspector-config/configurations'
+let g:netrw_dirhist_9='/Users/d065023/.config/vimspector-config/configurations/macos/_all'
+let g:netrw_dirhist_8='/Users/d065023/.config/vimspector-config/configurations/macos'
+let g:netrw_dirhist_7='/Users/d065023/.config/vimspector-config/configurations'
+let g:netrw_dirhist_6='/Users/d065023/.config/vimspector-config/configurations/macos/_all'
+let g:netrw_dirhist_5='/Users/d065023/.config/vimspector-config/configurations/macos'
+let g:netrw_dirhist_4='/Users/d065023/.config/vimspector-config/configurations'
+let g:netrw_dirhist_3='/Users/d065023/.config/vimspector-config'
