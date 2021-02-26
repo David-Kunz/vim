@@ -86,6 +86,9 @@ inoremap <c-y> <Esc>:Ttoggle<CR>
 tnoremap <c-y> <c-\><c-n>:Ttoggle<CR>
 nnoremap <leader>x :TREPLSendLine<CR>
 vnoremap <leader>x :TREPLSendSelection<CR>
+if has('nvim')
+  au! TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
+endif
 
 " sbdchd/neoformat
 nnoremap <leader>F :Neoformat prettier<CR>
