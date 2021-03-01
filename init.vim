@@ -34,7 +34,7 @@ set splitbelow " splits below
 set expandtab " space characters instead of tab
 set tabstop=2 " tab equals 2 spaces
 set shiftwidth=2 " indentation
-set number " show absolute line numbers
+set number relativenumber " show relative line numbers
 set ignorecase " search case insensitive
 set smartcase " search via smartcase
 set incsearch " search incremental
@@ -95,6 +95,7 @@ nnoremap <leader>F :Neoformat prettier<CR>
 
 " nvim-telescope/telescope.nvim
  nnoremap <leader><space> :Telescope git_files<CR>
+ nnoremap <leader>ff :Telescope live_grep<CR>
  nnoremap <leader>FF :Telescope find_files<CR>
  nnoremap <leader>fg :Telescope git_branches<CR>
  nnoremap <leader>fb :Telescope buffers<CR>
