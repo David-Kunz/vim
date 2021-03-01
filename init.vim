@@ -39,7 +39,7 @@ set ignorecase " search case insensitive
 set smartcase " search via smartcase
 set incsearch " search incremental
 set diffopt+=vertical " starts diff mode in vertical split
-set hidden " allow hidden files
+set hidden " allow hidden buffers
 set nobackup " don't create backup files
 set nowritebackup " don't create backup files
 set cmdheight=1 " only one line for commands
