@@ -4,12 +4,11 @@ call plug#begin('~/.vim/plugged')
   Plug 'itchyny/vim-gitbranch'
   Plug 'itchyny/lightline.vim'
   Plug 'szw/vim-maximizer'
-  Plug 'christoomey/vim-tmux-navigator'
   Plug 'kassio/neoterm'
   Plug 'tpope/vim-commentary'
   Plug 'sbdchd/neoformat'
   Plug 'tpope/vim-fugitive'
-  Plug 'airblade/vim-gitgutter'
+  " Plug 'airblade/vim-gitgutter'
   Plug 'neovim/nvim-lspconfig'
   Plug 'hrsh7th/nvim-compe'
   Plug 'janko/vim-test'
@@ -18,10 +17,15 @@ call plug#begin('~/.vim/plugged')
   Plug 'ChristianChiarulli/nvcode-color-schemes.vim'
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
   Plug 'junegunn/goyo.vim'
-  Plug 'junegunn/limelight.vim'
   Plug 'nvim-telescope/telescope.nvim'
   Plug 'nvim-lua/popup.nvim'
   Plug 'nvim-lua/plenary.nvim'
+  Plug 'heavenshell/vim-jsdoc', { 
+  \ 'for': ['javascript', 'javascript.jsx','typescript'], 
+  \ 'do': 'make install'
+  \}
+  Plug 'alaviss/nim.nvim'
+  Plug 'lewis6991/gitsigns.nvim'
   " Plug 'mfussenegger/nvim-dap'
   " Plug 'theHamsta/nvim-dap-virtual-text'
 call plug#end()
@@ -34,7 +38,7 @@ set splitbelow " splits below
 set expandtab " space characters instead of tab
 set tabstop=2 " tab equals 2 spaces
 set shiftwidth=2 " indentation
-set number relativenumber " show relative line numbers
+set number " show absolute line numbers
 set ignorecase " search case insensitive
 set smartcase " search via smartcase
 set incsearch " search incremental
@@ -60,6 +64,10 @@ nnoremap <leader>v :e $MYVIMRC<CR>
 " tomasiser/vim-code-dark
 "colorscheme codedark
 
+" lewis6991/gitsigns.nvim
+lua require('gitsigns').setup()
+
+
 " itchyny/lightline.vim and itchyny/vim-gitbranch
 let g:lightline = {
       \ 'active': {
@@ -73,7 +81,7 @@ let g:lightline = {
       \ }
 
 " szw/vim-maximizer
-nnoremap <silent> <leader>m :MaximizerToggle!<CR>
+nnoremap <silent> <C-w>m :MaximizerToggle!<CR>
 
 " kassio/neoterm
 let g:neoterm_default_mod = 'vertical'
@@ -94,16 +102,21 @@ endif
 nnoremap <leader>F :Neoformat prettier<CR>
 
 " nvim-telescope/telescope.nvim
- nnoremap <leader><space> :Telescope git_files<CR>
- nnoremap <leader>ff :Telescope live_grep<CR>
- nnoremap <leader>FF :Telescope find_files<CR>
- nnoremap <leader>fg :Telescope git_branches<CR>
- nnoremap <leader>fb :Telescope buffers<CR>
+nnoremap <leader><space> :Telescope git_files<CR>
+" nnoremap <leader>ff :Telescope live_grep<CR>
+nnoremap <leader>FF :Telescope find_files<CR>
+nnoremap <leader>fg :Telescope git_branches<CR>
+nnoremap <leader>fb :Telescope buffers<CR>
+nnoremap <leader>fs :Telescope lsp_document_symbols<CR>
+nnoremap <leader>ff :Telescope live_grep<CR>
+" nnoremap <leader>ff : lua require'telescope.builtin'.grep_string{ only_sort_text = true, search = vim.fn.input("Grep For >") }<CR>
+
 
 " tpope/vim-fugitive
 nnoremap <leader>gg :G<cr>
 nnoremap <leader>gd :Gdiff master<cr>
 nnoremap <leader>gl :G log -100<cr>
+nnoremap <leader>gp :G push<cr>
 
 " neovim/nvim-lspconfig
 lua require'lspconfig'.tsserver.setup{}
@@ -125,6 +138,10 @@ local lspconfig = require'lspconfig'
           }
       }
   })
+EOF
+
+lua << EOF
+require'lspconfig'.nimls.setup{}
 EOF
 
 
@@ -243,13 +260,6 @@ require'nvim-treesitter.configs'.setup {
   highlight = {
     enable = true,
   },
-  incremental_selection = {
-    enable = true,
-    keymaps = {
-      init_selection = "gnn",
-      node_incremental = "gni",
-    },
-  },
   indent = {
     enable = true
   }
@@ -260,9 +270,9 @@ set foldmethod=expr
 setlocal foldlevelstart=99
 set foldexpr=nvim_treesitter#foldexpr()
 
-" 'junegunn/goyo.vim' and 'junegunn/limelight.vim'
+" 'junegunn/goyo.vim'
 let g:goyo_width = 150
-nmap <silent> <Leader>l :Goyo<CR>:Limelight!!<CR>
+nmap <silent> <Leader>l :Goyo<CR>
 
 " mfussenegger/nvim-dap
 " lua << EOF
