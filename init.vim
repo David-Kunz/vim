@@ -16,7 +16,6 @@ call plug#begin('~/.vim/plugged')
   Plug 'vimwiki/vimwiki'
   Plug 'ChristianChiarulli/nvcode-color-schemes.vim'
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-  Plug 'junegunn/goyo.vim'
   Plug 'nvim-telescope/telescope.nvim'
   Plug 'nvim-lua/popup.nvim'
   Plug 'nvim-lua/plenary.nvim'
@@ -26,6 +25,7 @@ call plug#begin('~/.vim/plugged')
   \}
   Plug 'alaviss/nim.nvim'
   Plug 'lewis6991/gitsigns.nvim'
+  Plug 'folke/tokyonight.nvim'
   " Plug 'mfussenegger/nvim-dap'
   " Plug 'theHamsta/nvim-dap-virtual-text'
 call plug#end()
@@ -65,7 +65,9 @@ nnoremap <leader>v :e $MYVIMRC<CR>
 "colorscheme codedark
 
 " lewis6991/gitsigns.nvim
-lua require('gitsigns').setup()
+lua << EOF
+ require('gitsigns').setup({})
+EOF
 
 
 " itchyny/lightline.vim and itchyny/vim-gitbranch
@@ -104,11 +106,12 @@ nnoremap <leader>F :Neoformat prettier<CR>
 " nvim-telescope/telescope.nvim
 nnoremap <leader><space> :Telescope git_files<CR>
 " nnoremap <leader>ff :Telescope live_grep<CR>
-nnoremap <leader>FF :Telescope find_files<CR>
+nnoremap <leader>fn :Telescope find_files<CR>
 nnoremap <leader>fg :Telescope git_branches<CR>
 nnoremap <leader>fb :Telescope buffers<CR>
 nnoremap <leader>fs :Telescope lsp_document_symbols<CR>
 nnoremap <leader>ff :Telescope live_grep<CR>
+nnoremap <leader>FF :Telescope grep_string<CR>
 " nnoremap <leader>ff : lua require'telescope.builtin'.grep_string{ only_sort_text = true, search = vim.fn.input("Grep For >") }<CR>
 
 
@@ -120,29 +123,29 @@ nnoremap <leader>gp :G push<cr>
 
 " neovim/nvim-lspconfig
 lua require'lspconfig'.tsserver.setup{}
-lua << EOF
-local lspconfig = require'lspconfig'
-  lspconfig.rust_analyzer.setup({
-      settings = {
-          ["rust-analyzer"] = {
-              assist = {
-                  importMergeBehavior = "last",
-                  importPrefix = "by_self",
-              },
-              cargo = {
-                  loadOutDirsFromCheck = true
-              },
-              procMacro = {
-                  enable = true
-              },
-          }
-      }
-  })
-EOF
+" lua << EOF
+" local lspconfig = require'lspconfig'
+"   lspconfig.rust_analyzer.setup({
+"       settings = {
+"           ["rust-analyzer"] = {
+"               assist = {
+"                   importMergeBehavior = "last",
+"                   importPrefix = "by_self",
+"               },
+"               cargo = {
+"                   loadOutDirsFromCheck = true
+"               },
+"               procMacro = {
+"                   enable = true
+"               },
+"           }
+"       }
+"   })
+" EOF
 
-lua << EOF
-require'lspconfig'.nimls.setup{}
-EOF
+" lua << EOF
+" require'lspconfig'.nimls.setup{}
+" EOF
 
 
 
@@ -254,7 +257,10 @@ let wiki.nested_syntaxes = { 'js': 'javascript' }
 let g:vimwiki_list = [wiki] 
 
 " nvim/treesitter
-colorscheme onedark
+"colorscheme onedark
+
+colorscheme tokyonight
+
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
   highlight = {
@@ -270,9 +276,10 @@ set foldmethod=expr
 setlocal foldlevelstart=99
 set foldexpr=nvim_treesitter#foldexpr()
 
-" 'junegunn/goyo.vim'
-let g:goyo_width = 150
-nmap <silent> <Leader>l :Goyo<CR>
+
+" " 'junegunn/goyo.vim'
+" let g:goyo_width = 150
+" nmap <silent> <Leader>l :Goyo<CR>
 
 " mfussenegger/nvim-dap
 " lua << EOF
