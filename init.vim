@@ -3,7 +3,7 @@ call plug#begin('~/.vim/plugged')
   " Plug 'pangloss/vim-javascript'
 
   Plug 'itchyny/vim-gitbranch'
-  Plug 'itchyny/lightline.vim'
+  " Plug 'itchyny/lightline.vim'
   Plug 'szw/vim-maximizer'
   Plug 'kassio/neoterm'
   Plug 'tpope/vim-commentary'
@@ -31,6 +31,9 @@ call plug#begin('~/.vim/plugged')
   Plug 'nvim-telescope/telescope-dap.nvim'
   Plug 'theHamsta/nvim-dap-virtual-text'
   Plug 'Mofiqul/codedark.nvim'
+  Plug 'hoob3rt/lualine.nvim'
+  Plug 'kyazdani42/nvim-web-devicons'
+  Plug 'ryanoasis/vim-devicons'
 call plug#end()
 
  
@@ -70,17 +73,22 @@ lua << EOF
  require('gitsigns').setup({})
 EOF
 
+" 'hoob3rt/lualine.nvim'
+lua << EOF
+  require('lualine').setup()
+EOF
 
-" itchyny/lightline.vim and itchyny/vim-gitbranch
-let g:lightline = {
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
-      \ },
-      \ 'component_function': {
-      \   'gitbranch': 'gitbranch#name'
-      \ }
-      \ }
+
+" " itchyny/lightline.vim and itchyny/vim-gitbranch
+" let g:lightline = {
+"       \ 'active': {
+"       \   'left': [ [ 'mode', 'paste' ],
+"       \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+"       \ },
+"       \ 'component_function': {
+"       \   'gitbranch': 'gitbranch#name'
+"       \ }
+"       \ }
 
 " szw/vim-maximizer
 nnoremap <silent> <C-w>m :MaximizerToggle!<CR>
