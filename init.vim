@@ -1,6 +1,7 @@
 call plug#begin('~/.vim/plugged')
-  Plug 'tomasiser/vim-code-dark'
+  " Plug 'tomasiser/vim-code-dark'
   " Plug 'pangloss/vim-javascript'
+
   Plug 'itchyny/vim-gitbranch'
   Plug 'itchyny/lightline.vim'
   Plug 'szw/vim-maximizer'
@@ -29,7 +30,9 @@ call plug#begin('~/.vim/plugged')
   Plug 'mfussenegger/nvim-dap'
   Plug 'nvim-telescope/telescope-dap.nvim'
   Plug 'theHamsta/nvim-dap-virtual-text'
+  Plug 'Mofiqul/codedark.nvim'
 call plug#end()
+
  
 " default options
 set completeopt=menu,menuone,noselect " better autocomplete options
@@ -62,9 +65,6 @@ let g:netrw_liststyle=3 " tree view in netrw
 let g:markdown_fenced_languages = ['javascript', 'js=javascript', 'json=javascript'] " syntax highlighting in markdown
 nnoremap <leader>v :e $MYVIMRC<CR>
 
-" tomasiser/vim-code-dark
-"colorscheme codedark
-
 " lewis6991/gitsigns.nvim
 lua << EOF
  require('gitsigns').setup({})
@@ -79,8 +79,7 @@ let g:lightline = {
       \ },
       \ 'component_function': {
       \   'gitbranch': 'gitbranch#name'
-      \ },
-      \ 'colorscheme': 'codedark',
+      \ }
       \ }
 
 " szw/vim-maximizer
@@ -260,9 +259,7 @@ let wiki.nested_syntaxes = { 'js': 'javascript' }
 let g:vimwiki_list = [wiki] 
 
 " nvim/treesitter
-"colorscheme onedark
-
-colorscheme tokyonight
+colorscheme codedark
 
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
@@ -300,6 +297,8 @@ nnoremap <S-k> :lua require'dap'.step_out()<CR>
 nnoremap <S-l> :lua require'dap'.step_into()<CR>
 nnoremap <S-j> :lua require'dap'.step_over()<CR>
 nnoremap <leader>dn :lua require'dap'.continue()<CR>
+nnoremap <leader>dk :lua require'dap'.up()<CR>
+nnoremap <leader>dj :lua require'dap'.down()<CR>
 nnoremap <leader>d_ :lua require'dap'.run_last()<CR>
 nnoremap <leader>dr :lua require'dap'.repl.open({}, 'vsplit')<CR><C-w>l
 nnoremap <leader>di :lua require'dap.ui.variables'.hover(function () return vim.fn.expand("<cexpr>") end)<CR>
