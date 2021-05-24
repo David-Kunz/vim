@@ -1,21 +1,14 @@
 call plug#begin('~/.vim/plugged')
-  " Plug 'tomasiser/vim-code-dark'
-  " Plug 'pangloss/vim-javascript'
-
-  Plug 'itchyny/vim-gitbranch'
-  " Plug 'itchyny/lightline.vim'
   Plug 'szw/vim-maximizer'
   Plug 'kassio/neoterm'
   Plug 'tpope/vim-commentary'
   Plug 'sbdchd/neoformat'
   Plug 'tpope/vim-fugitive'
-  " Plug 'airblade/vim-gitgutter'
   Plug 'neovim/nvim-lspconfig'
   Plug 'hrsh7th/nvim-compe'
   Plug 'janko/vim-test'
   " Plug 'puremourning/vimspector'
   Plug 'vimwiki/vimwiki'
-  Plug 'ChristianChiarulli/nvcode-color-schemes.vim'
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
   Plug 'nvim-telescope/telescope.nvim'
   Plug 'nvim-lua/popup.nvim'
@@ -35,7 +28,6 @@ call plug#begin('~/.vim/plugged')
   Plug 'kyazdani42/nvim-web-devicons'
   Plug 'ryanoasis/vim-devicons'
 call plug#end()
-
  
 " default options
 set completeopt=menu,menuone,noselect " better autocomplete options
@@ -55,7 +47,7 @@ set nobackup " don't create backup files
 set nowritebackup " don't create backup files
 set cmdheight=1 " only one line for commands
 set shortmess+=c " don't need to press enter so often
-set signcolumn=yes " add a column for sings (e.g. GitGutter, LSP, ...)
+set signcolumn=yes " add a column for sings (e.g. LSP, ...)
 set updatetime=520 " time until update
 set undofile " persists undo tree
 filetype plugin indent on " enable detection, plugins and indents
@@ -75,20 +67,12 @@ EOF
 
 " 'hoob3rt/lualine.nvim'
 lua << EOF
-  require('lualine').setup()
+  require('lualine').setup({
+  options = {
+    theme = "codedark-nvim"
+   }
+  })
 EOF
-
-
-" " itchyny/lightline.vim and itchyny/vim-gitbranch
-" let g:lightline = {
-"       \ 'active': {
-"       \   'left': [ [ 'mode', 'paste' ],
-"       \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
-"       \ },
-"       \ 'component_function': {
-"       \   'gitbranch': 'gitbranch#name'
-"       \ }
-"       \ }
 
 " szw/vim-maximizer
 nnoremap <silent> <C-w>m :MaximizerToggle!<CR>
@@ -122,14 +106,11 @@ nnoremap <leader>ff :Telescope live_grep<CR>
 nnoremap <leader>FF :Telescope grep_string<CR>
 " nnoremap <leader>ff : lua require'telescope.builtin'.grep_string{ only_sort_text = true, search = vim.fn.input("Grep For >") }<CR>
 
-
-
 " tpope/vim-fugitive
 nnoremap <leader>gg :G<cr>
 nnoremap <leader>gd :Gdiff master<cr>
 nnoremap <leader>gl :G log -100<cr>
 nnoremap <leader>gp :G push<cr>
- 
 
 " neovim/nvim-lspconfig
 lua require'lspconfig'.tsserver.setup{}
@@ -156,9 +137,6 @@ lua require'lspconfig'.tsserver.setup{}
 " lua << EOF
 " require'lspconfig'.nimls.setup{}
 " EOF
-
-
-
 
 nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> gh     <cmd>lua vim.lsp.buf.hover()<CR>
@@ -257,6 +235,7 @@ lua << EOF
     lspconfig.sapcds_lsp.setup{ }
   end
 EOF
+
 " vimwiki/vimwiki
 nnoremap <Leader>tl <Plug>VimwikiToggleListItem
 vnoremap <Leader>tl <Plug>VimwikiToggleListItem
@@ -283,11 +262,6 @@ EOF
 set foldmethod=expr
 setlocal foldlevelstart=99
 set foldexpr=nvim_treesitter#foldexpr()
-
-
-" " 'junegunn/goyo.vim'
-" let g:goyo_width = 150
-" nmap <silent> <Leader>l :Goyo<CR>
 
 " mfussenegger/nvim-dap
 lua << EOF
