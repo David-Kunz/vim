@@ -69,7 +69,7 @@ EOF
 lua << EOF
   require('lualine').setup({
   options = {
-    theme = "codedark-nvim"
+    theme = "vscode"
    }
   })
 EOF
@@ -98,6 +98,7 @@ nnoremap <leader>F :Neoformat prettier<CR>
 " nvim-telescope/telescope.nvim
 nnoremap <leader><space> :Telescope git_files<CR>
 " nnoremap <leader>ff :Telescope live_grep<CR>
+nnoremap <leader>fo :Telescope file_browser<CR>
 nnoremap <leader>fn :Telescope find_files<CR>
 nnoremap <leader>fg :Telescope git_branches<CR>
 nnoremap <leader>fb :Telescope buffers<CR>
@@ -246,7 +247,7 @@ let wiki.nested_syntaxes = { 'js': 'javascript' }
 let g:vimwiki_list = [wiki] 
 
 " nvim/treesitter
-colorscheme codedark
+colorscheme vscode
 
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
@@ -288,6 +289,7 @@ vnoremap <leader>di :lua require'dap.ui.variables'.visual_hover()<CR>
 nnoremap <leader>d? :lua require'dap.ui.variables'.scopes()<CR>
 nnoremap <leader>de :lua require'dap'.set_exception_breakpoints({"all"})<CR>
 nnoremap <leader>da :lua require'debugHelper'.attach()<CR>
+nnoremap <leader>dA :lua require'debugHelper'.attachToRemote()<CR>
 
 " Plug 'nvim-telescope/telescope-dap.nvim'
 lua << EOF
