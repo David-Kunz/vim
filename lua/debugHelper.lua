@@ -1,7 +1,7 @@
 local dap = require('dap')
 
 local function debugJest(testName, filename)
-  print("starting " .. testName .. " with file " .. filename)
+  print("starting " .. testName .. " in " .. filename)
   dap.run({
       type = 'node2',
       request = 'launch',
