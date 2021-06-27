@@ -24,7 +24,7 @@ call plug#begin('~/.vim/plugged')
   " Plug 'rcarriga/nvim-dap-ui'
   Plug 'nvim-telescope/telescope-dap.nvim'
   Plug 'theHamsta/nvim-dap-virtual-text'
-  Plug 'Mofiqul/codedark.nvim'
+  Plug 'Mofiqul/vscode.nvim'
   Plug 'hoob3rt/lualine.nvim'
   Plug 'kyazdani42/nvim-web-devicons'
   Plug 'ryanoasis/vim-devicons'
@@ -253,6 +253,7 @@ let wiki.nested_syntaxes = { 'js': 'javascript' }
 let g:vimwiki_list = [wiki] 
 
 " nvim/treesitter
+let g:vscode_style = "dark"
 colorscheme vscode
 
 lua <<EOF
