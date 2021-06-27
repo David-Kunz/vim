@@ -328,9 +328,7 @@ let g:test#custom_strategies = {'jest': function('JestStrategy')}
 
 " TimUntersberger/neogit and sindrets/diffview.nvim
 lua << EOF
-local neogit = require("neogit")
-
-neogit.setup {
+require("neogit").setup {
   disable_commit_confirmation = true,
   integrations = {
     diffview = true
