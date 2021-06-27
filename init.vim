@@ -298,10 +298,9 @@ nnoremap <leader>d? :lua require'dap.ui.variables'.scopes()<CR>
 nnoremap <leader>de :lua require'dap'.set_exception_breakpoints({"all"})<CR>
 nnoremap <leader>da :lua require'debugHelper'.attach()<CR>
 nnoremap <leader>dA :lua require'debugHelper'.attachToRemote()<CR>
-
-" new!
 nnoremap <leader>di :lua require'dap.ui.widgets'.hover()<CR>
 nnoremap <leader>d? :lua local widgets=require'dap.ui.widgets';widgets.centered_float(widgets.scopes)<CR>
+
 " Plug 'nvim-telescope/telescope-dap.nvim'
 lua << EOF
 require('telescope').setup()
