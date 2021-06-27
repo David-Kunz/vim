@@ -28,6 +28,8 @@ call plug#begin('~/.vim/plugged')
   Plug 'hoob3rt/lualine.nvim'
   Plug 'kyazdani42/nvim-web-devicons'
   Plug 'ryanoasis/vim-devicons'
+  Plug 'TimUntersberger/neogit'
+  Plug 'sindrets/diffview.nvim'
 call plug#end()
  
 " default options
@@ -54,7 +56,7 @@ set undofile " persists undo tree
 filetype plugin indent on " enable detection, plugins and indents
 let mapleader = " " " space as leader key
 if (has("termguicolors"))
-  set termguicolors " better colors, but makes it very slow!
+  set termguicolors " better colors, but makes it sery slow!
 endif
 let g:netrw_banner=0 " disable banner in netrw
 let g:netrw_liststyle=3 " tree view in netrw
@@ -108,11 +110,12 @@ nnoremap <leader>ff :Telescope live_grep<CR>
 nnoremap <leader>FF :Telescope grep_string<CR>
 " nnoremap <leader>ff : lua require'telescope.builtin'.grep_string{ only_sort_text = true, search = vim.fn.input("Grep For >") }<CR>
 
-" tpope/vim-fugitive
-nnoremap <leader>gg :G<cr>
-nnoremap <leader>gd :Gdiff master<cr>
-nnoremap <leader>gl :G log -100<cr>
-nnoremap <leader>gp :G push<cr>
+" " tpope/vim-fugitive
+" nnoremap <leader>gg :G<cr>
+" nnoremap <leader>gd :Gdiff master<cr>
+" nnoremap <leader>gl :G log -100<cr>
+" nnoremap <leader>gp :G push<cr>
+
 
 " neovim/nvim-lspconfig
 lua require'lspconfig'.tsserver.setup{}
@@ -238,6 +241,8 @@ lua << EOF
   end
 EOF
 
+nnoremap <Leader>tt :tabclose<CR>
+
 " vimwiki/vimwiki
 nnoremap <Leader>tl <Plug>VimwikiToggleListItem
 vnoremap <Leader>tl <Plug>VimwikiToggleListItem
@@ -320,3 +325,20 @@ function! JestStrategy(cmd)
   call luaeval("require'debugHelper'.debugJest([[" . testName . "]], [[" . fileName . "]])")
 endfunction      
 let g:test#custom_strategies = {'jest': function('JestStrategy')}
+
+" TimUntersberger/neogit and sindrets/diffview.nvim
+lua << EOF
+local neogit = require("neogit")
+
+neogit.setup {
+  disable_commit_confirmation = true,
+  integrations = {
+    diffview = true
+    }
+  }
+EOF
+nnoremap <leader>gg :Neogit<cr>
+nnoremap <leader>gd :DiffviewOpen<cr>
+nnoremap <leader>gD :DiffviewOpen master<cr>
+nnoremap <leader>gl :Neogit log<cr>
+nnoremap <leader>gp :Neogit push<cr>

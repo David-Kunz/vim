@@ -6,10 +6,10 @@ syntax match cdsComment "\v\/\/.*$"
 syntax region cdsComment start="\v/\*" end="\v\*/"
 
 syntax match cdsOtherStuff /=/
-syntax match cdsAnnotation /\v\@\a*/
+syntax match cdsAnnotation /\v\@\S*/
 
 syntax match supportClassCds /\v(<|>)(Association to (one|many|)|Composition of (one|many|)|Boolean|Date|Time|DateTime|Timestamp|Number|Integer|Decimal|String)(<|>)/
-syntax match keywordStrongCds /\v(<|>)(key|as|on|namespace|import|using|define|extend|annotate|expose|context|service|abstract|aspect|entity|view|type|facet|annotation|actions|action|function)(<|>)/
+syntax match keywordStrongCds /\v(<|>)(key|as|on|with|namespace|import|using|define|extend|annotate|expose|context|service|abstract|aspect|entity|projection|view|event|type|facet|annotation|actions|action|function)(<|>)/
 syntax match keywordStrongControlCds /\v(<|>)from(<|>)/
 syntax region stringQuotedSingleCds start="\v'" end="\v'"
 syntax region stringQuotedDoubleCds start="\v\"" end="\v\""
