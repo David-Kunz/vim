@@ -3,7 +3,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'kassio/neoterm'
   Plug 'tpope/vim-commentary'
   Plug 'sbdchd/neoformat'
-  Plug 'tpope/vim-fugitive'
+  " Plug 'tpope/vim-fugitive'
   Plug 'neovim/nvim-lspconfig'
   Plug 'hrsh7th/nvim-compe'
   Plug 'janko/vim-test'
@@ -19,7 +19,7 @@ call plug#begin('~/.vim/plugged')
   \}
   Plug 'alaviss/nim.nvim'
   Plug 'lewis6991/gitsigns.nvim'
-  Plug 'folke/tokyonight.nvim'
+  " Plug 'folke/tokyonight.nvim'
   Plug 'mfussenegger/nvim-dap'
   " Plug 'rcarriga/nvim-dap-ui'
   Plug 'nvim-telescope/telescope-dap.nvim'
@@ -99,7 +99,24 @@ endif
 nnoremap <leader>F :Neoformat prettier<CR>
 
 " nvim-telescope/telescope.nvim
+lua << EOF
+_G.telescope_find_files_in_path = function(path)
+ local _path = path or vim.fn.input("Dir: ", "", "dir")
+ require("telescope.builtin").find_files({search_dirs = {_path}})
+end
+EOF
+lua << EOF
+_G.telescope_live_grep_in_path = function(path)
+ local _path = path or vim.fn.input("Dir: ", "", "dir")
+ require("telescope.builtin").live_grep({search_dirs = {_path}})
+end
+EOF
+
 nnoremap <leader><space> :Telescope git_files<CR>
+nnoremap <leader>fd :lua telescope_find_files_in_path()<CR>
+nnoremap <leader>fD :lua telescope_live_grep_in_path()<CR>
+nnoremap <leader>ft :lua telescope_find_files_in_path("./tests")<CR>
+nnoremap <leader>fT :lua telescope_live_grep_in_path("./tests")<CR>
 " nnoremap <leader>ff :Telescope live_grep<CR>
 nnoremap <leader>fo :Telescope file_browser<CR>
 nnoremap <leader>fn :Telescope find_files<CR>
@@ -175,6 +192,9 @@ nnoremap <silent> ts :TestSuite<CR>
 nnoremap <silent> t_ :TestLast<CR>
 let test#strategy = "neovim"
 let test#neovim#term_position = "vertical"
+let test#enabled_runners = ["javascript#jest"]
+let g:test#javascript#runner = 'jest'
+
 
 " puremourning/vimspector
  " fun! GotoWindow(id)
@@ -241,7 +261,7 @@ lua << EOF
   end
 EOF
 
-nnoremap <Leader>tt :tabclose<CR>
+nnoremap <Leader><ESC><ESC> :tabclose<CR>
 
 " vimwiki/vimwiki
 nnoremap <Leader>tl <Plug>VimwikiToggleListItem
