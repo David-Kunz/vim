@@ -287,9 +287,9 @@ require'nvim-treesitter.configs'.setup {
 }
 EOF
 
-set foldmethod=expr
-setlocal foldlevelstart=99
-set foldexpr=nvim_treesitter#foldexpr()
+" set foldmethod=expr
+" setlocal foldlevelstart=99
+" set foldexpr=nvim_treesitter#foldexpr()
 
 " mfussenegger/nvim-dap
 lua << EOF
@@ -310,7 +310,7 @@ nnoremap <leader>ds :lua require'dap'.stop()<CR>
 nnoremap <leader>dn :lua require'dap'.continue()<CR>
 nnoremap <leader>dk :lua require'dap'.up()<CR>
 nnoremap <leader>dj :lua require'dap'.down()<CR>
-nnoremap <leader>d_ :lua require'dap'.run_last()<CR>
+nnoremap <leader>d_ :lua require'dap'.disconnect();require'dap'.stop();require'dap'.run_last()<CR>
 nnoremap <leader>dr :lua require'dap'.repl.open({}, 'vsplit')<CR><C-w>l
 nnoremap <leader>di :lua require'dap.ui.variables'.hover()<CR>
 vnoremap <leader>di :lua require'dap.ui.variables'.visual_hover()<CR>
@@ -357,6 +357,6 @@ require("neogit").setup {
 EOF
 nnoremap <leader>gg :Neogit<cr>
 nnoremap <leader>gd :DiffviewOpen<cr>
-nnoremap <leader>gD :DiffviewOpen master<cr>
+nnoremap <leader>gD :DiffviewOpen main<cr>
 nnoremap <leader>gl :Neogit log<cr>
 nnoremap <leader>gp :Neogit push<cr>
