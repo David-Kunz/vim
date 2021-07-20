@@ -6,7 +6,7 @@ call plug#begin('~/.vim/plugged')
   " Plug 'tpope/vim-fugitive'
   Plug 'neovim/nvim-lspconfig'
   Plug 'hrsh7th/nvim-compe'
-  Plug 'janko/vim-test'
+  " Plug 'janko/vim-test'
   " Plug 'puremourning/vimspector'
   Plug 'vimwiki/vimwiki'
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -30,6 +30,10 @@ call plug#begin('~/.vim/plugged')
   Plug 'ryanoasis/vim-devicons'
   Plug 'TimUntersberger/neogit'
   Plug 'sindrets/diffview.nvim'
+  Plug 'projekt0n/github-nvim-theme'
+  Plug 'David-Kunz/jester'
+  Plug 'vhyrro/neorg'
+  Plug 'folke/zen-mode.nvim'
 call plug#end()
  
 " default options
@@ -112,6 +116,19 @@ _G.telescope_live_grep_in_path = function(path)
 end
 EOF
 
+lua << EOF
+local actions = require('telescope.actions')
+require('telescope').setup({
+  defaults = {
+    mappings = {
+      i = {
+        ["<C-q>"] = actions.send_to_qflist
+      }
+    }
+  }
+})
+EOF
+
 nnoremap <leader><space> :Telescope git_files<CR>
 nnoremap <leader>fd :lua telescope_find_files_in_path()<CR>
 nnoremap <leader>fD :lua telescope_live_grep_in_path()<CR>
@@ -185,15 +202,15 @@ EOF
 inoremap <silent><expr> <C-Space> compe#complete()
 inoremap <silent><expr> <CR>      compe#confirm('<CR>')
 
-" janko/vim-test
-nnoremap <silent> tt :TestNearest<CR>
-nnoremap <silent> tf :TestFile<CR>
-nnoremap <silent> ts :TestSuite<CR>
-nnoremap <silent> t_ :TestLast<CR>
-let test#strategy = "neovim"
-let test#neovim#term_position = "vertical"
-let test#enabled_runners = ["javascript#jest"]
-let g:test#javascript#runner = 'jest'
+" " janko/vim-test
+" nnoremap <silent> tt :TestNearest<CR>
+" nnoremap <silent> tf :TestFile<CR>
+" nnoremap <silent> ts :TestSuite<CR>
+" nnoremap <silent> t_ :TestLast<CR>
+" let test#strategy = "neovim"
+" let test#neovim#term_position = "vertical"
+" let test#enabled_runners = ["javascript#jest"]
+" let g:test#javascript#runner = 'jest'
 
 
 " puremourning/vimspector
@@ -275,8 +292,45 @@ let g:vimwiki_list = [wiki]
 " nvim/treesitter
 let g:vscode_style = "dark"
 colorscheme vscode
+" lua << EOF
+" require('github-theme').setup({
+"   themeStyle = "dark"
+" })
+" EOF
 
-lua <<EOF
+" vhyrro/neorg
+nnoremap <leader>nn :e ~/neorg/index.norg<CR>
+lua << EOF
+  require('neorg').setup {
+            -- Tell Neorg what modules to load
+            load = {
+                ["core.defaults"] = {}, -- Load all the default modules
+                ["core.norg.concealer"] = {}, -- Allows for use of icons
+                ["core.norg.dirman"] = { -- Manage your directories with Neorg
+                    config = {
+                        workspaces = {
+                            my_workspace = "~/neorg"
+                        }
+                    }
+                }
+            },
+        }
+EOF
+
+lua << EOF
+local parser_configs = require('nvim-treesitter.parsers').get_parser_configs()
+
+parser_configs.norg = {
+    install_info = {
+        url = "https://github.com/vhyrro/tree-sitter-norg",
+        files = { "src/parser.c" },
+        branch = "main"
+    },
+}
+EOF
+
+
+lua << EOF
 require'nvim-treesitter.configs'.setup {
   highlight = {
     enable = true,
@@ -360,3 +414,65 @@ nnoremap <leader>gd :DiffviewOpen<cr>
 nnoremap <leader>gD :DiffviewOpen main<cr>
 nnoremap <leader>gl :Neogit log<cr>
 nnoremap <leader>gp :Neogit push<cr>
+
+" David-Kunz/jester
+nnoremap <leader>tt :lua require"jester".run()<cr>
+nnoremap <leader>t_ :lua require"jester".run_last()<cr>
+nnoremap <leader>tf :lua require"jester".run_file()<cr>
+nnoremap <leader>dd :lua require"jester".debug()<cr>
+nnoremap <leader>d_ :lua require"jester".debug_last()<cr>
+nnoremap <leader>dF :lua require"jester".debug_file()<cr>
+
+" lua language server
+lua << EOF
+local system_name
+if vim.fn.has("mac") == 1 then
+  system_name = "macOS"
+elseif vim.fn.has("unix") == 1 then
+  system_name = "Linux"
+elseif vim.fn.has('win32') == 1 then
+  system_name = "Windows"
+else
+  print("Unsupported system for sumneko")
+end
+
+-- set the path to the sumneko installation; if you previously installed via the now deprecated :LspInstall, use
+local sumneko_root_path = os.getenv('HOME') ..'/apps/lua-language-server'
+local sumneko_binary = sumneko_root_path.."/bin/"..system_name.."/lua-language-server"
+
+local runtime_path = vim.split(package.path, ';')
+table.insert(runtime_path, "lua/?.lua")
+table.insert(runtime_path, "lua/?/init.lua")
+
+require'lspconfig'.sumneko_lua.setup {
+  cmd = {sumneko_binary, "-E", sumneko_root_path .. "/main.lua"};
+  settings = {
+    Lua = {
+      runtime = {
+        -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+        version = 'LuaJIT',
+        -- Setup your lua path
+        path = runtime_path,
+      },
+      diagnostics = {
+        -- Get the language server to recognize the `vim` global
+        globals = {'vim'},
+      },
+      workspace = {
+        -- Make the server aware of Neovim runtime files
+        library = vim.api.nvim_get_runtime_file("", true),
+      },
+      -- Do not send telemetry data containing a randomized but unique identifier
+      telemetry = {
+        enable = false,
+      },
+    },
+  },
+}
+EOF
+
+" folke/zen-mode.nvim
+lua << EOF
+  require("zen-mode").setup {}
+EOF
+nnoremap <leader>z :ZenMode<CR>
