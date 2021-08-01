@@ -153,27 +153,28 @@ map('n', '<leader>FF', ':Telescope grep_string<CR>')
 -- neovim/nvim-lspconfig
 local nvim_lsp = require'lspconfig'
 nvim_lsp.tsserver.setup{}
--- nvim_lsp.rust_analyzer.setup({
---     settings = {
---         ["rust-analyzer"] = {
---             assist = {
---                 importGranularity = "module",
---                 importPrefix = "by_self",
---             },
---             cargo = {
---                 loadOutDirsFromCheck = true
---             },
---             procMacro = {
---                 enable = true
---             },
---         }
---     }
--- })
+nvim_lsp.rust_analyzer.setup({
+    settings = {
+        ["rust-analyzer"] = {
+            assist = {
+                importGranularity = "module",
+                importPrefix = "by_self",
+            },
+            cargo = {
+                loadOutDirsFromCheck = true
+            },
+            procMacro = {
+                enable = true
+            },
+        }
+    }
+})
 --require'lspconfig'.nimls.setup{}
 
 map('n', 'gd', ':lua vim.lsp.buf.definition()<CR>')
 map('n', 'gh', ':lua vim.lsp.buf.hover()<CR>')
 map('n', 'gH', ':Telescope lsp_code_actions<CR>')
+map('v', 'gH', ":'<,'>lua vim.lsp.buf.range_code_action()<CR>")
 map('n', 'gD', ':lua vim.lsp.buf.implementation()<CR>')
 map('n', '<c-k>', ':lua vim.lsp.buf.signature_help()<CR>')
 map('n', 'gr', ':lua vim.lsp.buf.references()<CR>')
