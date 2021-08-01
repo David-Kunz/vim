@@ -192,6 +192,7 @@ require'compe'.setup {
     -- treesitter = true;
   };
 }
+vim.cmd('inoremap <silent><expr> <c-space> compe#complete()', { silent = true, expr = true } )
 
 -- CDS
 cmd([[
