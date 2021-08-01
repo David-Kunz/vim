@@ -16,6 +16,7 @@ require('packer').startup(function(use)
 	use 'hrsh7th/nvim-compe'
 	use 'vimwiki/vimwiki'
 	use { 'nvim-treesitter/nvim-treesitter', branch = '0.5-compat', run = ':TSUpdate' }
+  use 'nvim-treesitter/nvim-treesitter-textobjects'
 	use 'nvim-telescope/telescope.nvim'
 	use 'nvim-lua/popup.nvim'
 	use 'nvim-lua/plenary.nvim'
@@ -174,8 +175,8 @@ nvim_lsp.rust_analyzer.setup({
 
 map('n', 'gd', ':lua vim.lsp.buf.definition()<CR>')
 map('n', 'gh', ':lua vim.lsp.buf.hover()<CR>')
-map('n', 'gH', ':Telescope lsp_code_actions<CR>')
-map('v', 'gH', ":'<,'>lua vim.lsp.buf.range_code_action()<CR>")
+map('n', 'ga', ':Telescope lsp_code_actions<CR>')
+map('n', 'gA', ':Telescope lsp_range_code_actions<CR>')
 map('n', 'gD', ':lua vim.lsp.buf.implementation()<CR>')
 map('n', '<c-k>', ':lua vim.lsp.buf.signature_help()<CR>')
 map('n', 'gr', ':lua vim.lsp.buf.references()<CR>')
@@ -255,6 +256,20 @@ require'nvim-treesitter.configs'.setup {
   },
   indent = {
     enable = true
+  },
+  textobjects = {
+    select = {
+      enable = true,
+      lookahead = true,
+      keymaps = {
+        ["af"] = "@function.outer",
+        ["if"] = "@function.inner",
+        ["ac"] = "@class.outer",
+        ["ic"] = "@class.inner",
+        ["ab"] = "@block.outer",
+        ["ib"] = "@block.inner"
+      }
+    }
   }
 }
 -- mfussenegger/nvim-dap
@@ -267,10 +282,10 @@ dap.adapters.node2 = {
 vim.fn.sign_define('DapBreakpoint', {text='🟥', texthl='', linehl='', numhl=''})
 vim.fn.sign_define('DapStopped', {text='⭐️', texthl='', linehl='', numhl=''})
 map('n', '<leader>dh', ':lua require"dap".toggle_breakpoint()<CR>')
-map('n', '<S-k>', ':lua require"dap".step_out()<CR>')
-map('n', '<S-l>', ':lua require"dap".step_into()<CR>')
-map('n', '<S-j>', ':lua require"dap".step_over()<CR>')
-map('n', '<leader>dn', ':lua require"dap".continue()<CR>')
+map('n', '<c-k>', ':lua require"dap".step_out()<CR>')
+map('n', '<c-l>', ':lua require"dap".step_into()<CR>')
+map('n', '<c-j>', ':lua require"dap".step_over()<CR>')
+map('n', '<c-h>', ':lua require"dap".continue()<CR>')
 map('n', '<leader>dk', ':lua require"dap".up()<CR>')
 map('n', '<leader>dj', ':lua require"dap".down()<CR>')
 map('n', '<leader>d_', ':lua require"dap".disconnect();require"dap".stop();require"dap".run_last()<CR>')
@@ -366,3 +381,10 @@ require("zen-mode").setup {
   window = { width = .40 }
 }
 map('n', '<leader>z', ':ZenMode<CR>')
+
+-- map('n', '<c-j>', ':bnext<CR>')
+-- map('n', '<c-k>', ':bprev<CR>')
+
+map('v', 'J', ":m '>+1<CR>gv=gv")
+map('v', 'K', ":m '<-2<CR>gv=gv")
+map('n', 'Y', "y$")
