@@ -82,14 +82,14 @@ require('lualine').setup({
     section_separators = {'', ''},
   },
   sections = {
-    lualine_a = {'mode'},
+    lualine_a = {{'filename', path = 1}},
     lualine_b = {'branch', {
       'diff',
       color_added = 'green',
       color_modified = 'yellow',
       color_removed = 'red'
     }},
-    lualine_c = {{'filename', path = 1}},
+    lualine_c = {},
     lualine_x = {'filetype'},
     lualine_y = {'progress'},
     lualine_z = {'location'}
@@ -149,6 +149,7 @@ map('n', '<leader>fb', ':Telescope buffers<CR>')
 map('n', '<leader>fs', ':Telescope lsp_document_symbols<CR>')
 map('n', '<leader>ff', ':Telescope live_grep<CR>')
 map('n', '<leader>FF', ':Telescope grep_string<CR>')
+map('n', '<leader>fs', ':Telescope git_status<CR>')
 
 -- neovim/nvim-lspconfig
 local nvim_lsp = require'lspconfig'
