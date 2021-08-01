@@ -6,7 +6,7 @@ local opt = vim.opt
 g.mapleader = " "
 
 vim.cmd [[packadd packer.nvim]]
-require('packer').startup(function()
+require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
 	use 'szw/vim-maximizer'
 	use 'kassio/neoterm'
@@ -15,7 +15,7 @@ require('packer').startup(function()
 	use 'neovim/nvim-lspconfig'
 	use 'hrsh7th/nvim-compe'
 	use 'vimwiki/vimwiki'
-	use { 'nvim-treesitter/nvim-treesitter',run = ':TSUpdate' }
+	use { 'nvim-treesitter/nvim-treesitter', branch = '0.5-compat', run = ':TSUpdate' }
 	use 'nvim-telescope/telescope.nvim'
 	use 'nvim-lua/popup.nvim'
 	use 'nvim-lua/plenary.nvim'
@@ -76,9 +76,24 @@ require('gitsigns').setup({})
 
 -- hoob3rt/lualine.nvim
 require('lualine').setup({
-options = {
-  theme = "vscode"
- }
+  options = {
+    theme = "vscode",
+    component_separators = {'', ''},
+    section_separators = {'', ''},
+  },
+  sections = {
+    lualine_a = {'mode'},
+    lualine_b = {'branch', {
+      'diff',
+      color_added = 'green',
+      color_modified = 'yellow',
+      color_removed = 'red'
+    }},
+    lualine_c = {{'filename', path = 1}},
+    lualine_x = {'filetype'},
+    lualine_y = {'progress'},
+    lualine_z = {'location'}
+  },
 })
 
 -- szw/vim-maximizer
@@ -136,24 +151,24 @@ map('n', '<leader>ff', ':Telescope live_grep<CR>')
 map('n', '<leader>FF', ':Telescope grep_string<CR>')
 
 -- neovim/nvim-lspconfig
-require'lspconfig'.tsserver.setup{}
---local lspconfig = require'lspconfig'
---  lspconfig.rust_analyzer.setup({
---      settings = {
---          ["rust-analyzer"] = {
---              assist = {
---                  importMergeBehavior = "last",
---                  importPrefix = "by_self",
---              },
---              cargo = {
---                  loadOutDirsFromCheck = true
---              },
---              procMacro = {
---                  enable = true
---              },
---          }
---      }
---  })
+local nvim_lsp = require'lspconfig'
+nvim_lsp.tsserver.setup{}
+-- nvim_lsp.rust_analyzer.setup({
+--     settings = {
+--         ["rust-analyzer"] = {
+--             assist = {
+--                 importGranularity = "module",
+--                 importPrefix = "by_self",
+--             },
+--             cargo = {
+--                 loadOutDirsFromCheck = true
+--             },
+--             procMacro = {
+--                 enable = true
+--             },
+--         }
+--     }
+-- })
 --require'lspconfig'.nimls.setup{}
 
 map('n', 'gd', ':lua vim.lsp.buf.definition()<CR>')
@@ -176,8 +191,6 @@ require'compe'.setup {
     -- treesitter = true;
   };
 }
-map('i', '<C-Space>', 'compe#complete()')
-map('i', '<CR>', 'compe#confirm("<CR>")')
 
 -- CDS
 cmd([[
@@ -207,9 +220,6 @@ map('n', '<leader><esc><esc>', ':tabclose<CR>')
 -- nvim/treesitter
 g.vscode_style = "dark"
 cmd('colorscheme vscode')
---require('github-theme').setup({
---  themeStyle = "dark"
---})
 
 -- vhyrro/neorg
 map('n', '<leader>nn', ':e ~/neorg/index.norg<CR>')
@@ -257,7 +267,6 @@ map('n', '<leader>dh', ':lua require"dap".toggle_breakpoint()<CR>')
 map('n', '<S-k>', ':lua require"dap".step_out()<CR>')
 map('n', '<S-l>', ':lua require"dap".step_into()<CR>')
 map('n', '<S-j>', ':lua require"dap".step_over()<CR>')
-map('n', '<leader>ds', ':lua require"dap".stop()<CR>')
 map('n', '<leader>dn', ':lua require"dap".continue()<CR>')
 map('n', '<leader>dk', ':lua require"dap".up()<CR>')
 map('n', '<leader>dj', ':lua require"dap".down()<CR>')
@@ -275,9 +284,9 @@ map('n', '<leader>d?', ':lua local widgets=require"dap.ui.widgets";widgets.cente
 -- nvim-telescope/telescope-dap.nvim
 require('telescope').setup()
 require('telescope').load_extension('dap')
-map('n', 'leader>df', ':Telescope dap frames<CR>')
-map('n', 'leader>dc', ':Telescope dap commands<CR>')
-map('n', 'leader>db', ':Telescope dap list_breakpoints<CR>')
+map('n', '<leader>ds', ':Telescope dap frames<CR>')
+map('n', '<leader>dc', ':Telescope dap commands<CR>')
+map('n', '<leader>db', ':Telescope dap list_breakpoints<CR>')
 
 -- theHamsta/nvim-dap-virtual-text and mfussenegger/nvim-dap
 g.dap_virtual_text = true
@@ -289,19 +298,19 @@ require("neogit").setup {
     diffview = true
     }
   }
-map('n', 'leader>gg', ':Neogit<cr>')
-map('n', 'leader>gd', ':DiffviewOpen<cr>')
-map('n', 'leader>gD', ':DiffviewOpen main<cr>')
-map('n', 'leader>gl', ':Neogit log<cr>')
-map('n', 'leader>gp', ':Neogit push<cr>')
+map('n', '<leader>gg', ':Neogit<cr>')
+map('n', '<leader>gd', ':DiffviewOpen<cr>')
+map('n', '<leader>gD', ':DiffviewOpen main<cr>')
+map('n', '<leader>gl', ':Neogit log<cr>')
+map('n', '<leader>gp', ':Neogit push<cr>')
 
 -- David-Kunz/jester
-map('n', 'leader>tt', ':lua require"jester".run()<cr>')
-map('n', 'leader>t_', ':lua require"jester".run_last()<cr>')
-map('n', 'leader>tf', ':lua require"jester".run_file()<cr>')
-map('n', 'leader>dd', ':lua require"jester".debug()<cr>')
-map('n', 'leader>d_', ':lua require"jester".debug_last()<cr>')
-map('n', 'leader>dF', ':lua require"jester".debug_file()<cr>')
+map('n', '<leader>tt', ':lua require"jester".run()<cr>')
+map('n', '<leader>t_', ':lua require"jester".run_last()<cr>')
+map('n', '<leader>tf', ':lua require"jester".run_file()<cr>')
+map('n', '<leader>dd', ':lua require"jester".debug()<cr>')
+map('n', '<leader>d_', ':lua require"jester".debug_last()<cr>')
+map('n', '<leader>df', ':lua require"jester".debug_file()<cr>')
 
 -- lua language server
  local system_name
@@ -350,5 +359,7 @@ map('n', 'leader>dF', ':lua require"jester".debug_file()<cr>')
  }
 
 -- folke/zen-mode.nvim
-require("zen-mode").setup {}
-map('n', 'leader>z', ':ZenMode<CR>')
+require("zen-mode").setup {
+  window = { width = .40 }
+}
+map('n', '<leader>z', ':ZenMode<CR>')
