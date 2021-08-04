@@ -127,16 +127,6 @@ _G.telescope_live_grep_in_path = function(path)
  local _path = path or vim.fn.input("Dir: ", "", "dir")
  require("telescope.builtin").live_grep({search_dirs = {_path}})
 end
-local actions = require('telescope.actions')
-require('telescope').setup({
-  defaults = {
-    mappings = {
-      i = {
-        ["<C-q>"] = actions.send_to_qflist
-      }
-    }
-  }
-})
 map('n', '<leader><space>', ':Telescope git_files<CR>')
 map('n', '<leader>fd', ':lua telescope_find_files_in_path()<CR>')
 map('n', '<leader>fD', ':lua telescope_live_grep_in_path()<CR>')
@@ -300,7 +290,6 @@ map('n', '<leader>di', ':lua require"dap.ui.widgets".hover()<CR>')
 map('n', '<leader>d?', ':lua local widgets=require"dap.ui.widgets";widgets.centered_float(widgets.scopes)<CR>')
 
 -- nvim-telescope/telescope-dap.nvim
-require('telescope').setup()
 require('telescope').load_extension('dap')
 map('n', '<leader>ds', ':Telescope dap frames<CR>')
 map('n', '<leader>dc', ':Telescope dap commands<CR>')
