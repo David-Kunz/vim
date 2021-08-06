@@ -91,9 +91,9 @@ require('lualine').setup({
       color_removed = 'red'
     }},
     lualine_c = {},
-    lualine_x = {'filetype'},
-    lualine_y = {'progress'},
-    lualine_z = {'location'}
+    lualine_x = {},
+    lualine_y = {},
+    lualine_z = {}
   },
 })
 
