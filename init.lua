@@ -35,6 +35,7 @@ require('packer').startup(function(use)
 	use 'David-Kunz/jester'
 	use 'vhyrro/neorg'
 	use 'folke/zen-mode.nvim'
+  use 'nvim-treesitter/playground'
 end)
 
 --  
@@ -127,7 +128,17 @@ _G.telescope_live_grep_in_path = function(path)
  local _path = path or vim.fn.input("Dir: ", "", "dir")
  require("telescope.builtin").live_grep({search_dirs = {_path}})
 end
-map('n', '<leader><space>', ':Telescope git_files<CR>')
+_G.telescope_files_or_git_files = function()
+ local utils = require('telescope.utils')
+ local builtin = require('telescope.builtin')
+ local _, ret, _ = utils.get_os_command_output({ 'git', 'rev-parse', '--is-inside-work-tree' })
+ if ret == 0 then
+   builtin.git_files()
+ else
+   builtin.find_files()
+ end
+end
+map('n', '<leader><space>', ':lua telescope_files_or_git_files()<CR>')
 map('n', '<leader>fd', ':lua telescope_find_files_in_path()<CR>')
 map('n', '<leader>fD', ':lua telescope_live_grep_in_path()<CR>')
 map('n', '<leader>ft', ':lua telescope_find_files_in_path("./tests")<CR>')
@@ -140,7 +151,6 @@ map('n', '<leader>fb', ':Telescope buffers<CR>')
 map('n', '<leader>fs', ':Telescope lsp_document_symbols<CR>')
 map('n', '<leader>ff', ':Telescope live_grep<CR>')
 map('n', '<leader>FF', ':Telescope grep_string<CR>')
-map('n', '<leader>fs', ':Telescope git_status<CR>')
 
 -- neovim/nvim-lspconfig
 local nvim_lsp = require'lspconfig'
@@ -272,6 +282,7 @@ dap.adapters.node2 = {
 vim.fn.sign_define('DapBreakpoint', {text='🟥', texthl='', linehl='', numhl=''})
 vim.fn.sign_define('DapStopped', {text='⭐️', texthl='', linehl='', numhl=''})
 map('n', '<leader>dh', ':lua require"dap".toggle_breakpoint()<CR>')
+map('n', '<leader>dH', ":lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>")
 map('n', '<c-k>', ':lua require"dap".step_out()<CR>')
 map('n', '<c-l>', ':lua require"dap".step_into()<CR>')
 map('n', '<c-j>', ':lua require"dap".step_over()<CR>')
@@ -371,9 +382,10 @@ require("zen-mode").setup {
 }
 map('n', '<leader>z', ':ZenMode<CR>')
 
--- map('n', '<c-j>', ':bnext<CR>')
--- map('n', '<c-k>', ':bprev<CR>')
+map('n', '<s-l>', ':bnext<CR>')
+map('n', '<s-h>', ':bprev<CR>')
 
 map('v', 'J', ":m '>+1<CR>gv=gv")
 map('v', 'K', ":m '<-2<CR>gv=gv")
 map('n', 'Y', "y$")
+
