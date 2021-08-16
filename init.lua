@@ -36,6 +36,8 @@ require('packer').startup(function(use)
 	use 'vhyrro/neorg'
 	use 'folke/zen-mode.nvim'
   use 'nvim-treesitter/playground'
+  use 'kyazdani42/nvim-tree.lua'
+  -- use 'ahmedkhalf/project.nvim'
 end)
 
 --  
@@ -389,3 +391,12 @@ map('v', 'J', ":m '>+1<CR>gv=gv")
 map('v', 'K', ":m '<-2<CR>gv=gv")
 map('n', 'Y', "y$")
 
+-- ahmedkhalf/project.nvim
+-- require("project_nvim").setup()
+-- require('telescope').load_extension('projects')
+
+map('n', '<leader>fp', ':Telescope projects<CR>')
+
+map('n', '<c-p>', ':NvimTreeToggle<CR>')
+g.nvim_tree_follow = 1
+g.nvim_tree_auto_resize = 1
