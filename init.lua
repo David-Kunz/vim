@@ -328,9 +328,9 @@ map('n', '<leader>gp', ':Neogit push<cr>')
 map('n', '<leader>tt', ':lua require"jester".run()<cr>')
 map('n', '<leader>t_', ':lua require"jester".run_last()<cr>')
 map('n', '<leader>tf', ':lua require"jester".run_file()<cr>')
-map('n', '<leader>dd', ':lua require"jester".debug()<cr>')
-map('n', '<leader>d_', ':lua require"jester".debug_last()<cr>')
-map('n', '<leader>df', ':lua require"jester".debug_file()<cr>')
+map('n', '<leader>dd', ':lua require"jester".debug({ path_to_jest = "/usr/local/bin/jest" })<cr>')
+map('n', '<leader>d_', ':lua require"jester".debug_last({ path_to_jest = "/usr/local/bin/jest" })<cr>')
+map('n', '<leader>df', ':lua require"jester".debug_file({ path_to_jest = "/usr/local/bin/jest" })<cr>')
 
 -- lua language server
  local system_name
