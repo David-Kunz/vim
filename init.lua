@@ -37,6 +37,7 @@ require('packer').startup(function(use)
 	use 'folke/zen-mode.nvim'
   use 'nvim-treesitter/playground'
   use 'kyazdani42/nvim-tree.lua'
+  use 'David-Kunz/treesitter-unit'
   -- use 'ahmedkhalf/project.nvim'
 end)
 
@@ -402,3 +403,8 @@ map('n', '<leader>fp', ':Telescope projects<CR>')
 map('n', '<c-p>', ':NvimTreeToggle<CR>')
 g.nvim_tree_follow = 1
 g.nvim_tree_auto_resize = 1
+
+-- David-Kunz/treesitter-unit
+map('n', 'vx', ':lua require"treesitter-unit".select()<CR>')
+map('n', 'dx', ':lua require"treesitter-unit".delete()<CR>')
+map('n', 'cx', ':lua require"treesitter-unit".change()<CR>')
