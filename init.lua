@@ -36,9 +36,10 @@ require('packer').startup(function(use)
 	-- use 'vhyrro/neorg'
 	use 'folke/zen-mode.nvim'
   use 'nvim-treesitter/playground'
-  use 'kyazdani42/nvim-tree.lua'
+  -- use 'kyazdani42/nvim-tree.lua'
   use 'David-Kunz/treesitter-unit'
   -- use 'ahmedkhalf/project.nvim'
+  use 'tamago324/lir.nvim'
 end)
 
 --  
@@ -398,13 +399,81 @@ map('n', 'Y', "y$")
 -- require("project_nvim").setup()
 -- require('telescope').load_extension('projects')
 
-map('n', '<leader>fp', ':Telescope projects<CR>')
+-- map('n', '<leader>fp', ':Telescope projects<CR>')
 
-map('n', '<c-p>', ':NvimTreeToggle<CR>')
-g.nvim_tree_follow = 1
-g.nvim_tree_auto_resize = 1
+-- map('n', '<c-p>', ':NvimTreeToggle<CR>')
+-- g.nvim_tree_follow = 1
+-- g.nvim_tree_auto_resize = 1
 
 -- David-Kunz/treesitter-unit
-map('n', 'vx', ':lua require"treesitter-unit".select()<CR>')
-map('n', 'dx', ':lua require"treesitter-unit".delete()<CR>')
-map('n', 'cx', ':lua require"treesitter-unit".change()<CR>')
+map('x', 'iu', ':lua require"treesitter-unit".select()<CR>')
+map('x', 'u', ':lua require"treesitter-unit".select(true)<CR>')
+map('o', 'iu', ':<c-u>lua require"treesitter-unit".select()<CR>')
+map('o', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
+require"treesitter-unit".enable_highlighting()
+
+
+local actions = require'lir.actions'
+local mark_actions = require 'lir.mark.actions'
+local clipboard_actions = require'lir.clipboard.actions'
+
+require'lir'.setup {
+  show_hidden_files = false,
+  devicons_enable = true,
+  mappings = {
+    ['l']     = actions.edit,
+    ['<C-s>'] = actions.split,
+    ['<C-v>'] = actions.vsplit,
+    ['<C-t>'] = actions.tabedit,
+
+    ['h']     = actions.up,
+    ['q']     = actions.quit,
+
+    ['K']     = actions.mkdir,
+    ['N']     = actions.newfile,
+    ['R']     = actions.rename,
+    ['@']     = actions.cd,
+    ['Y']     = actions.yank_path,
+    ['.']     = actions.toggle_show_hidden,
+    ['D']     = actions.delete,
+
+    ['J'] = function()
+      mark_actions.toggle_mark()
+      vim.cmd('normal! j')
+    end,
+    ['C'] = clipboard_actions.copy,
+    ['X'] = clipboard_actions.cut,
+    ['P'] = clipboard_actions.paste,
+  },
+  float = {
+    winblend = 0,
+
+    -- -- You can define a function that returns a table to be passed as the third
+    -- -- argument of nvim_open_win().
+    -- win_opts = function()
+    --   local width = math.floor(vim.o.columns * 0.8)
+    --   local height = math.floor(vim.o.lines * 0.8)
+    --   return {
+    --     border = require("lir.float.helper").make_border_opts({
+    --       "+", "─", "+", "│", "+", "─", "+", "│",
+    --     }, "Normal"),
+    --     width = width,
+    --     height = height,
+    --     row = 1,
+    --     col = math.floor((vim.o.columns - width) / 2),
+    --   }
+    -- end,
+  },
+  hide_cursor = true,
+}
+
+-- custom folder icon
+require'nvim-web-devicons'.setup({
+  override = {
+    lir_folder_icon = {
+      icon = "",
+      color = "#7ebae4",
+      name = "LirFolderNode"
+    },
+  }
+})
