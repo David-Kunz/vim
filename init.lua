@@ -412,7 +412,7 @@ map('o', 'iu', ':<c-u>lua require"treesitter-unit".select()<CR>')
 map('o', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
 require"treesitter-unit".enable_highlighting()
 
-
+-- tamago324/lir.nvim
 local actions = require'lir.actions'
 local mark_actions = require 'lir.mark.actions'
 local clipboard_actions = require'lir.clipboard.actions'
@@ -477,3 +477,16 @@ require'nvim-web-devicons'.setup({
     },
   }
 })
+-- use visual mode
+function _G.LirSettings()
+  vim.api.nvim_buf_set_keymap(0, 'x', 'J', ':<C-u>lua require"lir.mark.actions".toggle_mark("v")<CR>', {noremap = true, silent = true})
+
+  -- echo cwd
+  vim.api.nvim_echo({{vim.fn.expand('%:p'), 'Normal'}}, false, {})
+end
+vim.cmd [[augroup lir-settings]]
+vim.cmd [[  autocmd!]]
+vim.cmd [[  autocmd Filetype lir :lua LirSettings()]]
+vim.cmd [[augroup END]]
+map('n', '<c-p>', ':lua require"lir.float".toggle()<CR>')
+
