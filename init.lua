@@ -324,7 +324,7 @@ map('n', '<leader>gg', ':Gstatus<cr>')
 map('n', '<leader>gd', ':DiffviewOpen<cr>')
 map('n', '<leader>gD', ':DiffviewOpen main<cr>')
 map('n', '<leader>gl', ':Gclog<cr>')
-map('n', '<leader>gp', ':Gpush<cr>')
+map('n', '<leader>gp', ':Git push<cr>')
 
 -- David-Kunz/jester
 map('n', '<leader>tt', ':lua require"jester".run()<cr>')
