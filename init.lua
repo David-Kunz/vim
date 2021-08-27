@@ -13,7 +13,10 @@ require('packer').startup(function(use)
 	use 'tpope/vim-commentary'
 	use 'sbdchd/neoformat'
 	use 'neovim/nvim-lspconfig'
-	use 'hrsh7th/nvim-compe'
+  use 'hrsh7th/nvim-cmp'
+  use 'hrsh7th/cmp-buffer'
+  use 'hrsh7th/cmp-nvim-lua'
+  use 'hrsh7th/cmp-nvim-lsp'
 	use 'vimwiki/vimwiki'
 	use { 'nvim-treesitter/nvim-treesitter', branch = '0.5-compat', run = ':TSUpdate' }
   use 'nvim-treesitter/nvim-treesitter-textobjects'
@@ -29,7 +32,7 @@ require('packer').startup(function(use)
 	use 'hoob3rt/lualine.nvim'
 	use 'kyazdani42/nvim-web-devicons'
 	use 'ryanoasis/vim-devicons'
-	use 'TimUntersberger/neogit'
+	-- use 'TimUntersberger/neogit'
 	use 'sindrets/diffview.nvim'
 	use 'projekt0n/github-nvim-theme'
 	use 'David-Kunz/jester'
@@ -40,6 +43,8 @@ require('packer').startup(function(use)
   use 'David-Kunz/treesitter-unit'
   -- use 'ahmedkhalf/project.nvim'
   use 'tamago324/lir.nvim'
+  -- use 'kdheepak/lazygit.nvim'
+  use 'tpope/vim-fugitive'
 end)
 
 --  
@@ -186,20 +191,6 @@ map('n', '<c-k>', ':lua vim.lsp.buf.signature_help()<CR>')
 map('n', 'gr', ':lua vim.lsp.buf.references()<CR>')
 map('n', 'gR', ':lua vim.lsp.buf.rename()<CR>')
  
--- hrsh7th/nvim-compe
-require'compe'.setup {
-  enabled = true;
-  autocomplete = true;
-  source = {
-    path = true;
-    buffer = true;
-    nvim_lsp = true;
-    nvim_lua = true;
-    -- treesitter = true;
-  };
-}
-vim.cmd('inoremap <silent><expr> <c-space> compe#complete()', { silent = true, expr = true } )
-
 -- CDS
 cmd([[
 augroup MyCDSCode
@@ -315,18 +306,25 @@ map('n', '<leader>db', ':Telescope dap list_breakpoints<CR>')
 -- theHamsta/nvim-dap-virtual-text and mfussenegger/nvim-dap
 g.dap_virtual_text = true
 
--- TimUntersberger/neogit and sindrets/diffview.nvim
-require("neogit").setup {
-  disable_commit_confirmation = true,
-  integrations = {
-    diffview = true
-    }
-  }
-map('n', '<leader>gg', ':Neogit<cr>')
+-- -- TimUntersberger/neogit and sindrets/diffview.nvim
+-- require("neogit").setup {
+--   disable_commit_confirmation = true,
+--   integrations = {
+--     diffview = true
+--     }
+--   }
+-- map('n', '<leader>gg', ':Neogit<cr>')
+-- map('n', '<leader>gd', ':DiffviewOpen<cr>')
+-- map('n', '<leader>gD', ':DiffviewOpen main<cr>')
+-- map('n', '<leader>gl', ':Neogit log<cr>')
+-- map('n', '<leader>gp', ':Neogit push<cr>')
+
+-- 'tpope/vim-fugitive'
+map('n', '<leader>gg', ':Gstatus<cr>')
 map('n', '<leader>gd', ':DiffviewOpen<cr>')
 map('n', '<leader>gD', ':DiffviewOpen main<cr>')
-map('n', '<leader>gl', ':Neogit log<cr>')
-map('n', '<leader>gp', ':Neogit push<cr>')
+map('n', '<leader>gl', ':Gclog<cr>')
+map('n', '<leader>gp', ':Gpush<cr>')
 
 -- David-Kunz/jester
 map('n', '<leader>tt', ':lua require"jester".run()<cr>')
@@ -406,8 +404,8 @@ map('n', 'Y', "y$")
 -- g.nvim_tree_auto_resize = 1
 
 -- David-Kunz/treesitter-unit
-map('x', 'iu', ':lua require"treesitter-unit".select()<CR>')
-map('x', 'u', ':lua require"treesitter-unit".select(true)<CR>')
+map('x', 'iu', ':<c-u>lua require"treesitter-unit".select()<CR>')
+map('x', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
 map('o', 'iu', ':<c-u>lua require"treesitter-unit".select()<CR>')
 map('o', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
 require"treesitter-unit".enable_highlighting()
@@ -490,3 +488,23 @@ vim.cmd [[  autocmd Filetype lir :lua LirSettings()]]
 vim.cmd [[augroup END]]
 map('n', '<c-p>', ':lua require"lir.float".toggle()<CR>')
 
+-- hrsh7th/nvim-cmp
+local cmp = require('cmp')
+  cmp.setup {
+    mapping = {
+      ['<C-p>'] = cmp.mapping.select_prev_item(),
+      ['<C-n>'] = cmp.mapping.select_next_item(),
+      ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-Space>'] = cmp.mapping.complete(),
+      ['<C-e>'] = cmp.mapping.close(),
+      ['<CR>'] = cmp.mapping.confirm({
+        behavior = cmp.ConfirmBehavior.Insert,
+        select = true,
+      })
+    },
+    sources = {
+      { name = 'buffer' },
+      { name = 'nvim_lsp' },
+    },
+  }
