@@ -320,7 +320,7 @@ g.dap_virtual_text = true
 -- map('n', '<leader>gp', ':Neogit push<cr>')
 
 -- 'tpope/vim-fugitive'
-map('n', '<leader>gg', ':Gstatus<cr>')
+map('n', '<leader>gg', ':Git<cr>')
 map('n', '<leader>gd', ':DiffviewOpen<cr>')
 map('n', '<leader>gD', ':DiffviewOpen main<cr>')
 map('n', '<leader>gl', ':Gclog<cr>')
