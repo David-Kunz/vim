@@ -486,7 +486,6 @@ vim.cmd [[augroup lir-settings]]
 vim.cmd [[  autocmd!]]
 vim.cmd [[  autocmd Filetype lir :lua LirSettings()]]
 vim.cmd [[augroup END]]
-map('n', '<c-p>', ':lua require"lir.float".toggle()<CR>')
 
 -- hrsh7th/nvim-cmp
 local cmp = require('cmp')
