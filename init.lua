@@ -163,7 +163,10 @@ map('n', '<leader>FF', ':Telescope grep_string<CR>')
 
 -- neovim/nvim-lspconfig
 local nvim_lsp = require'lspconfig'
-nvim_lsp.tsserver.setup{}
+local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities(), {
+  snippetSupport = false,
+})
+nvim_lsp.tsserver.setup{ capabilities = capabilities }
 nvim_lsp.rust_analyzer.setup({
     settings = {
         ["rust-analyzer"] = {
@@ -277,6 +280,7 @@ dap.adapters.node2 = {
   args = {os.getenv('HOME') .. '/apps/vscode-node-debug2/out/src/nodeDebug.js'},
 }
 vim.fn.sign_define('DapBreakpoint', {text='🟥', texthl='', linehl='', numhl=''})
+vim.fn.sign_define('DapBreakpointRejected', {text='🟦', texthl='', linehl='', numhl=''})
 vim.fn.sign_define('DapStopped', {text='⭐️', texthl='', linehl='', numhl=''})
 map('n', '<leader>dh', ':lua require"dap".toggle_breakpoint()<CR>')
 map('n', '<leader>dH', ":lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>")
@@ -286,7 +290,7 @@ map('n', '<c-j>', ':lua require"dap".step_over()<CR>')
 map('n', '<c-h>', ':lua require"dap".continue()<CR>')
 map('n', '<leader>dk', ':lua require"dap".up()<CR>')
 map('n', '<leader>dj', ':lua require"dap".down()<CR>')
-map('n', '<leader>d_', ':lua require"dap".disconnect();require"dap".stop();require"dap".run_last()<CR>')
+map('n', '<leader>dc', ':lua require"dap".disconnect({ terminateDebuggee = true });require"dap".close()<CR>')
 map('n', '<leader>dr', ':lua require"dap".repl.open({}, "vsplit")<CR><C-w>l')
 map('n', '<leader>di', ':lua require"dap.ui.variables".hover()<CR>')
 map('n', '<leader>di', ':lua require"dap.ui.variables".visual_hover()<CR>')
@@ -300,7 +304,7 @@ map('n', '<leader>d?', ':lua local widgets=require"dap.ui.widgets";widgets.cente
 -- nvim-telescope/telescope-dap.nvim
 require('telescope').load_extension('dap')
 map('n', '<leader>ds', ':Telescope dap frames<CR>')
-map('n', '<leader>dc', ':Telescope dap commands<CR>')
+-- map('n', '<leader>dc', ':Telescope dap commands<CR>')
 map('n', '<leader>db', ':Telescope dap list_breakpoints<CR>')
 
 -- theHamsta/nvim-dap-virtual-text and mfussenegger/nvim-dap
@@ -462,7 +466,6 @@ require'lir'.setup {
     --   }
     -- end,
   },
-  hide_cursor = true,
 }
 
 -- custom folder icon
@@ -493,8 +496,6 @@ local cmp = require('cmp')
     mapping = {
       ['<C-p>'] = cmp.mapping.select_prev_item(),
       ['<C-n>'] = cmp.mapping.select_next_item(),
-      ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-      ['<C-f>'] = cmp.mapping.scroll_docs(4),
       ['<C-Space>'] = cmp.mapping.complete(),
       ['<C-e>'] = cmp.mapping.close(),
       ['<CR>'] = cmp.mapping.confirm({
@@ -507,3 +508,6 @@ local cmp = require('cmp')
       { name = 'nvim_lsp' },
     },
   }
+
+-- global mark I for last edit
+vim.cmd [[autocmd InsertLeave * execute 'normal! mI']]
