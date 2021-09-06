@@ -500,7 +500,6 @@ local cmp = require('cmp')
       ['<C-e>'] = cmp.mapping.close(),
       ['<CR>'] = cmp.mapping.confirm({
         behavior = cmp.ConfirmBehavior.Insert,
-        select = true,
       })
     },
     sources = {
@@ -511,3 +510,6 @@ local cmp = require('cmp')
 
 -- global mark I for last edit
 vim.cmd [[autocmd InsertLeave * execute 'normal! mI']]
+
+-- highlight on yank
+vim.cmd([[au TextYankPost * lua vim.highlight.on_yank {higroup="IncSearch", timeout=150, on_visual=true}]])
