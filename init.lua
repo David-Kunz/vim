@@ -39,12 +39,13 @@ require('packer').startup(function(use)
 	-- use 'vhyrro/neorg'
 	use 'folke/zen-mode.nvim'
   use 'nvim-treesitter/playground'
-  -- use 'kyazdani42/nvim-tree.lua'
+  use 'kyazdani42/nvim-tree.lua'
   use 'David-Kunz/treesitter-unit'
   -- use 'ahmedkhalf/project.nvim'
-  use 'tamago324/lir.nvim'
+  -- use 'tamago324/lir.nvim'
   -- use 'kdheepak/lazygit.nvim'
   use 'tpope/vim-fugitive'
+  use 'Pocco81/TrueZen.nvim'
 end)
 
 --  
@@ -93,7 +94,7 @@ require('lualine').setup({
     section_separators = {'', ''},
   },
   sections = {
-    lualine_a = {{'filename', path = 1}},
+    lualine_a = {{'filename', path = 2}},
     lualine_b = {'branch', {
       'diff',
       color_added = 'green',
@@ -208,7 +209,7 @@ configs.sapcds_lsp = {
     cmd = {vim.fn.expand("$HOME/projects/startcdslsp")};
     filetypes = {'cds'};
     root_dir = function(fname)
-      return lspconfig.util.find_git_ancestor(fname) or vim.loop.os_homedir()
+      return lspconfig.util.find_git_ancestor(fname)
     end;
     settings = {};
   };
@@ -415,58 +416,58 @@ map('o', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
 require"treesitter-unit".enable_highlighting()
 
 -- tamago324/lir.nvim
-local actions = require'lir.actions'
-local mark_actions = require 'lir.mark.actions'
-local clipboard_actions = require'lir.clipboard.actions'
+-- local actions = require'lir.actions'
+-- local mark_actions = require 'lir.mark.actions'
+-- local clipboard_actions = require'lir.clipboard.actions'
 
-require'lir'.setup {
-  show_hidden_files = false,
-  devicons_enable = true,
-  mappings = {
-    ['l']     = actions.edit,
-    ['<C-s>'] = actions.split,
-    ['<C-v>'] = actions.vsplit,
-    ['<C-t>'] = actions.tabedit,
+-- require'lir'.setup {
+--   show_hidden_files = false,
+--   devicons_enable = true,
+--   mappings = {
+--     ['l']     = actions.edit,
+--     ['<C-s>'] = actions.split,
+--     ['<C-v>'] = actions.vsplit,
+--     ['<C-t>'] = actions.tabedit,
 
-    ['h']     = actions.up,
-    ['q']     = actions.quit,
+--     ['h']     = actions.up,
+--     ['q']     = actions.quit,
 
-    ['K']     = actions.mkdir,
-    ['N']     = actions.newfile,
-    ['R']     = actions.rename,
-    ['@']     = actions.cd,
-    ['Y']     = actions.yank_path,
-    ['.']     = actions.toggle_show_hidden,
-    ['D']     = actions.delete,
+--     ['K']     = actions.mkdir,
+--     ['N']     = actions.newfile,
+--     ['R']     = actions.rename,
+--     ['@']     = actions.cd,
+--     ['Y']     = actions.yank_path,
+--     ['.']     = actions.toggle_show_hidden,
+--     ['D']     = actions.delete,
 
-    ['J'] = function()
-      mark_actions.toggle_mark()
-      vim.cmd('normal! j')
-    end,
-    ['C'] = clipboard_actions.copy,
-    ['X'] = clipboard_actions.cut,
-    ['P'] = clipboard_actions.paste,
-  },
-  float = {
-    winblend = 0,
+--     ['J'] = function()
+--       mark_actions.toggle_mark()
+--       vim.cmd('normal! j')
+--     end,
+--     ['C'] = clipboard_actions.copy,
+--     ['X'] = clipboard_actions.cut,
+--     ['P'] = clipboard_actions.paste,
+--   },
+--   float = {
+--     winblend = 0,
 
-    -- -- You can define a function that returns a table to be passed as the third
-    -- -- argument of nvim_open_win().
-    -- win_opts = function()
-    --   local width = math.floor(vim.o.columns * 0.8)
-    --   local height = math.floor(vim.o.lines * 0.8)
-    --   return {
-    --     border = require("lir.float.helper").make_border_opts({
-    --       "+", "─", "+", "│", "+", "─", "+", "│",
-    --     }, "Normal"),
-    --     width = width,
-    --     height = height,
-    --     row = 1,
-    --     col = math.floor((vim.o.columns - width) / 2),
-    --   }
-    -- end,
-  },
-}
+--     -- -- You can define a function that returns a table to be passed as the third
+--     -- -- argument of nvim_open_win().
+--     -- win_opts = function()
+--     --   local width = math.floor(vim.o.columns * 0.8)
+--     --   local height = math.floor(vim.o.lines * 0.8)
+--     --   return {
+--     --     border = require("lir.float.helper").make_border_opts({
+--     --       "+", "─", "+", "│", "+", "─", "+", "│",
+--     --     }, "Normal"),
+--     --     width = width,
+--     --     height = height,
+--     --     row = 1,
+--     --     col = math.floor((vim.o.columns - width) / 2),
+--     --   }
+--     -- end,
+--   },
+-- }
 
 -- custom folder icon
 require'nvim-web-devicons'.setup({
@@ -489,6 +490,7 @@ vim.cmd [[augroup lir-settings]]
 vim.cmd [[  autocmd!]]
 vim.cmd [[  autocmd Filetype lir :lua LirSettings()]]
 vim.cmd [[augroup END]]
+
 
 -- hrsh7th/nvim-cmp
 local cmp = require('cmp')
@@ -513,3 +515,38 @@ vim.cmd [[autocmd InsertLeave * execute 'normal! mI']]
 
 -- highlight on yank
 vim.cmd([[au TextYankPost * lua vim.highlight.on_yank {higroup="IncSearch", timeout=150, on_visual=true}]])
+
+-- Pocco81/TrueZen.nvim
+map('n', '<leader>e', ':TZAtaraxis<CR>', {silent = true })
+local true_zen = require("true-zen")
+
+true_zen.setup({
+	modes = {
+		ataraxis = {
+			top_padding = 0,
+			bottom_padding = 0,
+			quit = "nil"
+		}
+	},
+	integrations = {
+		gitsigns = true,
+		lualine = true,
+	},
+})
+
+-- kyazdani42/nvim-tree.lua
+map('n', '\\', ':NvimTreeToggle<CR>', {silent=true})
+g.nvim_tree_follow = 1
+g.nvim_tree_quit_on_open = 1
+g.nvim_tree_group_empty = 1
+-- g.nvim_tree_show_icons = {
+--   git = 0,
+--   folders = 1,
+--   files = 1,
+--   folder_arrows = 1
+-- }
+-- g.nvim_tree_gitignore = 0
+-- g.nvim_tree_git_hl = 0
+
+map('n', '<leader>q', ':q<CR>')
+map('n', '<leader>w', ':w<CR>')
