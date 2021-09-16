@@ -117,7 +117,7 @@ g.neoterm_autoinsert = true
 g.neoterm_autoscroll = true
 g.neoterm_term_per_tab = true
 map('n', '<c-y>', ':Ttoggle<CR>')
-map('i', '<c-y>', ':Ttoggle<CR>')
+map('i', '<c-y>', '<Esc>:Ttoggle<CR>')
 map('t', '<c-y>', '<c-\\><c-n>:Ttoggle<CR>')
 map('n', '<leader>x', ':TREPLSendLine<CR>')
 map('v', '<leader>x', ':TREPLSendSelection<CR>')
@@ -409,10 +409,10 @@ map('n', 'Y', "y$")
 -- g.nvim_tree_auto_resize = 1
 
 -- David-Kunz/treesitter-unit
-map('x', 'iu', ':<c-u>lua require"treesitter-unit".select()<CR>')
-map('x', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
-map('o', 'iu', ':<c-u>lua require"treesitter-unit".select()<CR>')
-map('o', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
+map('x', 'u', ':<c-u>lua require"treesitter-unit".select()<CR>')
+map('x', 'au', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
+map('o', 'u', ':<c-u>lua require"treesitter-unit".select()<CR>')
+map('o', 'au', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
 require"treesitter-unit".enable_highlighting()
 
 -- tamago324/lir.nvim
@@ -505,8 +505,8 @@ local cmp = require('cmp')
       })
     },
     sources = {
-      { name = 'buffer' },
       { name = 'nvim_lsp' },
+      { name = 'buffer' },
     },
   }
 
@@ -536,6 +536,7 @@ true_zen.setup({
 
 -- kyazdani42/nvim-tree.lua
 map('n', '\\', ':NvimTreeToggle<CR>', {silent=true})
+g.nvim_tree_width = 50
 g.nvim_tree_follow = 1
 g.nvim_tree_quit_on_open = 1
 g.nvim_tree_group_empty = 1
