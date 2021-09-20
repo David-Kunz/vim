@@ -328,7 +328,7 @@ g.dap_virtual_text = true
 map('n', '<leader>gg', ':Git<cr>')
 map('n', '<leader>gd', ':DiffviewOpen<cr>')
 map('n', '<leader>gD', ':DiffviewOpen main<cr>')
-map('n', '<leader>gl', ':Gclog<cr>')
+map('n', '<leader>gl', ':Git log<cr>')
 map('n', '<leader>gp', ':Git push<cr>')
 
 -- David-Kunz/jester
