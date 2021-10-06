@@ -13,16 +13,16 @@ require('packer').startup(function(use)
 	use 'tpope/vim-commentary'
 	use 'sbdchd/neoformat'
 	use 'neovim/nvim-lspconfig'
-  use 'hrsh7th/nvim-cmp'
-  use 'hrsh7th/cmp-buffer'
-  use 'hrsh7th/cmp-nvim-lua'
-  use 'hrsh7th/cmp-nvim-lsp'
+  -- use 'hrsh7th/nvim-cmp'
+  -- use 'hrsh7th/cmp-buffer'
+  -- use 'hrsh7th/cmp-nvim-lua'
+  -- use 'hrsh7th/cmp-nvim-lsp'
 	use 'vimwiki/vimwiki'
 	use { 'nvim-treesitter/nvim-treesitter', branch = '0.5-compat', run = ':TSUpdate' }
   use 'nvim-treesitter/nvim-treesitter-textobjects'
 	use 'nvim-telescope/telescope.nvim'
-	use 'nvim-lua/popup.nvim'
 	use 'nvim-lua/plenary.nvim'
+	use 'nvim-lua/popup.nvim'
 	use 'alaviss/nim.nvim'
 	use 'lewis6991/gitsigns.nvim'
 	use 'mfussenegger/nvim-dap'
@@ -33,7 +33,6 @@ require('packer').startup(function(use)
 	use 'kyazdani42/nvim-web-devicons'
 	use 'ryanoasis/vim-devicons'
 	-- use 'TimUntersberger/neogit'
-	use 'sindrets/diffview.nvim'
 	use 'projekt0n/github-nvim-theme'
 	use 'David-Kunz/jester'
 	-- use 'vhyrro/neorg'
@@ -44,8 +43,10 @@ require('packer').startup(function(use)
   -- use 'ahmedkhalf/project.nvim'
   -- use 'tamago324/lir.nvim'
   -- use 'kdheepak/lazygit.nvim'
-  use 'tpope/vim-fugitive'
   use 'Pocco81/TrueZen.nvim'
+  use 'tpope/vim-fugitive'
+  use 'p00f/nvim-ts-rainbow'
+  use 'sindrets/diffview.nvim'
 end)
 
 --  
@@ -148,9 +149,9 @@ _G.telescope_files_or_git_files = function()
    builtin.find_files()
  end
 end
+map('n', '<leader>fD', ':lua telescope_live_grep_in_path()<CR>')
 map('n', '<leader><space>', ':lua telescope_files_or_git_files()<CR>')
 map('n', '<leader>fd', ':lua telescope_find_files_in_path()<CR>')
-map('n', '<leader>fD', ':lua telescope_live_grep_in_path()<CR>')
 map('n', '<leader>ft', ':lua telescope_find_files_in_path("./tests")<CR>')
 map('n', '<leader>fT', ':lua telescope_live_grep_in_path("./tests")<CR>')
 map('n', '<leader>ff', ':Telescope live_grep<CR>')
@@ -164,26 +165,37 @@ map('n', '<leader>FF', ':Telescope grep_string<CR>')
 
 -- neovim/nvim-lspconfig
 local nvim_lsp = require'lspconfig'
-local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities(), {
-  snippetSupport = false,
-})
-nvim_lsp.tsserver.setup{ capabilities = capabilities }
-nvim_lsp.rust_analyzer.setup({
-    settings = {
-        ["rust-analyzer"] = {
-            assist = {
-                importGranularity = "module",
-                importPrefix = "by_self",
-            },
-            cargo = {
-                loadOutDirsFromCheck = true
-            },
-            procMacro = {
-                enable = true
-            },
-        }
-    }
-})
+local on_attach = function(client, bufnr)
+    local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+    buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+end
+-- local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities(), {
+--   snippetSupport = false,
+-- })
+-- nvim_lsp.tsserver.setup{ capabilities = capabilities }
+local servers = { 'tsserver' }
+for _, lsp in ipairs(servers) do
+  nvim_lsp[lsp].setup {
+    on_attach = on_attach
+  }
+end
+-- nvim_lsp.tsserver.setup{ on_attach = on_attach }
+-- nvim_lsp.rust_analyzer.setup({
+--     settings = {
+--         ["rust-analyzer"] = {
+--             assist = {
+--                 importGranularity = "module",
+--                 importPrefix = "by_self",
+--             },
+--             cargo = {
+--                 loadOutDirsFromCheck = true
+--             },
+--             procMacro = {
+--                 enable = true
+--             },
+--         }
+--     }
+-- })
 --require'lspconfig'.nimls.setup{}
 
 map('n', 'gd', ':lua vim.lsp.buf.definition()<CR>')
@@ -223,6 +235,8 @@ map('n', '<leader><esc><esc>', ':tabclose<CR>')
 -- nvim/treesitter
 g.vscode_style = "dark"
 cmd('colorscheme vscode')
+cmd('set foldmethod=expr')
+cmd('set foldexpr=nvim_treesitter#foldexpr()')
 
 map('n', '<leader>nn', ':tabe ~/tmp/notes.md<CR>')
 
@@ -312,6 +326,12 @@ map('n', '<leader>db', ':Telescope dap list_breakpoints<CR>')
 g.dap_virtual_text = true
 
 -- -- TimUntersberger/neogit and sindrets/diffview.nvim
+require'diffview'.setup {
+  file_panel = {
+    position = "left",            -- One of 'left', 'right', 'top', 'bottom'
+    width = 60,                   -- Only applies when position is 'left' or 'right'
+  }
+}
 -- require("neogit").setup {
 --   disable_commit_confirmation = true,
 --   integrations = {
@@ -326,8 +346,10 @@ g.dap_virtual_text = true
 
 -- 'tpope/vim-fugitive'
 map('n', '<leader>gg', ':Git<cr>')
-map('n', '<leader>gd', ':DiffviewOpen<cr>')
-map('n', '<leader>gD', ':DiffviewOpen main<cr>')
+map('n', '<leader>gd', ':tabe %<cr>:Gvdiffsplit!<CR>')
+map('n', '<leader>gD', ':DiffviewOpen<cr>')
+map('n', '<leader>gm', ':tabe %<cr>:Gvdiffsplit! main<CR>')
+map('n', '<leader>gM', ':DiffviewOpen main<cr>')
 map('n', '<leader>gl', ':Git log<cr>')
 map('n', '<leader>gp', ':Git push<cr>')
 
@@ -409,10 +431,8 @@ map('n', 'Y', "y$")
 -- g.nvim_tree_auto_resize = 1
 
 -- David-Kunz/treesitter-unit
-map('x', 'u', ':<c-u>lua require"treesitter-unit".select()<CR>')
-map('x', 'au', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
-map('o', 'u', ':<c-u>lua require"treesitter-unit".select()<CR>')
-map('o', 'au', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
+map('x', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
+map('o', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
 require"treesitter-unit".enable_highlighting()
 
 -- tamago324/lir.nvim
@@ -493,22 +513,22 @@ vim.cmd [[augroup END]]
 
 
 -- hrsh7th/nvim-cmp
-local cmp = require('cmp')
-  cmp.setup {
-    mapping = {
-      ['<C-p>'] = cmp.mapping.select_prev_item(),
-      ['<C-n>'] = cmp.mapping.select_next_item(),
-      ['<C-Space>'] = cmp.mapping.complete(),
-      ['<C-e>'] = cmp.mapping.close(),
-      ['<CR>'] = cmp.mapping.confirm({
-        behavior = cmp.ConfirmBehavior.Insert,
-      })
-    },
-    sources = {
-      { name = 'nvim_lsp' },
-      { name = 'buffer' },
-    },
-  }
+-- local cmp = require('cmp')
+--   cmp.setup {
+--     mapping = {
+--       ['<C-p>'] = cmp.mapping.select_prev_item(),
+--       ['<C-n>'] = cmp.mapping.select_next_item(),
+--       ['<C-Space>'] = cmp.mapping.complete(),
+--       ['<C-e>'] = cmp.mapping.close(),
+--       ['<CR>'] = cmp.mapping.confirm({
+--         behavior = cmp.ConfirmBehavior.Insert,
+--       })
+--     },
+--     sources = {
+--       { name = 'nvim_lsp' },
+--       { name = 'buffer' },
+--     },
+--   }
 
 -- global mark I for last edit
 vim.cmd [[autocmd InsertLeave * execute 'normal! mI']]
@@ -535,19 +555,30 @@ true_zen.setup({
 })
 
 -- kyazdani42/nvim-tree.lua
+require('nvim-tree').setup({
+  hijack_cursor = true,
+  update_focused_file = { enable = true },
+  view = {
+    width = 60
+  }
+})
 map('n', '\\', ':NvimTreeToggle<CR>', {silent=true})
-g.nvim_tree_width = 50
-g.nvim_tree_follow = 1
-g.nvim_tree_quit_on_open = 1
-g.nvim_tree_group_empty = 1
--- g.nvim_tree_show_icons = {
---   git = 0,
---   folders = 1,
---   files = 1,
---   folder_arrows = 1
--- }
--- g.nvim_tree_gitignore = 0
--- g.nvim_tree_git_hl = 0
 
 map('n', '<leader>q', ':q<CR>')
 map('n', '<leader>w', ':w<CR>')
+
+vim.cmd('iabbrev :tup: 👍')
+vim.cmd('iabbrev :tdo: 👎')
+vim.cmd('iabbrev :smi: 😊')
+vim.cmd('iabbrev :sad: 😔')
+vim.cmd('iabbrev darkred #8b0000')
+vim.cmd('iabbrev darkgreen #006400')
+
+-- p00f/nvim-ts-rainbow
+require'nvim-treesitter.configs'.setup {
+  rainbow = {
+    enable = true,
+    extended_mode = true,
+    max_file_lines = nil
+  }
+}
