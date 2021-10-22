@@ -25,7 +25,7 @@ require('packer').startup(function(use)
 	use 'nvim-telescope/telescope-dap.nvim'
 	use 'theHamsta/nvim-dap-virtual-text'
 	use 'Mofiqul/vscode.nvim'
-	use 'hoob3rt/lualine.nvim'
+  use 'nvim-lualine/lualine.nvim'
 	use 'kyazdani42/nvim-web-devicons'
 	use 'ryanoasis/vim-devicons'
 	-- use 'TimUntersberger/neogit'
@@ -39,7 +39,6 @@ require('packer').startup(function(use)
   -- use 'ahmedkhalf/project.nvim'
   -- use 'tamago324/lir.nvim'
   -- use 'kdheepak/lazygit.nvim'
-  use 'Pocco81/TrueZen.nvim'
   use 'tpope/vim-fugitive'
   use 'p00f/nvim-ts-rainbow'
   use 'sindrets/diffview.nvim'
@@ -286,6 +285,8 @@ map('n', '<leader><esc><esc>', ':tabclose<CR>')
 -- nvim/treesitter
 g.vscode_style = "dark"
 -- cmd('colorscheme vscode')
+g.nord_contrast = true
+g.nord_borders = true
 cmd('colorscheme nord')
 cmd('set foldmethod=expr')
 cmd('set foldexpr=nvim_treesitter#foldexpr()')
@@ -469,10 +470,6 @@ map('n', '<leader>z', ':ZenMode<CR>')
 map('n', '<s-l>', ':bnext<CR>')
 map('n', '<s-h>', ':bprev<CR>')
 
-map('v', 'J', ":m '>+1<CR>gv=gv")
-map('v', 'K', ":m '<-2<CR>gv=gv")
-map('n', 'Y', "y$")
-
 -- ahmedkhalf/project.nvim
 -- require("project_nvim").setup()
 -- require('telescope').load_extension('projects')
@@ -569,24 +566,6 @@ vim.cmd [[autocmd InsertLeave * execute 'normal! mI']]
 
 -- highlight on yank
 vim.cmd([[au TextYankPost * lua vim.highlight.on_yank {higroup="IncSearch", timeout=150, on_visual=true}]])
-
--- Pocco81/TrueZen.nvim
-map('n', '<leader>e', ':TZAtaraxis<CR>', {silent = true })
-local true_zen = require("true-zen")
-
-true_zen.setup({
-	modes = {
-		ataraxis = {
-			top_padding = 0,
-			bottom_padding = 0,
-			quit = "nil"
-		}
-	},
-	integrations = {
-		gitsigns = true,
-		lualine = true,
-	},
-})
 
 -- kyazdani42/nvim-tree.lua
 require('nvim-tree').setup({
