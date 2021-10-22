@@ -13,10 +13,6 @@ require('packer').startup(function(use)
 	use 'tpope/vim-commentary'
 	use 'sbdchd/neoformat'
 	use 'neovim/nvim-lspconfig'
-  -- use 'hrsh7th/nvim-cmp'
-  -- use 'hrsh7th/cmp-buffer'
-  -- use 'hrsh7th/cmp-nvim-lua'
-  -- use 'hrsh7th/cmp-nvim-lsp'
 	use 'vimwiki/vimwiki'
 	use { 'nvim-treesitter/nvim-treesitter', branch = '0.5-compat', run = ':TSUpdate' }
   use 'nvim-treesitter/nvim-treesitter-textobjects'
@@ -47,7 +43,17 @@ require('packer').startup(function(use)
   use 'tpope/vim-fugitive'
   use 'p00f/nvim-ts-rainbow'
   use 'sindrets/diffview.nvim'
+  use 'hrsh7th/vim-vsnip'
+  use 'hrsh7th/vim-vsnip-integ'
+
+  use 'hrsh7th/cmp-nvim-lsp'
+  use 'hrsh7th/cmp-buffer'
+  use 'hrsh7th/nvim-cmp'
+  use 'hrsh7th/cmp-vsnip'
+  use 'shaunsingh/nord.nvim'
+  use 'onsails/lspkind-nvim'
 end)
+
 
 --  
 -- " default options
@@ -69,7 +75,7 @@ opt.cmdheight = 1
 opt.signcolumn = 'yes'
 opt.updatetime = 520
 opt.undofile = true
-cmd('filetype plugin indent on')
+cmd('filetype plugin on')
 opt.backup = false
 g.netrw_banner = false
 g.netrw_liststyle = 3
@@ -90,7 +96,8 @@ require('gitsigns').setup({})
 -- hoob3rt/lualine.nvim
 require('lualine').setup({
   options = {
-    theme = "vscode",
+    -- theme = "vscode",
+    theme = "nord",
     component_separators = {'', ''},
     section_separators = {'', ''},
   },
@@ -98,9 +105,9 @@ require('lualine').setup({
     lualine_a = {{'filename', path = 2}},
     lualine_b = {'branch', {
       'diff',
-      color_added = 'green',
-      color_modified = 'yellow',
-      color_removed = 'red'
+      -- color_added = 'green',
+      -- color_modified = 'yellow',
+      -- color_removed = 'red'
     }},
     lualine_c = {},
     lualine_x = {},
@@ -163,22 +170,66 @@ map('n', '<leader>fs', ':Telescope lsp_document_symbols<CR>')
 map('n', '<leader>ff', ':Telescope live_grep<CR>')
 map('n', '<leader>FF', ':Telescope grep_string<CR>')
 
--- neovim/nvim-lspconfig
-local nvim_lsp = require'lspconfig'
-local on_attach = function(client, bufnr)
-    local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-    buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
-end
--- local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities(), {
---   snippetSupport = false,
--- })
--- nvim_lsp.tsserver.setup{ capabilities = capabilities }
-local servers = { 'tsserver' }
-for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup {
-    on_attach = on_attach
+-- without cmp:
+-- local nvim_lsp = require'lspconfig'
+-- local on_attach = function(client, bufnr)
+--     local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+--     buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+-- end
+-- local servers = { 'tsserver' }
+-- for _, lsp in ipairs(servers) do
+--   nvim_lsp[lsp].setup {
+--     on_attach = on_attach
+--   }
+-- end
+
+
+-- hrsh7th/nvim-cmp
+local cmp = require'cmp'
+local lspkind = require('lspkind')
+
+cmp.setup({
+  snippet = {
+    expand = function(args)
+      vim.fn["vsnip#anonymous"](args.body)
+    end,
+  },
+  mapping = {
+    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-e>'] = cmp.mapping.close(),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }),
+  },
+  sources = {
+    { name = 'nvim_lsp' },
+    { name = 'vsnip' },
+    { name = 'buffer', keyword_length = 5 },
+  },
+  formatting = {
+    format = lspkind.cmp_format({with_text = false, maxwidth = 50})
   }
-end
+})
+
+local nvim_lsp = require'lspconfig'
+nvim_lsp.tsserver.setup {
+  capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+}
+
+-- hrsh7th/vim-vsnip
+vim.cmd([[
+imap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+smap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+" Expand or jump
+imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+" Jump forward or backward
+imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+]])
+
 -- nvim_lsp.tsserver.setup{ on_attach = on_attach }
 -- nvim_lsp.rust_analyzer.setup({
 --     settings = {
@@ -221,20 +272,21 @@ configs.sapcds_lsp = {
     cmd = {vim.fn.expand("$HOME/projects/startcdslsp")};
     filetypes = {'cds'};
     root_dir = function(fname)
-      return lspconfig.util.find_git_ancestor(fname)
+      return vim.fn.getcwd()
     end;
     settings = {};
   };
 }
 if lspconfig.sapcds_lsp.setup then
-  lspconfig.sapcds_lsp.setup{ }
+  lspconfig.sapcds_lsp.setup{ on_attach = on_attach }
 end
 
 map('n', '<leader><esc><esc>', ':tabclose<CR>')
 
 -- nvim/treesitter
 g.vscode_style = "dark"
-cmd('colorscheme vscode')
+-- cmd('colorscheme vscode')
+cmd('colorscheme nord')
 cmd('set foldmethod=expr')
 cmd('set foldexpr=nvim_treesitter#foldexpr()')
 
@@ -380,8 +432,9 @@ map('n', '<leader>df', ':lua require"jester".debug_file({ path_to_jest = "/usr/l
  local runtime_path = vim.split(package.path, ';')
  table.insert(runtime_path, "lua/?.lua")
  table.insert(runtime_path, "lua/?/init.lua")
- 
+
  require'lspconfig'.sumneko_lua.setup {
+   capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities()),
    cmd = {sumneko_binary, "-E", sumneko_root_path .. "/main.lua"};
    settings = {
      Lua = {
@@ -433,7 +486,7 @@ map('n', 'Y', "y$")
 -- David-Kunz/treesitter-unit
 map('x', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
 map('o', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
-require"treesitter-unit".enable_highlighting()
+-- require"treesitter-unit".enable_highlighting()
 
 -- tamago324/lir.nvim
 -- local actions = require'lir.actions'
@@ -511,25 +564,6 @@ vim.cmd [[  autocmd!]]
 vim.cmd [[  autocmd Filetype lir :lua LirSettings()]]
 vim.cmd [[augroup END]]
 
-
--- hrsh7th/nvim-cmp
--- local cmp = require('cmp')
---   cmp.setup {
---     mapping = {
---       ['<C-p>'] = cmp.mapping.select_prev_item(),
---       ['<C-n>'] = cmp.mapping.select_next_item(),
---       ['<C-Space>'] = cmp.mapping.complete(),
---       ['<C-e>'] = cmp.mapping.close(),
---       ['<CR>'] = cmp.mapping.confirm({
---         behavior = cmp.ConfirmBehavior.Insert,
---       })
---     },
---     sources = {
---       { name = 'nvim_lsp' },
---       { name = 'buffer' },
---     },
---   }
-
 -- global mark I for last edit
 vim.cmd [[autocmd InsertLeave * execute 'normal! mI']]
 
@@ -564,7 +598,7 @@ require('nvim-tree').setup({
 })
 map('n', '\\', ':NvimTreeToggle<CR>', {silent=true})
 
-map('n', '<leader>q', ':q<CR>')
+map('n', '<leader>\\', ':q<CR>')
 map('n', '<leader>w', ':w<CR>')
 
 vim.cmd('iabbrev :tup: 👍')
@@ -582,3 +616,4 @@ require'nvim-treesitter.configs'.setup {
     max_file_lines = nil
   }
 }
+
