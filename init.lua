@@ -29,7 +29,6 @@ require('packer').startup(function(use)
 	use 'kyazdani42/nvim-web-devicons'
 	use 'ryanoasis/vim-devicons'
 	-- use 'TimUntersberger/neogit'
-	use 'projekt0n/github-nvim-theme'
 	use 'David-Kunz/jester'
 	-- use 'vhyrro/neorg'
 	use 'folke/zen-mode.nvim'
@@ -51,8 +50,8 @@ require('packer').startup(function(use)
   use 'hrsh7th/cmp-vsnip'
   use 'shaunsingh/nord.nvim'
   use 'onsails/lspkind-nvim'
+  use 'David-Kunz/cmp-npm'
 end)
-
 
 --  
 -- " default options
@@ -183,6 +182,9 @@ map('n', '<leader>FF', ':Telescope grep_string<CR>')
 -- end
 
 
+-- David-Kunz/cmp-npm
+require('cmp-npm').setup({})
+
 -- hrsh7th/nvim-cmp
 local cmp = require'cmp'
 local lspkind = require('lspkind')
@@ -201,6 +203,7 @@ cmp.setup({
     ['<CR>'] = cmp.mapping.confirm({ select = true }),
   },
   sources = {
+    { name = 'npm' },
     { name = 'nvim_lsp' },
     { name = 'vsnip' },
     { name = 'buffer', keyword_length = 5 },
@@ -211,9 +214,12 @@ cmp.setup({
 })
 
 local nvim_lsp = require'lspconfig'
-nvim_lsp.tsserver.setup {
-  capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
-}
+local servers = { 'tsserver', 'rust_analyzer' }
+for _, lsp in ipairs(servers) do
+  nvim_lsp[lsp].setup {
+    capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+  }
+end
 
 -- hrsh7th/vim-vsnip
 vim.cmd([[
