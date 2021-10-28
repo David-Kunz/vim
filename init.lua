@@ -31,7 +31,7 @@ require('packer').startup(function(use)
 	-- use 'TimUntersberger/neogit'
 	use 'David-Kunz/jester'
 	-- use 'vhyrro/neorg'
-	use 'folke/zen-mode.nvim'
+  use 'junegunn/goyo.vim'
   use 'nvim-treesitter/playground'
   use 'kyazdani42/nvim-tree.lua'
   use 'David-Kunz/treesitter-unit'
@@ -39,7 +39,7 @@ require('packer').startup(function(use)
   -- use 'tamago324/lir.nvim'
   -- use 'kdheepak/lazygit.nvim'
   use 'tpope/vim-fugitive'
-  use 'p00f/nvim-ts-rainbow'
+  -- use 'p00f/nvim-ts-rainbow'
   use 'sindrets/diffview.nvim'
   use 'hrsh7th/vim-vsnip'
   use 'hrsh7th/vim-vsnip-integ'
@@ -183,7 +183,7 @@ map('n', '<leader>FF', ':Telescope grep_string<CR>')
 
 
 -- David-Kunz/cmp-npm
-require('cmp-npm').setup({})
+require('cmp-npm').setup({ ignore = {"beta", "rc"} })
 
 -- hrsh7th/nvim-cmp
 local cmp = require'cmp'
@@ -291,13 +291,13 @@ map('n', '<leader><esc><esc>', ':tabclose<CR>')
 -- nvim/treesitter
 g.vscode_style = "dark"
 -- cmd('colorscheme vscode')
-g.nord_contrast = true
+-- g.nord_contrast = true
 g.nord_borders = true
 cmd('colorscheme nord')
 cmd('set foldmethod=expr')
 cmd('set foldexpr=nvim_treesitter#foldexpr()')
 
-map('n', '<leader>nn', ':tabe ~/tmp/notes.md<CR>')
+map('n', '<leader>n', ':tabe ~/tmp/notes.md<CR>')
 
 -- -- vhyrro/neorg
 -- map('n', '<leader>nn', ':e ~/neorg/index.norg<CR>')
@@ -328,9 +328,9 @@ require'nvim-treesitter.configs'.setup {
   highlight = {
     enable = true,
   },
-  indent = {
-    enable = true
-  },
+  -- indent = {
+  --   enable = true
+  -- },
   textobjects = {
     select = {
       enable = true,
@@ -353,6 +353,7 @@ dap.adapters.node2 = {
   command = 'node',
   args = {os.getenv('HOME') .. '/apps/vscode-node-debug2/out/src/nodeDebug.js'},
 }
+dap.defaults.fallback.terminal_win_cmd = '80vsplit new'
 vim.fn.sign_define('DapBreakpoint', {text='🟥', texthl='', linehl='', numhl=''})
 vim.fn.sign_define('DapBreakpointRejected', {text='🟦', texthl='', linehl='', numhl=''})
 vim.fn.sign_define('DapStopped', {text='⭐️', texthl='', linehl='', numhl=''})
@@ -468,10 +469,15 @@ map('n', '<leader>df', ':lua require"jester".debug_file({ path_to_jest = "/usr/l
  }
 
 -- folke/zen-mode.nvim
-require("zen-mode").setup {
-  window = { width = .40 }
-}
-map('n', '<leader>z', ':ZenMode<CR>')
+-- require("zen-mode").setup {
+--   window = { width = .40 }
+-- }
+-- map('n', '<leader>z', ':ZenMode<CR>')
+
+-- junegunn/goyo.vim
+g.goyo_width = 120
+map('n', '<leader>z', ':Goyo<CR>')
+
 
 map('n', '<s-l>', ':bnext<CR>')
 map('n', '<s-h>', ':bprev<CR>')
@@ -594,11 +600,11 @@ vim.cmd('iabbrev darkred #8b0000')
 vim.cmd('iabbrev darkgreen #006400')
 
 -- p00f/nvim-ts-rainbow
-require'nvim-treesitter.configs'.setup {
-  rainbow = {
-    enable = true,
-    extended_mode = true,
-    max_file_lines = nil
-  }
-}
+-- require'nvim-treesitter.configs'.setup {
+--   rainbow = {
+--     enable = true,
+--     extended_mode = true,
+--     max_file_lines = nil
+--   }
+-- }
 
