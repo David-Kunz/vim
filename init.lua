@@ -53,8 +53,8 @@ require('packer').startup(function(use)
   use 'David-Kunz/cmp-npm'
 end)
 
---  
--- " default options
+  
+-- default options
 opt.completeopt = {'menu', 'menuone', 'noselect'}
 opt.mouse = 'a'
 opt.splitright = true
