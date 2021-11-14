@@ -11,9 +11,9 @@ require('packer').startup(function(use)
 	use 'szw/vim-maximizer'
 	use 'kassio/neoterm'
 	use 'tpope/vim-commentary'
-	use 'sbdchd/neoformat'
+	--use 'sbdchd/neoformat'
+  use 'mhartington/formatter.nvim'
 	use 'neovim/nvim-lspconfig'
-	use 'vimwiki/vimwiki'
 	use { 'nvim-treesitter/nvim-treesitter', branch = '0.5-compat', run = ':TSUpdate' }
   use 'nvim-treesitter/nvim-treesitter-textobjects'
 	use 'nvim-telescope/telescope.nvim'
@@ -51,7 +51,13 @@ require('packer').startup(function(use)
   use 'shaunsingh/nord.nvim'
   use 'onsails/lspkind-nvim'
   use 'David-Kunz/cmp-npm'
-end)
+  use 'tjdevries/colorbuddy.vim'
+  use 'Th3Whit3Wolf/onebuddy'
+  use 'navarasu/onedark.nvim'
+  use 'marko-cerovac/material.nvim'
+  use 'ggandor/lightspeed.nvim'
+  end
+)
 
   
 -- default options
@@ -95,7 +101,8 @@ require('gitsigns').setup({})
 require('lualine').setup({
   options = {
     -- theme = "vscode",
-    theme = "nord",
+    -- theme = "nord",
+    theme = "material-nvim",
     component_separators = {'', ''},
     section_separators = {'', ''},
   },
@@ -133,7 +140,23 @@ if has('nvim')
 endif]])
 
 -- sbdchd/neoformat
-map('n', '<leader>F', ':Neoformat prettier<CR>')
+map('n', '<leader>F', ':Format<CR>')
+require('formatter').setup({
+  logging = false,
+  filetype = {
+    javascript = {
+        -- prettierd
+       function()
+          return {
+            exe = "prettierd",
+            args = {vim.api.nvim_buf_get_name(0)},
+            stdin = true
+          }
+        end
+    },
+    -- other formatters ...
+  }
+})
 
 -- nvim-telescope/telescope.nvim
 _G.telescope_find_files_in_path = function(path)
@@ -289,11 +312,14 @@ end
 map('n', '<leader><esc><esc>', ':tabclose<CR>')
 
 -- nvim/treesitter
-g.vscode_style = "dark"
+-- g.vscode_style = "dark"
 -- cmd('colorscheme vscode')
 -- g.nord_contrast = true
-g.nord_borders = true
-cmd('colorscheme nord')
+-- g.nord_borders = true
+-- cmd('colorscheme nord')
+-- require('colorbuddy').colorscheme('onebuddy')
+cmd('colorscheme material')
+
 cmd('set foldmethod=expr')
 cmd('set foldexpr=nvim_treesitter#foldexpr()')
 
@@ -353,10 +379,19 @@ dap.adapters.node2 = {
   command = 'node',
   args = {os.getenv('HOME') .. '/apps/vscode-node-debug2/out/src/nodeDebug.js'},
 }
+-- require('dap').set_log_level('INFO')
 dap.defaults.fallback.terminal_win_cmd = '80vsplit new'
 vim.fn.sign_define('DapBreakpoint', {text='🟥', texthl='', linehl='', numhl=''})
 vim.fn.sign_define('DapBreakpointRejected', {text='🟦', texthl='', linehl='', numhl=''})
 vim.fn.sign_define('DapStopped', {text='⭐️', texthl='', linehl='', numhl=''})
+
+-- _G.shutDownDapSession = function()
+--   local dap = require'dap'
+--   dap.terminate()
+--   dap.disconnect( { terminateDebuggee = true })
+--   dap.close()
+-- end
+
 map('n', '<leader>dh', ':lua require"dap".toggle_breakpoint()<CR>')
 map('n', '<leader>dH', ":lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>")
 map('n', '<c-k>', ':lua require"dap".step_out()<CR>')
@@ -365,7 +400,7 @@ map('n', '<c-j>', ':lua require"dap".step_over()<CR>')
 map('n', '<c-h>', ':lua require"dap".continue()<CR>')
 map('n', '<leader>dk', ':lua require"dap".up()<CR>')
 map('n', '<leader>dj', ':lua require"dap".down()<CR>')
-map('n', '<leader>dc', ':lua require"dap".disconnect({ terminateDebuggee = true });require"dap".close()<CR>')
+map('n', '<leader>dc', ':lua require"dap".terminate()<CR>')
 map('n', '<leader>dr', ':lua require"dap".repl.toggle({}, "vsplit")<CR><C-w>l')
 map('n', '<leader>di', ':lua require"dap.ui.variables".hover()<CR>')
 map('n', '<leader>di', ':lua require"dap.ui.variables".visual_hover()<CR>')
@@ -383,7 +418,8 @@ map('n', '<leader>ds', ':Telescope dap frames<CR>')
 map('n', '<leader>db', ':Telescope dap list_breakpoints<CR>')
 
 -- theHamsta/nvim-dap-virtual-text and mfussenegger/nvim-dap
-g.dap_virtual_text = true
+require('nvim-dap-virtual-text').setup()
+-- g.dap_virtual_text = true
 
 -- -- TimUntersberger/neogit and sindrets/diffview.nvim
 require'diffview'.setup {
@@ -479,8 +515,8 @@ g.goyo_width = 120
 map('n', '<leader>z', ':Goyo<CR>')
 
 
-map('n', '<s-l>', ':bnext<CR>')
-map('n', '<s-h>', ':bprev<CR>')
+map('n', '[b', ':bnext<CR>')
+map('n', ']b', ':bprev<CR>')
 
 -- ahmedkhalf/project.nvim
 -- require("project_nvim").setup()
@@ -589,7 +625,7 @@ require('nvim-tree').setup({
 })
 map('n', '\\', ':NvimTreeToggle<CR>', {silent=true})
 
-map('n', '<leader>\\', ':q<CR>')
+map('n', 'gq', ':q<CR>')
 map('n', '<leader>w', ':w<CR>')
 
 vim.cmd('iabbrev :tup: 👍')
@@ -608,3 +644,8 @@ vim.cmd('iabbrev darkgreen #006400')
 --   }
 -- }
 
+-- map('n', '<s-k>', ':lua require"tree-mover".up()<CR>')
+-- map('n', '<s-j>', ':lua require"tree-mover".down()<CR>')
+-- map('n', '<s-l>', ':lua require"tree-mover".right()<CR>')
+-- map('n', '<s-h>', ':lua require"tree-mover".left()<CR>')
+-- map('n', '<s-y>', ':lua require"tree-mover".current()<CR>')
