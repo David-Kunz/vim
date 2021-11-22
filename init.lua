@@ -24,14 +24,14 @@ require('packer').startup(function(use)
 	use 'mfussenegger/nvim-dap'
 	use 'nvim-telescope/telescope-dap.nvim'
 	use 'theHamsta/nvim-dap-virtual-text'
-	use 'Mofiqul/vscode.nvim'
+	-- use 'Mofiqul/vscode.nvim'
   use 'nvim-lualine/lualine.nvim'
 	use 'kyazdani42/nvim-web-devicons'
 	use 'ryanoasis/vim-devicons'
 	-- use 'TimUntersberger/neogit'
 	use 'David-Kunz/jester'
 	-- use 'vhyrro/neorg'
-  use 'junegunn/goyo.vim'
+  -- use 'junegunn/goyo.vim'
   use 'nvim-treesitter/playground'
   use 'kyazdani42/nvim-tree.lua'
   use 'David-Kunz/treesitter-unit'
@@ -48,14 +48,14 @@ require('packer').startup(function(use)
   use 'hrsh7th/cmp-buffer'
   use 'hrsh7th/nvim-cmp'
   use 'hrsh7th/cmp-vsnip'
-  use 'shaunsingh/nord.nvim'
+  -- use 'shaunsingh/nord.nvim'
   use 'onsails/lspkind-nvim'
   use 'David-Kunz/cmp-npm'
-  use 'tjdevries/colorbuddy.vim'
-  use 'Th3Whit3Wolf/onebuddy'
-  use 'navarasu/onedark.nvim'
+  -- use 'tjdevries/colorbuddy.vim'
+  -- use 'Th3Whit3Wolf/onebuddy'
+  -- use 'navarasu/onedark.nvim'
   use 'marko-cerovac/material.nvim'
-  use 'ggandor/lightspeed.nvim'
+  -- use 'ggandor/lightspeed.nvim'
   end
 )
 
@@ -377,7 +377,7 @@ local dap = require('dap')
 dap.adapters.node2 = {
   type = 'executable',
   command = 'node',
-  args = {os.getenv('HOME') .. '/apps/vscode-node-debug2/out/src/nodeDebug.js'},
+  args = {os.getenv('HOME') .. '/apps/node/out/src/nodeDebug.js'},
 }
 -- require('dap').set_log_level('INFO')
 dap.defaults.fallback.terminal_win_cmd = '80vsplit new'
@@ -441,7 +441,8 @@ require'diffview'.setup {
 -- map('n', '<leader>gp', ':Neogit push<cr>')
 
 -- 'tpope/vim-fugitive'
-map('n', '<leader>gg', ':Git<cr>')
+map('n', '<leader>gg', ':Telescope git_status<cr>')
+map('n', '<leader>gc', ':G commit<cr>')
 map('n', '<leader>gd', ':tabe %<cr>:Gvdiffsplit!<CR>')
 map('n', '<leader>gD', ':DiffviewOpen<cr>')
 map('n', '<leader>gm', ':tabe %<cr>:Gvdiffsplit! main<CR>')
@@ -512,7 +513,7 @@ map('n', '<leader>df', ':lua require"jester".debug_file({ path_to_jest = "/usr/l
 
 -- junegunn/goyo.vim
 g.goyo_width = 120
-map('n', '<leader>z', ':Goyo<CR>')
+-- map('n', '<leader>z', ':Goyo<CR>')
 
 
 map('n', '[b', ':bnext<CR>')
