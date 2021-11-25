@@ -357,6 +357,15 @@ require'nvim-treesitter.configs'.setup {
   -- indent = {
   --   enable = true
   -- },
+  incremental_selection = {
+    enable = true,
+    keymaps = {
+      init_selection = '<CR>',
+      scope_incremental = '<CR>',
+      node_incremental = '<TAB>',
+      node_decremental = '<S-TAB>',
+    },
+  },
   textobjects = {
     select = {
       enable = true,
@@ -441,7 +450,7 @@ require'diffview'.setup {
 -- map('n', '<leader>gp', ':Neogit push<cr>')
 
 -- 'tpope/vim-fugitive'
-map('n', '<leader>gg', ':Telescope git_status<cr>')
+map('n', '<leader>gg', ':G<cr>')
 map('n', '<leader>gc', ':G commit<cr>')
 map('n', '<leader>gd', ':tabe %<cr>:Gvdiffsplit!<CR>')
 map('n', '<leader>gD', ':DiffviewOpen<cr>')
