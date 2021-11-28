@@ -7,7 +7,7 @@ g.mapleader = " "
 vim.cmd [[packadd packer.nvim]]
 require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
-	use 'kassio/neoterm'
+	-- use 'kassio/neoterm'
 	use 'tpope/vim-commentary'
   use 'mhartington/formatter.nvim'
 	use 'neovim/nvim-lspconfig'
@@ -120,19 +120,15 @@ require('lualine').setup({
 })
 
 -- kassio/neoterm
-g.neoterm_default_mod = 'vertical'
-g.neoterm_autoinsert = true
-g.neoterm_autoscroll = true
-g.neoterm_term_per_tab = true
-map('n', '<c-y>', ':Ttoggle<CR>')
-map('i', '<c-y>', '<Esc>:Ttoggle<CR>')
-map('t', '<c-y>', '<c-\\><c-n>:Ttoggle<CR>')
-map('n', '<leader>x', ':TREPLSendLine<CR>')
-map('v', '<leader>x', ':TREPLSendSelection<CR>')
-cmd([[
-if has('nvim')
-   au! TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
-endif]])
+-- g.neoterm_default_mod = 'vertical'
+-- g.neoterm_autoinsert = true
+-- g.neoterm_autoscroll = true
+-- g.neoterm_term_per_tab = true
+-- map('n', '<c-y>', ':Ttoggle<CR>')
+-- map('i', '<c-y>', '<Esc>:Ttoggle<CR>')
+-- map('t', '<c-y>', '<c-\\><c-n>:Ttoggle<CR>')
+-- map('n', '<leader>x', ':TREPLSendLine<CR>')
+-- map('v', '<leader>x', ':TREPLSendSelection<CR>')
 
 -- sbdchd/neoformat
 map('n', '<leader>F', ':Format<CR>')
@@ -654,3 +650,31 @@ vim.cmd('iabbrev darkgreen #006400')
 -- map('n', '<s-l>', ':lua require"tree-mover".right()<CR>')
 -- map('n', '<s-h>', ':lua require"tree-mover".left()<CR>')
 -- map('n', '<s-y>', ':lua require"tree-mover".current()<CR>')
+
+
+local buf_of_tab = {}
+_G.toggle_terminal = function()
+  local cur_tab = vim.api.nvim_get_current_tabpage()
+  local term_buf = buf_of_tab[cur_tab]
+  if term_buf ~= nil then
+   local cur_buf = vim.api.nvim_get_current_buf()
+   if cur_buf == term_buf then
+     vim.cmd('q')
+   else
+     vim.cmd('vert sb' .. term_buf)
+     vim.cmd(':startinsert')
+   end
+  else
+    vim.cmd('vs | terminal')
+    local cur_buf = vim.api.nvim_get_current_buf()
+    table.insert(buf_of_tab, cur_tab, cur_buf)
+    vim.cmd(':startinsert')
+  end
+end
+map('n', '<c-y>', ':lua toggle_terminal()<CR>')
+map('i', '<c-y>', '<ESC>:lua toggle_terminal()<CR>')
+map('t', '<c-y>', '<c-\\><c-n>:lua toggle_terminal()<CR>')
+cmd([[
+if has('nvim')
+   au! TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
+endif]])
