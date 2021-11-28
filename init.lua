@@ -29,7 +29,7 @@ require('packer').startup(function(use)
 	use 'David-Kunz/jester'
 	-- use 'vhyrro/neorg'
   -- use 'junegunn/goyo.vim'
-  use 'nvim-treesitter/playground'
+  -- use 'nvim-treesitter/playground'
   use 'kyazdani42/nvim-tree.lua'
   use 'David-Kunz/treesitter-unit'
   -- use 'ahmedkhalf/project.nvim'
@@ -91,7 +91,9 @@ end
 map('n', '<leader>v', ':e $MYVIMRC<CR>')
 
 -- lewis6991/gitsigns.nvim
-require('gitsigns').setup({})
+require('gitsigns').setup({
+  current_line_blame = true
+})
 
 -- hoob3rt/lualine.nvim
 require('lualine').setup({
@@ -406,9 +408,6 @@ map('n', '<leader>dk', ':lua require"dap".up()<CR>')
 map('n', '<leader>dj', ':lua require"dap".down()<CR>')
 map('n', '<leader>dc', ':lua require"dap".terminate()<CR>')
 map('n', '<leader>dr', ':lua require"dap".repl.toggle({}, "vsplit")<CR><C-w>l')
-map('n', '<leader>di', ':lua require"dap.ui.variables".hover()<CR>')
-map('n', '<leader>di', ':lua require"dap.ui.variables".visual_hover()<CR>')
-map('n', '<leader>d?', ':lua require"dap.ui.variables".scopes()<CR>')
 map('n', '<leader>de', ':lua require"dap".set_exception_breakpoints({"all"})<CR>')
 map('n', '<leader>da', ':lua require"debugHelper".attach()<CR>')
 map('n', '<leader>dA', ':lua require"debugHelper".attachToRemote()<CR>')
