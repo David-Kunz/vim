@@ -1,5 +1,4 @@
 local cmd = vim.cmd
-local fn = vim.fn
 local g = vim.g
 local opt = vim.opt
 
@@ -8,10 +7,8 @@ g.mapleader = " "
 vim.cmd [[packadd packer.nvim]]
 require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
-	use 'szw/vim-maximizer'
 	use 'kassio/neoterm'
 	use 'tpope/vim-commentary'
-	--use 'sbdchd/neoformat'
   use 'mhartington/formatter.nvim'
 	use 'neovim/nvim-lspconfig'
 	use { 'nvim-treesitter/nvim-treesitter', branch = '0.5-compat', run = ':TSUpdate' }
@@ -19,7 +16,7 @@ require('packer').startup(function(use)
 	use 'nvim-telescope/telescope.nvim'
 	use 'nvim-lua/plenary.nvim'
 	use 'nvim-lua/popup.nvim'
-	use 'alaviss/nim.nvim'
+	-- use 'alaviss/nim.nvim'
 	use 'lewis6991/gitsigns.nvim'
 	use 'mfussenegger/nvim-dap'
 	use 'nvim-telescope/telescope-dap.nvim'
@@ -85,7 +82,6 @@ g.netrw_banner = false
 g.netrw_liststyle = 3
 g.markdown_fenced_languages = { 'javascript', 'js=javascript', 'json=javascript' }
 
-
 local function map(mode, lhs, rhs, opts)
   local options = {noremap = true}
   if opts then options = vim.tbl_extend('force', options, opts) end
@@ -120,9 +116,6 @@ require('lualine').setup({
     lualine_z = {}
   },
 })
-
--- szw/vim-maximizer
-map('', '<C-w>m', ':MaximizerToggle!<CR>')
 
 -- kassio/neoterm
 g.neoterm_default_mod = 'vertical'
@@ -293,21 +286,23 @@ augroup MyCDSCode
      autocmd BufReadPre,FileReadPre *.cds set ft=cds
 augroup END
 ]])
-local lspconfig = require'lspconfig'
-local configs = require'lspconfig/configs'
-configs.sapcds_lsp = {
-  default_config = {
-    cmd = {vim.fn.expand("$HOME/projects/startcdslsp")};
-    filetypes = {'cds'};
-    root_dir = function(fname)
-      return vim.fn.getcwd()
-    end;
-    settings = {};
-  };
-}
-if lspconfig.sapcds_lsp.setup then
-  lspconfig.sapcds_lsp.setup{ on_attach = on_attach }
-end
+-- local lspconfig = require'lspconfig'
+-- local configs = require'lspconfig/configs'
+-- if not configs.sapcds_lsp then
+--   configs.sapcds_lsp = {
+--     default_config = {
+--       cmd = {vim.fn.expand("$HOME/projects/startcdslsp")};
+--       filetypes = {'cds'};
+--       root_dir = lspconfig.util.root_pattern('.git', 'package.json'),
+--       settings = {};
+--     };
+--   }
+-- end
+-- if lspconfig.sapcds_lsp.setup then
+--   lspconfig.sapcds_lsp.setup{
+--     capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+--   }
+-- end
 
 map('n', '<leader><esc><esc>', ':tabclose<CR>')
 
