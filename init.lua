@@ -12,7 +12,6 @@ require('packer').startup(function(use)
   use 'mhartington/formatter.nvim'
 	use 'neovim/nvim-lspconfig'
 	use { 'nvim-treesitter/nvim-treesitter', branch = '0.5-compat', run = ':TSUpdate' }
-  use 'nvim-treesitter/nvim-treesitter-textobjects'
 	use 'nvim-telescope/telescope.nvim'
 	use 'nvim-lua/plenary.nvim'
 	use 'nvim-lua/popup.nvim'
@@ -81,6 +80,9 @@ opt.backup = false
 g.netrw_banner = false
 g.netrw_liststyle = 3
 g.markdown_fenced_languages = { 'javascript', 'js=javascript', 'json=javascript' }
+
+-- opt.path:append({ "**" })
+vim.cmd([[set path=$PWD/**]])
 
 local function map(mode, lhs, rhs, opts)
   local options = {noremap = true}
@@ -358,20 +360,6 @@ require'nvim-treesitter.configs'.setup {
       node_incremental = '<TAB>',
       node_decremental = '<S-TAB>',
     },
-  },
-  textobjects = {
-    select = {
-      enable = true,
-      lookahead = true,
-      keymaps = {
-        ["af"] = "@function.outer",
-        ["if"] = "@function.inner",
-        ["ac"] = "@class.outer",
-        ["ic"] = "@class.inner",
-        ["ab"] = "@block.outer",
-        ["ib"] = "@block.inner"
-      }
-    }
   }
 }
 -- mfussenegger/nvim-dap
