@@ -11,7 +11,7 @@ require('packer').startup(function(use)
 	use 'tpope/vim-commentary'
   use 'mhartington/formatter.nvim'
 	use 'neovim/nvim-lspconfig'
-	use { 'nvim-treesitter/nvim-treesitter', branch = '0.5-compat', run = ':TSUpdate' }
+	use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
 	use 'nvim-telescope/telescope.nvim'
 	use 'nvim-lua/plenary.nvim'
 	use 'nvim-lua/popup.nvim'
@@ -69,7 +69,6 @@ opt.ignorecase = true
 opt.smartcase = true
 opt.incsearch = true
 -- set diffopt+=vertical " starts diff mode in vertical split
-opt.hidden = true
 opt.cmdheight = 1
 -- set shortmess+=c " don't need to press enter so often
 opt.signcolumn = 'yes'
