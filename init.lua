@@ -28,7 +28,7 @@ require('packer').startup(function(use)
 	use 'David-Kunz/jester'
 	-- use 'vhyrro/neorg'
   -- use 'junegunn/goyo.vim'
-  -- use 'nvim-treesitter/playground'
+  use 'nvim-treesitter/playground'
   use 'kyazdani42/nvim-tree.lua'
   use 'David-Kunz/treesitter-unit'
   -- use 'ahmedkhalf/project.nvim'
@@ -113,7 +113,6 @@ require('lualine').setup({
       -- color_modified = 'yellow',
       -- color_removed = 'red'
     }},
-    lualine_c = {},
     lualine_x = {},
     lualine_y = {},
     lualine_z = {}
@@ -149,6 +148,31 @@ require('formatter').setup({
     -- other formatters ...
   }
 })
+local telescope_actions = require("telescope.actions.set")
+
+local fixfolds = {
+	hidden = true,
+	attach_mappings = function(_)
+		telescope_actions.select:enhance({
+			post = function()
+				vim.cmd(":normal! zx")
+			end,
+		})
+		return true
+	end,
+}
+
+require('telescope').setup {
+	pickers = {
+		buffers = fixfolds,
+		file_browser = fixfolds,
+		find_files = fixfolds,
+		git_files = fixfolds,
+		grep_string = fixfolds,
+		live_grep = fixfolds,
+		oldfiles = fixfolds,
+	},
+}
 
 -- nvim-telescope/telescope.nvim
 _G.telescope_find_files_in_path = function(path)
@@ -279,12 +303,12 @@ map('n', 'gr', ':lua vim.lsp.buf.references()<CR>')
 map('n', 'gR', ':lua vim.lsp.buf.rename()<CR>')
  
 -- CDS
-cmd([[
-augroup MyCDSCode
-     autocmd!
-     autocmd BufReadPre,FileReadPre *.cds set ft=cds
-augroup END
-]])
+-- cmd([[
+-- augroup MyCDSCode
+--      autocmd!
+--      autocmd BufReadPre,FileReadPre *.cds set ft=cds
+-- augroup END
+-- ]])
 -- local lspconfig = require'lspconfig'
 -- local configs = require'lspconfig/configs'
 -- if not configs.sapcds_lsp then
@@ -344,6 +368,20 @@ map('n', '<leader>n', ':tabe ~/tmp/notes.md<CR>')
 --         branch = "main"
 --     },
 -- }
+
+local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
+parser_config.cds = {
+      install_info = {
+            -- local path or git repo
+            -- url = "https://github.tools.sap/D067866/tree-sitter-cds.git",
+            url = "~/apps/tree-sitter-cds",
+            files = { "src/parser.c", "src/scanner.c" }
+      },
+      filetype = "cds",
+      -- additional filetypes that use this parser
+      used_by = { "cdl", "hdbcds" }
+    }
+
 require'nvim-treesitter.configs'.setup {
   highlight = {
     enable = true,
@@ -384,7 +422,7 @@ vim.fn.sign_define('DapStopped', {text='⭐️', texthl='', linehl='', numhl=''}
 map('n', '<leader>dh', ':lua require"dap".toggle_breakpoint()<CR>')
 map('n', '<leader>dH', ":lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>")
 map('n', '<c-k>', ':lua require"dap".step_out()<CR>')
-map('n', '<c-l>', ':lua require"dap".step_into()<CR>')
+map('n', "<c-l>", ':lua require"dap".step_into()<CR>')
 map('n', '<c-j>', ':lua require"dap".step_over()<CR>')
 map('n', '<c-h>', ':lua require"dap".continue()<CR>')
 map('n', '<leader>dn', ':lua require"dap".run_to_cursor()<CR>')
@@ -668,3 +706,17 @@ cmd([[
 if has('nvim')
    au! TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
 endif]])
+
+local someNs = vim.api.nvim_create_namespace('bla')
+_G.exampleVirtualLine = function() 
+  vim.api.nvim_buf_set_extmark(0, someNs, 2, 0, { virt_lines = { { { "This is an example virtual line", "CursorLine" } } } })
+end
+
+require "nvim-treesitter.configs".setup {
+  playground = {
+    enable = true,
+  }
+}
+
+map('n', '<c-o>', '<c-o>zz')
+map('n', '<c-i>', '<c-i>zz')
