@@ -34,7 +34,7 @@ require('packer').startup(function(use)
   -- use 'ahmedkhalf/project.nvim'
   -- use 'tamago324/lir.nvim'
   -- use 'kdheepak/lazygit.nvim'
-  use 'tpope/vim-fugitive'
+  -- use 'tpope/vim-fugitive'
   -- use 'p00f/nvim-ts-rainbow'
   use 'sindrets/diffview.nvim'
   use 'hrsh7th/vim-vsnip'
@@ -52,6 +52,7 @@ require('packer').startup(function(use)
   -- use 'navarasu/onedark.nvim'
   use 'marko-cerovac/material.nvim'
   -- use 'ggandor/lightspeed.nvim'
+  use 'TimUntersberger/neogit'
   end
 )
 
@@ -113,6 +114,7 @@ require('lualine').setup({
       -- color_modified = 'yellow',
       -- color_removed = 'red'
     }},
+    lualine_c = {},
     lualine_x = {},
     lualine_y = {},
     lualine_z = {}
@@ -145,7 +147,16 @@ require('formatter').setup({
           }
         end
     },
-    -- other formatters ...
+    sql = {
+        -- prettierd
+       function()
+          return {
+            exe = "sqlformat",
+            args = {vim.api.nvim_buf_get_name(0), '-a'},
+            stdin = true
+          }
+        end
+    },
   }
 })
 local telescope_actions = require("telescope.actions.set")
@@ -310,7 +321,7 @@ map('n', 'gR', ':lua vim.lsp.buf.rename()<CR>')
 -- augroup END
 -- ]])
 -- local lspconfig = require'lspconfig'
--- local configs = require'lspconfig/configs'
+-- local configs = require'lspconfig.configs'
 -- if not configs.sapcds_lsp then
 --   configs.sapcds_lsp = {
 --     default_config = {
@@ -323,7 +334,7 @@ map('n', 'gR', ':lua vim.lsp.buf.rename()<CR>')
 -- end
 -- if lspconfig.sapcds_lsp.setup then
 --   lspconfig.sapcds_lsp.setup{
---     capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+--     -- capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 --   }
 -- end
 
@@ -336,7 +347,7 @@ map('n', '<leader><esc><esc>', ':tabclose<CR>')
 -- g.nord_borders = true
 -- cmd('colorscheme nord')
 -- require('colorbuddy').colorscheme('onebuddy')
-cmd('colorscheme material')
+vim.cmd 'colorscheme material'
 
 cmd('set foldmethod=expr')
 cmd('set foldexpr=nvim_treesitter#foldexpr()')
@@ -465,15 +476,15 @@ require'diffview'.setup {
 -- map('n', '<leader>gl', ':Neogit log<cr>')
 -- map('n', '<leader>gp', ':Neogit push<cr>')
 
--- 'tpope/vim-fugitive'
-map('n', '<leader>gg', ':G<cr>')
-map('n', '<leader>gc', ':G commit<cr>')
-map('n', '<leader>gd', ':tabe %<cr>:Gvdiffsplit!<CR>')
-map('n', '<leader>gD', ':DiffviewOpen<cr>')
-map('n', '<leader>gm', ':tabe %<cr>:Gvdiffsplit! main<CR>')
-map('n', '<leader>gM', ':DiffviewOpen main<cr>')
-map('n', '<leader>gl', ':Git log<cr>')
-map('n', '<leader>gp', ':Git push<cr>')
+-- -- 'tpope/vim-fugitive'
+-- map('n', '<leader>gg', ':G<cr>')
+-- map('n', '<leader>gc', ':G commit<cr>')
+-- map('n', '<leader>gd', ':tabe %<cr>:Gvdiffsplit!<CR>')
+-- map('n', '<leader>gD', ':DiffviewOpen<cr>')
+-- map('n', '<leader>gm', ':tabe %<cr>:Gvdiffsplit! main<CR>')
+-- map('n', '<leader>gM', ':DiffviewOpen main<cr>')
+-- map('n', '<leader>gl', ':Git log<cr>')
+-- map('n', '<leader>gp', ':Git push<cr>')
 
 -- David-Kunz/jester
 map('n', '<leader>tt', ':lua require"jester".run({ path_to_jest = "/usr/local/bin/jest" })<cr>')
@@ -720,3 +731,17 @@ require "nvim-treesitter.configs".setup {
 
 map('n', '<c-o>', '<c-o>zz')
 map('n', '<c-i>', '<c-i>zz')
+
+
+-- TimUntersberger/neogit
+local neogit = require('neogit')
+neogit.setup {
+  disable_commit_confirmation = true,
+  disable_signs = true,
+  auto_refresh = false,
+  disable_builtin_notifications = true,
+  integrations = {
+    diffview = true
+  }
+}
+map('n', '<leader>gg', ':Neogit<cr>')
