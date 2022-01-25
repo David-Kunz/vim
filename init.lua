@@ -19,6 +19,8 @@ require('packer').startup(function(use)
 	use 'lewis6991/gitsigns.nvim'
 	use 'mfussenegger/nvim-dap'
 	use 'nvim-telescope/telescope-dap.nvim'
+  -- use 'nvim-telescope/telescope-file-browser.nvim'
+
 	use 'theHamsta/nvim-dap-virtual-text'
 	-- use 'Mofiqul/vscode.nvim'
   use 'nvim-lualine/lualine.nvim'
@@ -34,7 +36,7 @@ require('packer').startup(function(use)
   -- use 'ahmedkhalf/project.nvim'
   -- use 'tamago324/lir.nvim'
   -- use 'kdheepak/lazygit.nvim'
-  -- use 'tpope/vim-fugitive'
+  use 'tpope/vim-fugitive'
   -- use 'p00f/nvim-ts-rainbow'
   use 'sindrets/diffview.nvim'
   use 'hrsh7th/vim-vsnip'
@@ -52,7 +54,6 @@ require('packer').startup(function(use)
   -- use 'navarasu/onedark.nvim'
   use 'marko-cerovac/material.nvim'
   -- use 'ggandor/lightspeed.nvim'
-  use 'TimUntersberger/neogit'
   end
 )
 
@@ -172,17 +173,31 @@ local fixfolds = {
 		return true
 	end,
 }
+-- local fb_actions = require "telescope".extensions.file_browser.actions
+-- mappings in file_browser extension of telescope.setup
+
+local actions = require("telescope.actions")
+
 
 require('telescope').setup {
 	pickers = {
 		buffers = fixfolds,
-		file_browser = fixfolds,
 		find_files = fixfolds,
 		git_files = fixfolds,
 		grep_string = fixfolds,
 		live_grep = fixfolds,
 		oldfiles = fixfolds,
 	},
+   -- extensions = {
+   --  file_browser = {
+   --    mappings = {
+   --      ["n"] = {
+   --        h = fb_actions.goto_parent_dir,
+   --        l = actions.select_default
+   --      }
+   --    }
+   --  }
+  -- }
 }
 
 -- nvim-telescope/telescope.nvim
@@ -210,7 +225,7 @@ map('n', '<leader>fd', ':lua telescope_find_files_in_path()<CR>')
 map('n', '<leader>ft', ':lua telescope_find_files_in_path("./tests")<CR>')
 map('n', '<leader>fT', ':lua telescope_live_grep_in_path("./tests")<CR>')
 map('n', '<leader>ff', ':Telescope live_grep<CR>')
-map('n', '<leader>fo', ':Telescope file_browser<CR>')
+-- map('n', '<leader>fo', ':Telescope file_browser<CR>')
 map('n', '<leader>fn', ':Telescope find_files<CR>')
 map('n', '<leader>fg', ':Telescope git_branches<CR>')
 map('n', '<leader>fb', ':Telescope buffers<CR>')
@@ -384,7 +399,6 @@ local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
 parser_config.cds = {
       install_info = {
             -- local path or git repo
-            -- url = "https://github.tools.sap/D067866/tree-sitter-cds.git",
             url = "~/apps/tree-sitter-cds",
             files = { "src/parser.c", "src/scanner.c" }
       },
@@ -453,17 +467,19 @@ map('n', '<leader>ds', ':Telescope dap frames<CR>')
 -- map('n', '<leader>dc', ':Telescope dap commands<CR>')
 map('n', '<leader>db', ':Telescope dap list_breakpoints<CR>')
 
+-- nvim-telescope/telescope-file-browser.nvim
+-- require('telescope').load_extension('file_browser')
 -- theHamsta/nvim-dap-virtual-text and mfussenegger/nvim-dap
 require('nvim-dap-virtual-text').setup()
 -- g.dap_virtual_text = true
 
--- -- TimUntersberger/neogit and sindrets/diffview.nvim
-require'diffview'.setup {
-  file_panel = {
-    position = "left",            -- One of 'left', 'right', 'top', 'bottom'
-    width = 60,                   -- Only applies when position is 'left' or 'right'
-  }
-}
+-- -- -- TimUntersberger/neogit and sindrets/diffview.nvim
+-- require'diffview'.setup {
+--   file_panel = {
+--     position = "left",            -- One of 'left', 'right', 'top', 'bottom'
+--     width = 60,                   -- Only applies when position is 'left' or 'right'
+--   }
+-- }
 -- require("neogit").setup {
 --   disable_commit_confirmation = true,
 --   integrations = {
@@ -476,15 +492,15 @@ require'diffview'.setup {
 -- map('n', '<leader>gl', ':Neogit log<cr>')
 -- map('n', '<leader>gp', ':Neogit push<cr>')
 
--- -- 'tpope/vim-fugitive'
--- map('n', '<leader>gg', ':G<cr>')
--- map('n', '<leader>gc', ':G commit<cr>')
--- map('n', '<leader>gd', ':tabe %<cr>:Gvdiffsplit!<CR>')
--- map('n', '<leader>gD', ':DiffviewOpen<cr>')
--- map('n', '<leader>gm', ':tabe %<cr>:Gvdiffsplit! main<CR>')
--- map('n', '<leader>gM', ':DiffviewOpen main<cr>')
--- map('n', '<leader>gl', ':Git log<cr>')
--- map('n', '<leader>gp', ':Git push<cr>')
+-- 'tpope/vim-fugitive'
+map('n', '<leader>gg', ':G<cr>')
+map('n', '<leader>gc', ':G commit<cr>')
+map('n', '<leader>gd', ':tabe %<cr>:Gvdiffsplit!<CR>')
+map('n', '<leader>gD', ':DiffviewOpen<cr>')
+map('n', '<leader>gm', ':tabe %<cr>:Gvdiffsplit! main<CR>')
+map('n', '<leader>gM', ':DiffviewOpen main<cr>')
+map('n', '<leader>gl', ':Git log<cr>')
+map('n', '<leader>gp', ':Git push<cr>')
 
 -- David-Kunz/jester
 map('n', '<leader>tt', ':lua require"jester".run({ path_to_jest = "/usr/local/bin/jest" })<cr>')
@@ -733,15 +749,15 @@ map('n', '<c-o>', '<c-o>zz')
 map('n', '<c-i>', '<c-i>zz')
 
 
--- TimUntersberger/neogit
-local neogit = require('neogit')
-neogit.setup {
-  disable_commit_confirmation = true,
-  disable_signs = true,
-  auto_refresh = false,
-  disable_builtin_notifications = true,
-  integrations = {
-    diffview = true
-  }
-}
-map('n', '<leader>gg', ':Neogit<cr>')
+-- -- TimUntersberger/neogit
+-- local neogit = require('neogit')
+-- neogit.setup {
+--   disable_commit_confirmation = true,
+--   disable_signs = true,
+--   auto_refresh = false,
+--   disable_builtin_notifications = true,
+--   integrations = {
+--     diffview = true
+--   }
+-- }
+-- map('n', '<leader>gg', ':Neogit<cr>')
