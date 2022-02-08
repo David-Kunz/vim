@@ -91,11 +91,45 @@ local function map(mode, lhs, rhs, opts)
   vim.api.nvim_set_keymap(mode, lhs, rhs, options)
 end
 
+-- local function map(mode, l, r, opts)
+--       opts = opts or {}
+--       opts.buffer = bufnr
+--       vim.api.keymap.set(mode, l, r, opts)
+-- end
+
 map('n', '<leader>v', ':e $MYVIMRC<CR>')
+
 
 -- lewis6991/gitsigns.nvim
 require('gitsigns').setup({
-  current_line_blame = true
+  current_line_blame = true,
+  on_attach = function(bufnr)
+    local gs = package.loaded.gitsigns
+    _G.gs = package.loaded.gitsigns
+
+    -- Navigation
+    map('n', ']c', "&diff ? ']c' : '<cmd>Gitsigns next_hunk<CR>'", {expr=true})
+    map('n', '[c', "&diff ? '[c' : '<cmd>Gitsigns prev_hunk<CR>'", {expr=true})
+
+    -- Actions
+    map('n', '<leader>hs', ':Gitsigns stage_hunk<CR>')
+    map('n', '<leader>hr', ':Gitsigns reset_hunk<CR>')
+    map('v', '<leader>hs', ':Gitsigns stage_hunk<CR>')
+    map('v', '<leader>hr', ':Gitsigns reset_hunk<CR>')
+    map('n', '<leader>hS', ':lua gs.stage_buffer()<CR>')
+    map('n', '<leader>hu', ':lua gs.undo_stage_hunk()<CR>')
+    map('n', '<leader>hR', ':lua gs.reset_buffer()<CR>')
+    map('n', '<leader>hp', ':lua gs.preview_hunk()<CR>')
+    map('n', '<leader>hb', ':lua gs.blame_line{full=true}<CR>')
+    map('n', '<leader>tb', ':lua gs.toggle_current_line_blame()<CR>')
+    map('n', '<leader>hd', ':lua gs.diffthis()<CR>')
+    map('n', '<leader>hD', ":lua gs.diffthis('~')<CR>")
+    map('n', '<leader>td', ':lua gs.toggle_deleted()<CR>')
+
+    -- -- Text object
+    map('o', 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+    map('x', 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+  end
 })
 
 -- hoob3rt/lualine.nvim
@@ -455,6 +489,7 @@ map('n', '<leader>dk', ':lua require"dap".up()<CR>')
 map('n', '<leader>dj', ':lua require"dap".down()<CR>')
 map('n', '<leader>dc', ':lua require"dap".terminate()<CR>')
 map('n', '<leader>dr', ':lua require"dap".repl.toggle({}, "vsplit")<CR><C-w>l')
+map('n', '<leader>dR', ':lua require"dap".clear_breakpoints()<CR>')
 map('n', '<leader>de', ':lua require"dap".set_exception_breakpoints({"all"})<CR>')
 map('n', '<leader>da', ':lua require"debugHelper".attach()<CR>')
 map('n', '<leader>dA', ':lua require"debugHelper".attachToRemote()<CR>')
