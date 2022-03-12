@@ -17,7 +17,6 @@ require('packer').startup(function(use)
 	use 'nvim-lua/popup.nvim'
 	-- use 'alaviss/nim.nvim'
 	use 'lewis6991/gitsigns.nvim'
-	use 'mfussenegger/nvim-dap'
 	use 'nvim-telescope/telescope-dap.nvim'
   -- use 'nvim-telescope/telescope-file-browser.nvim'
 
@@ -54,6 +53,8 @@ require('packer').startup(function(use)
   -- use 'navarasu/onedark.nvim'
   use 'marko-cerovac/material.nvim'
   -- use 'ggandor/lightspeed.nvim'
+  -- use 'morhetz/gruvbox'
+	use 'mfussenegger/nvim-dap'
   end
 )
 
@@ -179,6 +180,14 @@ require('formatter').setup({
           }
         end
     },
+    rust = {
+      function()
+        return {
+          exe = "rustfmt",
+          stdin = true
+        }
+      end
+    },
     sql = {
         -- prettierd
        function()
@@ -258,6 +267,7 @@ map('n', '<leader>fT', ':lua telescope_live_grep_in_path("./tests")<CR>')
 map('n', '<leader>ff', ':Telescope live_grep<CR>')
 -- map('n', '<leader>fo', ':Telescope file_browser<CR>')
 map('n', '<leader>fn', ':Telescope find_files<CR>')
+map('n', '<leader>fr', ':Telescope resume<CR>')
 map('n', '<leader>fg', ':Telescope git_branches<CR>')
 map('n', '<leader>fb', ':Telescope buffers<CR>')
 map('n', '<leader>fs', ':Telescope lsp_document_symbols<CR>')
@@ -393,7 +403,9 @@ map('n', '<leader><esc><esc>', ':tabclose<CR>')
 -- g.nord_borders = true
 -- cmd('colorscheme nord')
 -- require('colorbuddy').colorscheme('onebuddy')
+vim.g.material_style = "darker"
 vim.cmd 'colorscheme material'
+-- vim.cmd ('colorscheme gruvbox')
 
 cmd('set foldmethod=expr')
 cmd('set foldexpr=nvim_treesitter#foldexpr()')
@@ -445,15 +457,6 @@ require'nvim-treesitter.configs'.setup {
   -- indent = {
   --   enable = true
   -- },
-  incremental_selection = {
-    enable = true,
-    keymaps = {
-      init_selection = '<CR>',
-      scope_incremental = '<CR>',
-      node_incremental = '<TAB>',
-      node_decremental = '<S-TAB>',
-    },
-  }
 }
 -- mfussenegger/nvim-dap
 local dap = require('dap')
@@ -462,6 +465,7 @@ dap.adapters.node2 = {
   command = 'node',
   args = {os.getenv('HOME') .. '/apps/node/out/src/nodeDebug.js'},
 }
+
 -- require('dap').set_log_level('INFO')
 dap.defaults.fallback.terminal_win_cmd = '80vsplit new'
 vim.fn.sign_define('DapBreakpoint', {text='🟥', texthl='', linehl='', numhl=''})
@@ -482,8 +486,8 @@ map('n', "<c-l>", ':lua require"dap".step_into()<CR>')
 map('n', '<c-j>', ':lua require"dap".step_over()<CR>')
 map('n', '<c-h>', ':lua require"dap".continue()<CR>')
 map('n', '<leader>dn', ':lua require"dap".run_to_cursor()<CR>')
-map('n', '<leader>dk', ':lua require"dap".up()<CR>')
-map('n', '<leader>dj', ':lua require"dap".down()<CR>')
+map('n', '<leader>dk', ':lua require"dap".up()<CR>zz')
+map('n', '<leader>dj', ':lua require"dap".down()<CR>zz')
 map('n', '<leader>dc', ':lua require"dap".terminate()<CR>')
 map('n', '<leader>dr', ':lua require"dap".repl.toggle({}, "vsplit")<CR><C-w>l')
 map('n', '<leader>dR', ':lua require"dap".clear_breakpoints()<CR>')
@@ -538,10 +542,13 @@ map('n', '<leader>gp', ':Git push<cr>')
 map('n', '<leader>tt', ':lua require"jester".run({ path_to_jest = "/usr/local/bin/jest" })<cr>')
 map('n', '<leader>t_', ':lua require"jester".run_last({ path_to_jest = "/usr/local/bin/jest" })<cr>')
 map('n', '<leader>tf', ':lua require"jester".run_file({ path_to_jest = "/usr/local/bin/jest" })<cr>')
-map('n', '<leader>dd', ':lua require"jester".debug({ path_to_jest = "/usr/local/bin/jest" })<cr>')
+-- map('n', '<leader>dd', ':lua require"jester".debug({ path_to_jest = "/usr/local/bin/jest" })<cr>')
 map('n', '<leader>d_', ':lua require"jester".debug_last({ path_to_jest = "/usr/local/bin/jest" })<cr>')
 map('n', '<leader>df', ':lua require"jester".debug_file({ path_to_jest = "/usr/local/bin/jest" })<cr>')
+map('n', '<leader>dq', ':lua require"jester".terminate()<cr>')
 
+-- map('n', '<leader>dd', ':lua require"jester".debug({ path_to_jest = "/usr/local/bin/jest", dap = { type = "node2" } })<cr>')
+map('n', '<leader>dd', ':lua require"jester".debug({ path_to_jest = "/usr/local/bin/jest" })<cr>')
 -- lua language server
  local system_name
  if vim.fn.has("mac") == 1 then
