@@ -38,13 +38,13 @@ require('packer').startup(function(use)
   use 'tpope/vim-fugitive'
   -- use 'p00f/nvim-ts-rainbow'
   use 'sindrets/diffview.nvim'
-  use 'hrsh7th/vim-vsnip'
-  use 'hrsh7th/vim-vsnip-integ'
+  -- use 'hrsh7th/vim-vsnip'
+  -- use 'hrsh7th/vim-vsnip-integ'
 
   use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/cmp-buffer'
   use 'hrsh7th/nvim-cmp'
-  use 'hrsh7th/cmp-vsnip'
+  -- use 'hrsh7th/cmp-vsnip'
   -- use 'shaunsingh/nord.nvim'
   use 'onsails/lspkind-nvim'
   use 'David-Kunz/cmp-npm'
@@ -55,6 +55,8 @@ require('packer').startup(function(use)
   -- use 'ggandor/lightspeed.nvim'
   -- use 'morhetz/gruvbox'
 	use 'mfussenegger/nvim-dap'
+  use 'L3MON4D3/LuaSnip'
+  use 'saadparwaiz1/cmp_luasnip'
   end
 )
 
@@ -291,33 +293,6 @@ map('n', '<leader>FF', ':Telescope grep_string<CR>')
 -- David-Kunz/cmp-npm
 require('cmp-npm').setup({ ignore = {"beta", "rc"} })
 
--- hrsh7th/nvim-cmp
-local cmp = require'cmp'
-local lspkind = require('lspkind')
-
-cmp.setup({
-  snippet = {
-    expand = function(args)
-      vim.fn["vsnip#anonymous"](args.body)
-    end,
-  },
-  mapping = {
-    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete(),
-    ['<C-e>'] = cmp.mapping.close(),
-    ['<CR>'] = cmp.mapping.confirm({ select = true }),
-  },
-  sources = {
-    { name = 'npm' },
-    { name = 'nvim_lsp' },
-    { name = 'vsnip' },
-    { name = 'buffer', keyword_length = 5 },
-  },
-  formatting = {
-    format = lspkind.cmp_format({with_text = false, maxwidth = 50})
-  }
-})
 
 local nvim_lsp = require'lspconfig'
 local servers = { 'tsserver', 'rust_analyzer' }
@@ -328,18 +303,18 @@ for _, lsp in ipairs(servers) do
 end
 
 -- hrsh7th/vim-vsnip
-vim.cmd([[
-imap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
-smap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
-" Expand or jump
-imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
-smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
-" Jump forward or backward
-imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
-smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
-imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
-smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
-]])
+-- vim.cmd([[
+-- imap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+-- smap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+-- " Expand or jump
+-- imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+-- smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+-- " Jump forward or backward
+-- imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+-- smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+-- imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+-- smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+-- ]])
 
 -- nvim_lsp.tsserver.setup{ on_attach = on_attach }
 -- nvim_lsp.rust_analyzer.setup({
@@ -717,7 +692,7 @@ require('nvim-tree').setup({
 })
 map('n', '\\', ':NvimTreeToggle<CR>', {silent=true})
 
-map('n', 'gq', ':q<CR>')
+map('n', 'gq', ':bd!<CR>')
 map('n', '<leader>w', ':w<CR>')
 
 vim.cmd('iabbrev :tup: 👍')
@@ -800,3 +775,83 @@ map('n', '<c-i>', '<c-i>zz')
 --   }
 -- }
 -- map('n', '<leader>gg', ':Neogit<cr>')
+--
+--
+
+-- 'L3MON4D3/LuaSnip'
+local has_words_before = function()
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
+
+local ls = require("luasnip")
+local cmp = require("cmp")
+local lspkind = require('lspkind')
+
+cmp.setup({
+  snippet = {
+    expand = function(args)
+      ls.lsp_expand(args.body)
+    end,
+  },
+  mapping = {
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<CR>'] = cmp.mapping.confirm({ select = false }),
+    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+
+    ["<Tab>"] = cmp.mapping(function(fallback)
+      if ls.expand_or_jumpable() then
+        ls.expand_or_jump()
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+
+    ["<S-Tab>"] = cmp.mapping(function(fallback)
+      if ls.jumpable(-1) then
+        ls.jump(-1)
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+  },
+  sources = {
+    { name = 'npm' },
+    { name = 'luasnip' },
+    { name = 'nvim_lsp' },
+    { name = 'buffer', keyword_length = 5 },
+  },
+  formatting = {
+    format = lspkind.cmp_format({with_text = false, maxwidth = 50})
+  }
+})
+
+local t = function(str)
+    return vim.api.nvim_replace_termcodes(str, true, true, true)
+end
+
+_G.expand = function ()
+  -- print("hurray!!")
+  if ls.expand_or_jumpable() then
+    return t("<Plug>luasnip-expand-or-jump")
+  end
+  return ''
+end
+
+_G.expand_back = function ()
+  -- print("hurray!!")
+  if ls.jumpable(-1) then
+    return t("<Plug>luasnip-jump-prev")
+  end
+  return ''
+end
+
+vim.api.nvim_set_keymap('i', '<c-j>', 'v:lua.expand()', { expr = true })
+vim.api.nvim_set_keymap('i', '<c-k>', 'v:lua.expand_back()', { expr = true })
+vim.api.nvim_set_keymap('s', '<c-j>', 'v:lua.expand()', { expr = true })
+vim.api.nvim_set_keymap('s', '<c-k>', 'v:lua.expand_back()', { expr = true })
+
+map('n', '<leader>ls', '<cmd>source ~/.config/nvim/after/plugin/luasnip.lua<CR>')
+
+map('n', '<leader>qq', ':%bd | e#<CR>')
