@@ -22,7 +22,7 @@ require('packer').startup(function(use)
 
 	use 'theHamsta/nvim-dap-virtual-text'
 	-- use 'Mofiqul/vscode.nvim'
-  use 'nvim-lualine/lualine.nvim'
+  -- use 'nvim-lualine/lualine.nvim'
 	use 'kyazdani42/nvim-web-devicons'
 	use 'ryanoasis/vim-devicons'
 	-- use 'TimUntersberger/neogit'
@@ -73,6 +73,7 @@ opt.number = true
 opt.ignorecase = true
 opt.smartcase = true
 opt.incsearch = true
+opt.relativenumber = true
 -- set diffopt+=vertical " starts diff mode in vertical split
 opt.cmdheight = 1
 -- set shortmess+=c " don't need to press enter so often
@@ -133,28 +134,28 @@ require('gitsigns').setup({
 })
 
 -- hoob3rt/lualine.nvim
-require('lualine').setup({
-  options = {
-    -- theme = "vscode",
-    -- theme = "nord",
-    theme = "material-nvim",
-    component_separators = {'', ''},
-    section_separators = {'', ''},
-  },
-  sections = {
-    lualine_a = {{'filename', path = 2}},
-    lualine_b = {'branch', {
-      'diff',
-      -- color_added = 'green',
-      -- color_modified = 'yellow',
-      -- color_removed = 'red'
-    }},
-    lualine_c = {},
-    lualine_x = {},
-    lualine_y = {},
-    lualine_z = {}
-  },
-})
+-- require('lualine').setup({
+--   options = {
+--     -- theme = "vscode",
+--     -- theme = "nord",
+--     theme = "material-nvim",
+--     component_separators = {'', ''},
+--     section_separators = {'', ''},
+--   },
+--   sections = {
+--     lualine_a = {{'filename', path = 2}},
+--     lualine_b = {'branch', {
+--       'diff',
+--       -- color_added = 'green',
+--       -- color_modified = 'yellow',
+--       -- color_removed = 'red'
+--     }},
+--     lualine_c = {},
+--     lualine_x = {},
+--     lualine_y = {},
+--     lualine_z = {}
+--   },
+-- })
 
 -- kassio/neoterm
 -- g.neoterm_default_mod = 'vertical'
@@ -442,7 +443,7 @@ dap.adapters.node2 = {
 }
 
 -- require('dap').set_log_level('INFO')
-dap.defaults.fallback.terminal_win_cmd = '80vsplit new'
+dap.defaults.fallback.terminal_win_cmd = '20split new'
 vim.fn.sign_define('DapBreakpoint', {text='🟥', texthl='', linehl='', numhl=''})
 vim.fn.sign_define('DapBreakpointRejected', {text='🟦', texthl='', linehl='', numhl=''})
 vim.fn.sign_define('DapStopped', {text='⭐️', texthl='', linehl='', numhl=''})
@@ -720,6 +721,16 @@ vim.cmd('iabbrev darkgreen #006400')
 
 _G.term_buf_of_tab = _G.term_buf_of_tab or {}
 _G.term_buf_max_nmb = _G.term_buf_max_nmb or 0
+
+function spawn_terminal()
+  vim.cmd('vs | terminal')
+  local cur_buf = vim.api.nvim_get_current_buf()
+  _G.term_buf_max_nmb = _G.term_buf_max_nmb + 1
+  vim.api.nvim_buf_set_name(cur_buf, "Terminal " .. _G.term_buf_max_nmb)
+  table.insert(term_buf_of_tab, cur_tab, cur_buf)
+  vim.cmd(':startinsert')
+end
+
 _G.toggle_terminal = function()
   local cur_tab = vim.api.nvim_get_current_tabpage()
   local term_buf = term_buf_of_tab[cur_tab]
@@ -732,11 +743,12 @@ _G.toggle_terminal = function()
      vim.cmd(':startinsert')
    end
   else
-    vim.cmd('vs | terminal')
-    local cur_buf = vim.api.nvim_get_current_buf()
-    _G.term_buf_max_nmb = _G.term_buf_max_nmb + 1
-    vim.api.nvim_buf_set_name(cur_buf, "Terminal " .. _G.term_buf_max_nmb)
-    table.insert(term_buf_of_tab, cur_tab, cur_buf)
+    spawn_terminal()
+    -- vim.cmd('vs | terminal')
+    -- local cur_buf = vim.api.nvim_get_current_buf()
+    -- _G.term_buf_max_nmb = _G.term_buf_max_nmb + 1
+    -- vim.api.nvim_buf_set_name(cur_buf, "Terminal " .. _G.term_buf_max_nmb)
+    -- table.insert(term_buf_of_tab, cur_tab, cur_buf)
     vim.cmd(':startinsert')
   end
 end
@@ -748,10 +760,22 @@ if has('nvim')
    au! TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
 endif]])
 
-local someNs = vim.api.nvim_create_namespace('bla')
-_G.exampleVirtualLine = function() 
-  vim.api.nvim_buf_set_extmark(0, someNs, 2, 0, { virt_lines = { { { "This is an example virtual line", "CursorLine" } } } })
+_G.send_line_to_terminal = function()
+  local curr_line = vim.api.nvim_get_current_line()
+  local cur_tab = vim.api.nvim_get_current_tabpage()
+  local term_buf = term_buf_of_tab[cur_tab]
+  if term_buf == nil then
+    spawn_terminal()
+  end
+  for _, chan in pairs(vim.api.nvim_list_chans()) do
+    if chan.buffer == term_buf then
+      chan_id = chan.id
+    end
+  end
+  vim.api.nvim_chan_send(chan_id, curr_line .. '\n')
 end
+
+map('n', '<leader>x', ':lua send_line_to_terminal()<CR>')
 
 require "nvim-treesitter.configs".setup {
   playground = {
@@ -854,4 +878,4 @@ vim.api.nvim_set_keymap('s', '<c-k>', 'v:lua.expand_back()', { expr = true })
 
 map('n', '<leader>ls', '<cmd>source ~/.config/nvim/after/plugin/luasnip.lua<CR>')
 
-map('n', '<leader>qq', ':%bd | e#<CR>')
+map('n', '<leader>qq', ':%bd! | e#<CR>')
