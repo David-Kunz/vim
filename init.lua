@@ -37,7 +37,7 @@ require('packer').startup(function(use)
   -- use 'kdheepak/lazygit.nvim'
   use 'tpope/vim-fugitive'
   -- use 'p00f/nvim-ts-rainbow'
-  use 'sindrets/diffview.nvim'
+  -- use 'sindrets/diffview.nvim'
   -- use 'hrsh7th/vim-vsnip'
   -- use 'hrsh7th/vim-vsnip-integ'
 
@@ -57,6 +57,10 @@ require('packer').startup(function(use)
 	use 'mfussenegger/nvim-dap'
   use 'L3MON4D3/LuaSnip'
   use 'saadparwaiz1/cmp_luasnip'
+  -- use 'morhetz/gruvbox'
+  -- use 'folke/tokyonight.nvim'
+  -- use 'EdenEast/nightfox.nvim'
+  -- use { 'lalitmee/cobalt2.nvim', requires = 'tjdevries/colorbuddy.nvim' }
   end
 )
 
@@ -104,7 +108,14 @@ end
 map('n', '<leader>v', ':e $MYVIMRC<CR>')
 
 
+
 -- lewis6991/gitsigns.nvim
+
+_G.diffThisBranch = function()
+ local branch = vim.fn.input("Branch: ", "")
+ require"gitsigns".diffthis(branch)
+end
+
 require('gitsigns').setup({
   current_line_blame = true,
   on_attach = function(bufnr)
@@ -125,6 +136,8 @@ require('gitsigns').setup({
     map('n', '<leader>tb', '<cmd>Gitsigns toggle_current_line_blame<CR>')
     map('n', '<leader>hd', '<cmd>Gitsigns diffthis<CR>')
     map('n', '<leader>hD', '<cmd>lua require"gitsigns".diffthis("~")<CR>')
+    map('n', '<leader>hm', '<cmd>lua require"gitsigns".diffthis("main")<CR>')
+    map('n', '<leader>hM', '<cmd>lua diffThisBranch()<CR>')
     map('n', '<leader>td', '<cmd>Gitsigns toggle_deleted<CR>')
 
     -- Text object
@@ -379,9 +392,21 @@ map('n', '<leader><esc><esc>', ':tabclose<CR>')
 -- g.nord_borders = true
 -- cmd('colorscheme nord')
 -- require('colorbuddy').colorscheme('onebuddy')
+
+-- require('material').setup{
+-- 	custom_highlights = {
+-- 		DiffText = { bg = '#000000' }
+-- 	}
+-- }
 vim.g.material_style = "darker"
 vim.cmd 'colorscheme material'
+
+
+
 -- vim.cmd ('colorscheme gruvbox')
+-- vim.cmd ('colorscheme tokyonight')
+-- require('colorbuddy').colorscheme('cobalt2')
+
 
 cmd('set foldmethod=expr')
 cmd('set foldexpr=nvim_treesitter#foldexpr()')
@@ -457,10 +482,10 @@ vim.fn.sign_define('DapStopped', {text='⭐️', texthl='', linehl='', numhl=''}
 
 map('n', '<leader>dh', ':lua require"dap".toggle_breakpoint()<CR>')
 map('n', '<leader>dH', ":lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>")
-map('n', '<c-k>', ':lua require"dap".step_out()<CR>')
-map('n', "<c-l>", ':lua require"dap".step_into()<CR>')
-map('n', '<c-j>', ':lua require"dap".step_over()<CR>')
-map('n', '<c-h>', ':lua require"dap".continue()<CR>')
+map('n', '<A-k>', ':lua require"dap".step_out()<CR>')
+map('n', "<A-l>", ':lua require"dap".step_into()<CR>')
+map('n', '<A-j>', ':lua require"dap".step_over()<CR>')
+map('n', '<A-h>', ':lua require"dap".continue()<CR>')
 map('n', '<leader>dn', ':lua require"dap".run_to_cursor()<CR>')
 map('n', '<leader>dk', ':lua require"dap".up()<CR>zz')
 map('n', '<leader>dj', ':lua require"dap".down()<CR>zz')
@@ -507,10 +532,10 @@ require('nvim-dap-virtual-text').setup()
 -- 'tpope/vim-fugitive'
 map('n', '<leader>gg', ':G<cr>')
 map('n', '<leader>gc', ':G commit<cr>')
-map('n', '<leader>gd', ':tabe %<cr>:Gvdiffsplit!<CR>')
-map('n', '<leader>gD', ':DiffviewOpen<cr>')
-map('n', '<leader>gm', ':tabe %<cr>:Gvdiffsplit! main<CR>')
-map('n', '<leader>gM', ':DiffviewOpen main<cr>')
+-- map('n', '<leader>gd', ':tabe %<cr>:Gvdiffsplit!<CR>')
+-- map('n', '<leader>gD', ':DiffviewOpen<cr>')
+-- map('n', '<leader>gm', ':tabe %<cr>:Gvdiffsplit! main<CR>')
+-- map('n', '<leader>gM', ':DiffviewOpen main<cr>')
 map('n', '<leader>gl', ':Git log<cr>')
 map('n', '<leader>gp', ':Git push<cr>')
 
@@ -767,6 +792,7 @@ _G.send_line_to_terminal = function()
   local term_buf = term_buf_of_tab[cur_tab]
   if term_buf == nil then
     spawn_terminal()
+    term_buf = term_buf_of_tab[cur_tab]
   end
   for _, chan in pairs(vim.api.nvim_list_chans()) do
     if chan.buffer == term_buf then
@@ -880,3 +906,9 @@ vim.api.nvim_set_keymap('s', '<c-k>', 'v:lua.expand_back()', { expr = true })
 map('n', '<leader>ls', '<cmd>source ~/.config/nvim/after/plugin/luasnip.lua<CR>')
 
 map('n', '<leader>qq', ':%bd! | e#<CR>')
+
+map('n', '<c-j>', '<C-w>j')
+map('n', '<c-k>', '<C-w>k')
+map('n', '<c-h>', '<C-w>h')
+map('n', '<c-l>', '<C-w>l')
+map('n', '<c-q>', '<C-w>q')
