@@ -35,7 +35,7 @@ require('packer').startup(function(use)
   -- use 'ahmedkhalf/project.nvim'
   -- use 'tamago324/lir.nvim'
   -- use 'kdheepak/lazygit.nvim'
-  use 'tpope/vim-fugitive'
+  -- use 'tpope/vim-fugitive'
   -- use 'p00f/nvim-ts-rainbow'
   -- use 'sindrets/diffview.nvim'
   -- use 'hrsh7th/vim-vsnip'
@@ -61,6 +61,8 @@ require('packer').startup(function(use)
   -- use 'folke/tokyonight.nvim'
   -- use 'EdenEast/nightfox.nvim'
   -- use { 'lalitmee/cobalt2.nvim', requires = 'tjdevries/colorbuddy.nvim' }
+  -- use 'kdheepak/lazygit.nvim'
+  use 'voldikss/vim-floaterm'
   end
 )
 
@@ -285,7 +287,7 @@ map('n', '<leader>ff', ':Telescope live_grep<CR>')
 map('n', '<leader>fn', ':Telescope find_files<CR>')
 map('n', '<leader>fr', ':Telescope resume<CR>')
 map('n', '<leader>fg', ':Telescope git_branches<CR>')
-map('n', '<leader>fb', ':Telescope buffers<CR>')
+map('n', '<leader>fj', ':Telescope buffers<CR>')
 map('n', '<leader>fs', ':Telescope lsp_document_symbols<CR>')
 map('n', '<leader>ff', ':Telescope live_grep<CR>')
 map('n', '<leader>FF', ':Telescope grep_string<CR>')
@@ -401,6 +403,11 @@ map('n', '<leader><esc><esc>', ':tabclose<CR>')
 vim.g.material_style = "darker"
 vim.cmd 'colorscheme material'
 
+
+vim.g.floaterm_width = 0.95
+vim.g.floaterm_height = 0.95
+map('n', '<leader>gi', ':FloatermNew lazygit<CR>')
+map('n', '<leader>gg', ':Telescope git_status<CR>')
 
 
 -- vim.cmd ('colorscheme gruvbox')
@@ -530,14 +537,14 @@ require('nvim-dap-virtual-text').setup()
 -- map('n', '<leader>gp', ':Neogit push<cr>')
 
 -- 'tpope/vim-fugitive'
-map('n', '<leader>gg', ':G<cr>')
-map('n', '<leader>gc', ':G commit<cr>')
 -- map('n', '<leader>gd', ':tabe %<cr>:Gvdiffsplit!<CR>')
 -- map('n', '<leader>gD', ':DiffviewOpen<cr>')
 -- map('n', '<leader>gm', ':tabe %<cr>:Gvdiffsplit! main<CR>')
 -- map('n', '<leader>gM', ':DiffviewOpen main<cr>')
-map('n', '<leader>gl', ':Git log<cr>')
-map('n', '<leader>gp', ':Git push<cr>')
+-- map('n', '<leader>gg', ':G<cr>')
+-- map('n', '<leader>gc', ':G commit<cr>')
+-- map('n', '<leader>gl', ':Git log<cr>')
+-- map('n', '<leader>gp', ':Git push<cr>')
 
 -- David-Kunz/jester
 map('n', '<leader>tt', ':lua require"jester".run({ path_to_jest = "/usr/local/bin/jest" })<cr>')
@@ -905,10 +912,23 @@ vim.api.nvim_set_keymap('s', '<c-k>', 'v:lua.expand_back()', { expr = true })
 
 map('n', '<leader>ls', '<cmd>source ~/.config/nvim/after/plugin/luasnip.lua<CR>')
 
-map('n', '<leader>qq', ':%bd! | e#<CR>')
-
-map('n', '<c-j>', '<C-w>j')
-map('n', '<c-k>', '<C-w>k')
-map('n', '<c-h>', '<C-w>h')
-map('n', '<c-l>', '<C-w>l')
-map('n', '<c-q>', '<C-w>q')
+-- _G.test_dap = function()
+--   local dap = require'dap'
+--   dap.terminate(nil, nil, function()
+--     vim.wait(2000, function()
+--         dap.run({
+--           args = { "--no-cache" },
+--           console = "integratedTerminal",
+--           cwd = "/Users/D065023/issues/nvimdap", -- <<<<<<<<<<<< please adjust!
+--           disableOptimisticBPs = true,
+--           port = 9229,
+--           protocol = "inspector",
+--           request = "launch",
+--           runtimeArgs = { "--inspect-brk", "test.js" },
+--           skipFiles = { "<node_internals>/**/*.js" },
+--           sourceMaps = "inline",
+--           type = "node2"
+--         })
+--     end)
+--   end)
+-- end
