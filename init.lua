@@ -79,7 +79,9 @@ opt.number = true
 opt.ignorecase = true
 opt.smartcase = true
 opt.incsearch = true
-opt.relativenumber = true
+-- opt.relativenumber = true
+vim.cmd('set nonumber')
+vim.cmd('set norelativenumber')
 -- set diffopt+=vertical " starts diff mode in vertical split
 opt.cmdheight = 1
 -- set shortmess+=c " don't need to press enter so often
@@ -547,16 +549,16 @@ require('nvim-dap-virtual-text').setup()
 -- map('n', '<leader>gp', ':Git push<cr>')
 
 -- David-Kunz/jester
-map('n', '<leader>tt', ':lua require"jester".run({ path_to_jest = "/usr/local/bin/jest" })<cr>')
-map('n', '<leader>t_', ':lua require"jester".run_last({ path_to_jest = "/usr/local/bin/jest" })<cr>')
-map('n', '<leader>tf', ':lua require"jester".run_file({ path_to_jest = "/usr/local/bin/jest" })<cr>')
--- map('n', '<leader>dd', ':lua require"jester".debug({ path_to_jest = "/usr/local/bin/jest" })<cr>')
-map('n', '<leader>d_', ':lua require"jester".debug_last({ path_to_jest = "/usr/local/bin/jest" })<cr>')
-map('n', '<leader>df', ':lua require"jester".debug_file({ path_to_jest = "/usr/local/bin/jest" })<cr>')
+--
+require'jester'.setup({ path_to_jest = "/usr/local/bin/jest" })
+map('n', '<leader>tt', ':lua require"jester".run()<cr>')
+map('n', '<leader>t_', ':lua require"jester".run_last()<cr>')
+map('n', '<leader>tf', ':lua require"jester".run_file()<cr>')
+map('n', '<leader>d_', ':lua require"jester".debug_last()<cr>')
+map('n', '<leader>df', ':lua require"jester".debug_file()<cr>')
 map('n', '<leader>dq', ':lua require"jester".terminate()<cr>')
+map('n', '<leader>dd', ':lua require"jester".debug()<cr>')
 
--- map('n', '<leader>dd', ':lua require"jester".debug({ path_to_jest = "/usr/local/bin/jest", dap = { type = "node2" } })<cr>')
-map('n', '<leader>dd', ':lua require"jester".debug({ path_to_jest = "/usr/local/bin/jest" })<cr>')
 -- lua language server
  local system_name
  if vim.fn.has("mac") == 1 then
@@ -912,23 +914,26 @@ vim.api.nvim_set_keymap('s', '<c-k>', 'v:lua.expand_back()', { expr = true })
 
 map('n', '<leader>ls', '<cmd>source ~/.config/nvim/after/plugin/luasnip.lua<CR>')
 
--- _G.test_dap = function()
---   local dap = require'dap'
---   dap.terminate(nil, nil, function()
---     vim.wait(2000, function()
---         dap.run({
---           args = { "--no-cache" },
---           console = "integratedTerminal",
---           cwd = "/Users/D065023/issues/nvimdap", -- <<<<<<<<<<<< please adjust!
---           disableOptimisticBPs = true,
---           port = 9229,
---           protocol = "inspector",
---           request = "launch",
---           runtimeArgs = { "--inspect-brk", "test.js" },
---           skipFiles = { "<node_internals>/**/*.js" },
---           sourceMaps = "inline",
---           type = "node2"
---         })
---     end)
---   end)
--- end
+_G.test_dap = function()
+  local dap = require'dap'
+  -- dap.terminate(nil, nil, function()
+  --   vim.wait(2000, function()
+  --     local session = dap.session()
+  --     return session and session.initialized
+  --   end)
+    dap.run({
+      args = { "--no-cache" },
+      console = "integratedTerminal",
+      cwd = "/Users/d065023/projects/DevOnDuty/VimAsIDE",
+      disableOptimisticBPs = true,
+      port = 9229,
+      protocol = "inspector",
+      request = "launch",
+      runtimeArgs = { "--inspect-brk", "foo.js" },
+      -- skipFiles = { "file:///<node_internals>/**/*.js" },
+      skipFiles = { "promiseInitHookWithDestroyTracking" },
+      sourceMaps = "inline",
+      type = "node2"
+      })
+    -- end)
+end
