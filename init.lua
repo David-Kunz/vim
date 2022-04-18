@@ -7,7 +7,6 @@ g.mapleader = " "
 vim.cmd [[packadd packer.nvim]]
 require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
-	-- use 'kassio/neoterm'
 	use 'tpope/vim-commentary'
   use 'mhartington/formatter.nvim'
 	use 'neovim/nvim-lspconfig'
@@ -15,53 +14,23 @@ require('packer').startup(function(use)
 	use 'nvim-telescope/telescope.nvim'
 	use 'nvim-lua/plenary.nvim'
 	use 'nvim-lua/popup.nvim'
-	-- use 'alaviss/nim.nvim'
 	use 'lewis6991/gitsigns.nvim'
 	use 'nvim-telescope/telescope-dap.nvim'
-  -- use 'nvim-telescope/telescope-file-browser.nvim'
-
 	use 'theHamsta/nvim-dap-virtual-text'
-	-- use 'Mofiqul/vscode.nvim'
-  -- use 'nvim-lualine/lualine.nvim'
 	use 'kyazdani42/nvim-web-devicons'
 	use 'ryanoasis/vim-devicons'
-	-- use 'TimUntersberger/neogit'
 	use 'David-Kunz/jester'
-	-- use 'vhyrro/neorg'
-  -- use 'junegunn/goyo.vim'
-  use 'nvim-treesitter/playground'
   use 'kyazdani42/nvim-tree.lua'
   use 'David-Kunz/treesitter-unit'
-  -- use 'ahmedkhalf/project.nvim'
-  -- use 'tamago324/lir.nvim'
-  -- use 'kdheepak/lazygit.nvim'
-  -- use 'tpope/vim-fugitive'
-  -- use 'p00f/nvim-ts-rainbow'
-  -- use 'sindrets/diffview.nvim'
-  -- use 'hrsh7th/vim-vsnip'
-  -- use 'hrsh7th/vim-vsnip-integ'
-
   use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/cmp-buffer'
   use 'hrsh7th/nvim-cmp'
-  -- use 'hrsh7th/cmp-vsnip'
-  -- use 'shaunsingh/nord.nvim'
   use 'onsails/lspkind-nvim'
   use 'David-Kunz/cmp-npm'
-  -- use 'tjdevries/colorbuddy.vim'
-  -- use 'Th3Whit3Wolf/onebuddy'
-  -- use 'navarasu/onedark.nvim'
   use 'marko-cerovac/material.nvim'
-  -- use 'ggandor/lightspeed.nvim'
-  -- use 'morhetz/gruvbox'
 	use 'mfussenegger/nvim-dap'
   use 'L3MON4D3/LuaSnip'
   use 'saadparwaiz1/cmp_luasnip'
-  -- use 'morhetz/gruvbox'
-  -- use 'folke/tokyonight.nvim'
-  -- use 'EdenEast/nightfox.nvim'
-  -- use { 'lalitmee/cobalt2.nvim', requires = 'tjdevries/colorbuddy.nvim' }
-  -- use 'kdheepak/lazygit.nvim'
   use 'voldikss/vim-floaterm'
   end
 )
@@ -96,104 +65,48 @@ g.markdown_fenced_languages = { 'javascript', 'js=javascript', 'json=javascript'
 
 -- opt.path:append({ "**" })
 vim.cmd([[set path=$PWD/**]])
-
-local function map(mode, lhs, rhs, opts)
-  local options = {noremap = true}
-  if opts then options = vim.tbl_extend('force', options, opts) end
-  vim.api.nvim_set_keymap(mode, lhs, rhs, options)
-end
-
--- local function map(mode, l, r, opts)
---       opts = opts or {}
---       opts.buffer = bufnr
---       vim.api.keymap.set(mode, l, r, opts)
--- end
-
-map('n', '<leader>v', ':e $MYVIMRC<CR>')
+vim.keymap.set('n', '<leader>v', ':e $MYVIMRC<CR>')
 
 
 
 -- lewis6991/gitsigns.nvim
-
-_G.diffThisBranch = function()
+function diffThisBranch()
  local branch = vim.fn.input("Branch: ", "")
  require"gitsigns".diffthis(branch)
 end
 
 require('gitsigns').setup({
-  signs = {
-    add          = {hl = 'GitSignsAdd'   , text = '▌', numhl='GitSignsAddNr'   , linehl='GitSignsAddLn'},
-    change       = {hl = 'GitSignsChange', text = '▌', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
-    delete       = {hl = 'GitSignsDelete', text = '▁', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
-    topdelete    = {hl = 'GitSignsDelete', text = '▔', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
-    changedelete = {hl = 'GitSignsChange', text = '~', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
-  },
   current_line_blame = true,
   on_attach = function(bufnr)
        -- Navigation
-    map('n', ']c', "&diff ? ']c' : '<cmd>Gitsigns next_hunk<CR>'", {expr=true})
-    map('n', '[c', "&diff ? '[c' : '<cmd>Gitsigns prev_hunk<CR>'", {expr=true})
+    vim.keymap.set('n', ']c', "&diff ? ']c' : '<cmd>Gitsigns next_hunk<CR>'", {expr=true})
+    vim.keymap.set('n', '[c', "&diff ? '[c' : '<cmd>Gitsigns prev_hunk<CR>'", {expr=true})
 
     -- Actions
-    map('n', '<leader>hs', ':Gitsigns stage_hunk<CR>')
-    map('v', '<leader>hs', ':Gitsigns stage_hunk<CR>')
-    map('n', '<leader>hr', ':Gitsigns reset_hunk<CR>')
-    map('v', '<leader>hr', ':Gitsigns reset_hunk<CR>')
-    map('n', '<leader>hS', '<cmd>Gitsigns stage_buffer<CR>')
-    map('n', '<leader>hu', '<cmd>Gitsigns undo_stage_hunk<CR>')
-    map('n', '<leader>hR', '<cmd>Gitsigns reset_buffer<CR>')
-    map('n', '<leader>hp', '<cmd>Gitsigns preview_hunk<CR>')
-    map('n', '<leader>hb', '<cmd>lua require"gitsigns".blame_line{full=true}<CR>')
-    map('n', '<leader>tb', '<cmd>Gitsigns toggle_current_line_blame<CR>')
-    map('n', '<leader>hd', '<cmd>Gitsigns diffthis<CR>')
-    map('n', '<leader>hD', '<cmd>lua require"gitsigns".diffthis("~")<CR>')
-    map('n', '<leader>hm', '<cmd>lua require"gitsigns".diffthis("main")<CR>')
-    map('n', '<leader>hM', '<cmd>lua diffThisBranch()<CR>')
-    map('n', '<leader>td', '<cmd>Gitsigns toggle_deleted<CR>')
+    vim.keymap.set('n', '<leader>hs', ':Gitsigns stage_hunk<CR>')
+    vim.keymap.set('v', '<leader>hs', ':Gitsigns stage_hunk<CR>')
+    vim.keymap.set('n', '<leader>hr', ':Gitsigns reset_hunk<CR>')
+    vim.keymap.set('v', '<leader>hr', ':Gitsigns reset_hunk<CR>')
+    vim.keymap.set('n', '<leader>hS', '<cmd>Gitsigns stage_buffer<CR>')
+    vim.keymap.set('n', '<leader>hu', '<cmd>Gitsigns undo_stage_hunk<CR>')
+    vim.keymap.set('n', '<leader>hR', '<cmd>Gitsigns reset_buffer<CR>')
+    vim.keymap.set('n', '<leader>hp', '<cmd>Gitsigns preview_hunk<CR>')
+    vim.keymap.set('n', '<leader>hb', function() require"gitsigns".blame_line{full=true} end)
+    vim.keymap.set('n', '<leader>tb', '<cmd>Gitsigns toggle_current_line_blame<CR>')
+    vim.keymap.set('n', '<leader>hd', '<cmd>Gitsigns diffthis<CR>')
+    vim.keymap.set('n', '<leader>hD', function() require"gitsigns".diffthis("~") end)
+    vim.keymap.set('n', '<leader>hm', function() require"gitsigns".diffthis("main")end)
+    vim.keymap.set('n', '<leader>hM', diffThisBranch)
+    vim.keymap.set('n', '<leader>td', '<cmd>Gitsigns toggle_deleted<CR>')
 
     -- Text object
-    map('o', 'ih', ':<C-U>Gitsigns select_hunk<CR>')
-    map('x', 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+    vim.keymap.set('o', 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+    vim.keymap.set('x', 'ih', ':<C-U>Gitsigns select_hunk<CR>')
   end
 })
 
--- hoob3rt/lualine.nvim
--- require('lualine').setup({
---   options = {
---     -- theme = "vscode",
---     -- theme = "nord",
---     theme = "material-nvim",
---     component_separators = {'', ''},
---     section_separators = {'', ''},
---   },
---   sections = {
---     lualine_a = {{'filename', path = 2}},
---     lualine_b = {'branch', {
---       'diff',
---       -- color_added = 'green',
---       -- color_modified = 'yellow',
---       -- color_removed = 'red'
---     }},
---     lualine_c = {},
---     lualine_x = {},
---     lualine_y = {},
---     lualine_z = {}
---   },
--- })
-
--- kassio/neoterm
--- g.neoterm_default_mod = 'vertical'
--- g.neoterm_autoinsert = true
--- g.neoterm_autoscroll = true
--- g.neoterm_term_per_tab = true
--- map('n', '<c-y>', ':Ttoggle<CR>')
--- map('i', '<c-y>', '<Esc>:Ttoggle<CR>')
--- map('t', '<c-y>', '<c-\\><c-n>:Ttoggle<CR>')
--- map('n', '<leader>x', ':TREPLSendLine<CR>')
--- map('v', '<leader>x', ':TREPLSendSelection<CR>')
-
 -- sbdchd/neoformat
-map('n', '<leader>F', ':Format<CR>')
+vim.keymap.set('n', '<leader>F', ':Format<CR>')
 require('formatter').setup({
   logging = false,
   filetype = {
@@ -240,8 +153,6 @@ local fixfolds = {
 		return true
 	end,
 }
--- local fb_actions = require "telescope".extensions.file_browser.actions
--- mappings in file_browser extension of telescope.setup
 
 local actions = require("telescope.actions")
 
@@ -254,17 +165,7 @@ require('telescope').setup {
 		grep_string = fixfolds,
 		live_grep = fixfolds,
 		oldfiles = fixfolds,
-	},
-   -- extensions = {
-   --  file_browser = {
-   --    mappings = {
-   --      ["n"] = {
-   --        h = fb_actions.goto_parent_dir,
-   --        l = actions.select_default
-   --      }
-   --    }
-   --  }
-  -- }
+	}
 }
 
 -- nvim-telescope/telescope.nvim
@@ -286,34 +187,20 @@ _G.telescope_files_or_git_files = function()
    builtin.find_files()
  end
 end
-map('n', '<leader>fD', ':lua telescope_live_grep_in_path()<CR>')
-map('n', '<leader><space>', ':lua telescope_files_or_git_files()<CR>')
-map('n', '<leader>fd', ':lua telescope_find_files_in_path()<CR>')
-map('n', '<leader>ft', ':lua telescope_find_files_in_path("./tests")<CR>')
-map('n', '<leader>fT', ':lua telescope_live_grep_in_path("./tests")<CR>')
-map('n', '<leader>ff', ':Telescope live_grep<CR>')
--- map('n', '<leader>fo', ':Telescope file_browser<CR>')
-map('n', '<leader>fn', ':Telescope find_files<CR>')
-map('n', '<leader>fr', ':Telescope resume<CR>')
-map('n', '<leader>fg', ':Telescope git_branches<CR>')
-map('n', '<leader>fj', ':Telescope buffers<CR>')
-map('n', '<leader>fs', ':Telescope lsp_document_symbols<CR>')
-map('n', '<leader>ff', ':Telescope live_grep<CR>')
-map('n', '<leader>FF', ':Telescope grep_string<CR>')
-
--- without cmp:
--- local nvim_lsp = require'lspconfig'
--- local on_attach = function(client, bufnr)
---     local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
---     buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
--- end
--- local servers = { 'tsserver' }
--- for _, lsp in ipairs(servers) do
---   nvim_lsp[lsp].setup {
---     on_attach = on_attach
---   }
--- end
-
+vim.keymap.set('n', '<leader>fD', function() telescope_live_grep_in_path() end)
+vim.keymap.set('n', '<leader><space>', function() telescope_files_or_git_files() end)
+vim.keymap.set('n', '<leader>fd', function() telescope_find_files_in_path() end)
+vim.keymap.set('n', '<leader>ft', function() telescope_find_files_in_path("./tests") end)
+vim.keymap.set('n', '<leader>fT', function() telescope_live_grep_in_path("./tests") end)
+vim.keymap.set('n', '<leader>ff', ':Telescope live_grep<CR>')
+-- vim.keymap.set('n', '<leader>fo', ':Telescope file_browser<CR>')
+vim.keymap.set('n', '<leader>fn', ':Telescope find_files<CR>')
+vim.keymap.set('n', '<leader>fr', ':Telescope resume<CR>')
+vim.keymap.set('n', '<leader>fg', ':Telescope git_branches<CR>')
+vim.keymap.set('n', '<leader>fj', ':Telescope buffers<CR>')
+vim.keymap.set('n', '<leader>fs', ':Telescope lsp_document_symbols<CR>')
+vim.keymap.set('n', '<leader>ff', ':Telescope live_grep<CR>')
+vim.keymap.set('n', '<leader>FF', ':Telescope grep_string<CR>')
 
 -- David-Kunz/cmp-npm
 require('cmp-npm').setup({ ignore = {"beta", "rc"} })
@@ -327,47 +214,14 @@ for _, lsp in ipairs(servers) do
   }
 end
 
--- hrsh7th/vim-vsnip
--- vim.cmd([[
--- imap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
--- smap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
--- " Expand or jump
--- imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
--- smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
--- " Jump forward or backward
--- imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
--- smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
--- imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
--- smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
--- ]])
-
--- nvim_lsp.tsserver.setup{ on_attach = on_attach }
--- nvim_lsp.rust_analyzer.setup({
---     settings = {
---         ["rust-analyzer"] = {
---             assist = {
---                 importGranularity = "module",
---                 importPrefix = "by_self",
---             },
---             cargo = {
---                 loadOutDirsFromCheck = true
---             },
---             procMacro = {
---                 enable = true
---             },
---         }
---     }
--- })
---require'lspconfig'.nimls.setup{}
-
-map('n', 'gd', ':lua vim.lsp.buf.definition()<CR>')
-map('n', 'gh', ':lua vim.lsp.buf.hover()<CR>')
-map('n', 'ga', ':Telescope lsp_code_actions<CR>')
-map('n', 'gA', ':Telescope lsp_range_code_actions<CR>')
-map('n', 'gD', ':lua vim.lsp.buf.implementation()<CR>')
-map('n', '<c-k>', ':lua vim.lsp.buf.signature_help()<CR>')
-map('n', 'gr', ':lua vim.lsp.buf.references()<CR>')
-map('n', 'gR', ':lua vim.lsp.buf.rename()<CR>')
+vim.keymap.set('n', 'gd', function() vim.lsp.buf.definition() end)
+vim.keymap.set('n', 'gh', function() vim.lsp.buf.hover() end)
+vim.keymap.set('n', 'gD', function() vim.lsp.buf.implementation() end)
+vim.keymap.set('n', '<c-k>', function() vim.lsp.buf.signature_help() end)
+vim.keymap.set('n', 'gr', function() vim.lsp.buf.references() end)
+vim.keymap.set('n', 'gR', function() vim.lsp.buf.rename() end)
+vim.keymap.set('n', 'ga', ':Telescope lsp_code_actions<CR>')
+vim.keymap.set('n', 'gA', ':Telescope lsp_range_code_actions<CR>')
  
 -- CDS
 -- cmd([[
@@ -394,66 +248,22 @@ map('n', 'gR', ':lua vim.lsp.buf.rename()<CR>')
 --   }
 -- end
 
-map('n', '<leader><esc><esc>', ':tabclose<CR>')
+vim.keymap.set('n', '<leader><esc><esc>', ':tabclose<CR>')
 
--- nvim/treesitter
--- g.vscode_style = "dark"
--- cmd('colorscheme vscode')
--- g.nord_contrast = true
--- g.nord_borders = true
--- cmd('colorscheme nord')
--- require('colorbuddy').colorscheme('onebuddy')
-
--- require('material').setup{
--- 	custom_highlights = {
--- 		DiffText = { bg = '#000000' }
--- 	}
--- }
 vim.g.material_style = "darker"
 vim.cmd 'colorscheme material'
 
 
 vim.g.floaterm_width = 0.95
 vim.g.floaterm_height = 0.95
-map('n', '<leader>gi', ':FloatermNew lazygit<CR>')
-map('n', '<leader>gg', ':Telescope git_status<CR>')
-
-
--- vim.cmd ('colorscheme gruvbox')
--- vim.cmd ('colorscheme tokyonight')
--- require('colorbuddy').colorscheme('cobalt2')
+vim.keymap.set('n', '<leader>gi', ':FloatermNew lazygit<CR>')
+vim.keymap.set('n', '<leader>gg', ':Telescope git_status<CR>')
 
 
 cmd('set foldmethod=expr')
 cmd('set foldexpr=nvim_treesitter#foldexpr()')
 
-map('n', '<leader>n', ':tabe ~/tmp/notes.md<CR>')
-
--- -- vhyrro/neorg
--- map('n', '<leader>nn', ':e ~/neorg/index.norg<CR>')
--- require('neorg').setup {
---           -- Tell Neorg what modules to load
---           load = {
---               ["core.defaults"] = {}, -- Load all the default modules
---               ["core.norg.concealer"] = {}, -- Allows for use of icons
---               ["core.norg.dirman"] = { -- Manage your directories with Neorg
---                   config = {
---                       workspaces = {
---                           my_workspace = "~/neorg"
---                       }
---                   }
---               }
---           },
---       }
--- local parser_configs = require('nvim-treesitter.parsers').get_parser_configs()
-
--- parser_configs.norg = {
---     install_info = {
---         url = "https://github.com/vhyrro/tree-sitter-norg",
---         files = { "src/parser.c" },
---         branch = "main"
---     },
--- }
+vim.keymap.set('n', '<leader>n', ':tabe ~/tmp/notes.md<CR>')
 
 local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
 parser_config.cds = {
@@ -489,82 +299,41 @@ vim.fn.sign_define('DapBreakpoint', {text='🟥', texthl='', linehl='', numhl=''
 vim.fn.sign_define('DapBreakpointRejected', {text='🟦', texthl='', linehl='', numhl=''})
 vim.fn.sign_define('DapStopped', {text='⭐️', texthl='', linehl='', numhl=''})
 
--- _G.shutDownDapSession = function()
---   local dap = require'dap'
---   dap.terminate()
---   dap.disconnect( { terminateDebuggee = true })
---   dap.close()
--- end
-
-map('n', '<leader>dh', ':lua require"dap".toggle_breakpoint()<CR>')
-map('n', '<leader>dH', ":lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>")
-map('n', '<A-k>', ':lua require"dap".step_out()<CR>')
-map('n', "<A-l>", ':lua require"dap".step_into()<CR>')
-map('n', '<A-j>', ':lua require"dap".step_over()<CR>')
-map('n', '<A-h>', ':lua require"dap".continue()<CR>')
-map('n', '<leader>dn', ':lua require"dap".run_to_cursor()<CR>')
-map('n', '<leader>dk', ':lua require"dap".up()<CR>zz')
-map('n', '<leader>dj', ':lua require"dap".down()<CR>zz')
-map('n', '<leader>dc', ':lua require"dap".terminate()<CR>')
-map('n', '<leader>dr', ':lua require"dap".repl.toggle({}, "vsplit")<CR><C-w>l')
-map('n', '<leader>dR', ':lua require"dap".clear_breakpoints()<CR>')
-map('n', '<leader>de', ':lua require"dap".set_exception_breakpoints({"all"})<CR>')
-map('n', '<leader>da', ':lua require"debugHelper".attach()<CR>')
-map('n', '<leader>dA', ':lua require"debugHelper".attachToRemote()<CR>')
-map('n', '<leader>di', ':lua require"dap.ui.widgets".hover()<CR>')
-map('n', '<leader>d?', ':lua local widgets=require"dap.ui.widgets";widgets.centered_float(widgets.scopes)<CR>')
+vim.keymap.set('n', '<leader>dh', function() require"dap".toggle_breakpoint() end)
+vim.keymap.set('n', '<leader>dH', ":lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>")
+vim.keymap.set('n', '<A-k>', function() require"dap".step_out() end)
+vim.keymap.set('n', "<A-l>", function() require"dap".step_into() end)
+vim.keymap.set('n', '<A-j>', function() require"dap".step_over() end)
+vim.keymap.set('n', '<A-h>', function() require"dap".continue() end)
+vim.keymap.set('n', '<leader>dn', function() require"dap".run_to_cursor() end)
+vim.keymap.set('n', '<leader>dc', function() require"dap".terminate() end)
+vim.keymap.set('n', '<leader>dR', function() require"dap".clear_breakpoints() end)
+vim.keymap.set('n', '<leader>de', function() require"dap".set_exception_breakpoints({"all"}) end)
+vim.keymap.set('n', '<leader>da', function() require"debugHelper".attach() end)
+vim.keymap.set('n', '<leader>dA', function() require"debugHelper".attachToRemote() end)
+vim.keymap.set('n', '<leader>di', function() require"dap.ui.widgets".hover() end)
+vim.keymap.set('n', '<leader>d?', function() local widgets=require"dap.ui.widgets";widgets.centered_float(widgets.scopes) end)
+vim.keymap.set('n', '<leader>dk', ':lua require"dap".up()<CR>zz')
+vim.keymap.set('n', '<leader>dj', ':lua require"dap".down()<CR>zz')
+vim.keymap.set('n', '<leader>dr', ':lua require"dap".repl.toggle({}, "vsplit")<CR><C-w>l')
 
 -- nvim-telescope/telescope-dap.nvim
 require('telescope').load_extension('dap')
-map('n', '<leader>ds', ':Telescope dap frames<CR>')
--- map('n', '<leader>dc', ':Telescope dap commands<CR>')
-map('n', '<leader>db', ':Telescope dap list_breakpoints<CR>')
+vim.keymap.set('n', '<leader>ds', ':Telescope dap frames<CR>')
+-- vim.keymap.set('n', '<leader>dc', ':Telescope dap commands<CR>')
+vim.keymap.set('n', '<leader>db', ':Telescope dap list_breakpoints<CR>')
 
--- nvim-telescope/telescope-file-browser.nvim
--- require('telescope').load_extension('file_browser')
--- theHamsta/nvim-dap-virtual-text and mfussenegger/nvim-dap
 require('nvim-dap-virtual-text').setup()
--- g.dap_virtual_text = true
-
--- -- -- TimUntersberger/neogit and sindrets/diffview.nvim
--- require'diffview'.setup {
---   file_panel = {
---     position = "left",            -- One of 'left', 'right', 'top', 'bottom'
---     width = 60,                   -- Only applies when position is 'left' or 'right'
---   }
--- }
--- require("neogit").setup {
---   disable_commit_confirmation = true,
---   integrations = {
---     diffview = true
---     }
---   }
--- map('n', '<leader>gg', ':Neogit<cr>')
--- map('n', '<leader>gd', ':DiffviewOpen<cr>')
--- map('n', '<leader>gD', ':DiffviewOpen main<cr>')
--- map('n', '<leader>gl', ':Neogit log<cr>')
--- map('n', '<leader>gp', ':Neogit push<cr>')
-
--- 'tpope/vim-fugitive'
--- map('n', '<leader>gd', ':tabe %<cr>:Gvdiffsplit!<CR>')
--- map('n', '<leader>gD', ':DiffviewOpen<cr>')
--- map('n', '<leader>gm', ':tabe %<cr>:Gvdiffsplit! main<CR>')
--- map('n', '<leader>gM', ':DiffviewOpen main<cr>')
--- map('n', '<leader>gg', ':G<cr>')
--- map('n', '<leader>gc', ':G commit<cr>')
--- map('n', '<leader>gl', ':Git log<cr>')
--- map('n', '<leader>gp', ':Git push<cr>')
 
 -- David-Kunz/jester
---
 require'jester'.setup({ path_to_jest = "/usr/local/bin/jest" })
-map('n', '<leader>tt', ':lua require"jester".run()<cr>')
-map('n', '<leader>t_', ':lua require"jester".run_last()<cr>')
-map('n', '<leader>tf', ':lua require"jester".run_file()<cr>')
-map('n', '<leader>d_', ':lua require"jester".debug_last()<cr>')
-map('n', '<leader>df', ':lua require"jester".debug_file()<cr>')
-map('n', '<leader>dq', ':lua require"jester".terminate()<cr>')
-map('n', '<leader>dd', ':lua require"jester".debug()<cr>')
+vim.keymap.set('n', '<leader>tt', function() require"jester".run() end)
+vim.keymap.set('n', '<leader>t_', function() require"jester".run_last() end)
+vim.keymap.set('n', '<leader>tf', function() require"jester".run_file() end)
+vim.keymap.set('n', '<leader>d_', function() require"jester".debug_last() end)
+vim.keymap.set('n', '<leader>df', function() require"jester".debug_file() end)
+vim.keymap.set('n', '<leader>dq', function() require"jester".terminate() end)
+vim.keymap.set('n', '<leader>dd', function() require"jester".debug() end)
 
 -- lua language server
  local system_name
@@ -613,88 +382,13 @@ map('n', '<leader>dd', ':lua require"jester".debug()<cr>')
    },
  }
 
--- folke/zen-mode.nvim
--- require("zen-mode").setup {
---   window = { width = .40 }
--- }
--- map('n', '<leader>z', ':ZenMode<CR>')
-
--- junegunn/goyo.vim
-g.goyo_width = 120
--- map('n', '<leader>z', ':Goyo<CR>')
-
-
-map('n', '[b', ':bnext<CR>')
-map('n', ']b', ':bprev<CR>')
-
--- ahmedkhalf/project.nvim
--- require("project_nvim").setup()
--- require('telescope').load_extension('projects')
-
--- map('n', '<leader>fp', ':Telescope projects<CR>')
-
--- map('n', '<c-p>', ':NvimTreeToggle<CR>')
--- g.nvim_tree_follow = 1
--- g.nvim_tree_auto_resize = 1
+vim.keymap.set('n', '[b', ':bnext<CR>')
+vim.keymap.set('n', ']b', ':bprev<CR>')
 
 -- David-Kunz/treesitter-unit
-map('x', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
-map('o', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
+vim.keymap.set('x', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
+vim.keymap.set('o', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
 -- require"treesitter-unit".enable_highlighting()
-
--- tamago324/lir.nvim
--- local actions = require'lir.actions'
--- local mark_actions = require 'lir.mark.actions'
--- local clipboard_actions = require'lir.clipboard.actions'
-
--- require'lir'.setup {
---   show_hidden_files = false,
---   devicons_enable = true,
---   mappings = {
---     ['l']     = actions.edit,
---     ['<C-s>'] = actions.split,
---     ['<C-v>'] = actions.vsplit,
---     ['<C-t>'] = actions.tabedit,
-
---     ['h']     = actions.up,
---     ['q']     = actions.quit,
-
---     ['K']     = actions.mkdir,
---     ['N']     = actions.newfile,
---     ['R']     = actions.rename,
---     ['@']     = actions.cd,
---     ['Y']     = actions.yank_path,
---     ['.']     = actions.toggle_show_hidden,
---     ['D']     = actions.delete,
-
---     ['J'] = function()
---       mark_actions.toggle_mark()
---       vim.cmd('normal! j')
---     end,
---     ['C'] = clipboard_actions.copy,
---     ['X'] = clipboard_actions.cut,
---     ['P'] = clipboard_actions.paste,
---   },
---   float = {
---     winblend = 0,
-
---     -- -- You can define a function that returns a table to be passed as the third
---     -- -- argument of nvim_open_win().
---     -- win_opts = function()
---     --   local width = math.floor(vim.o.columns * 0.8)
---     --   local height = math.floor(vim.o.lines * 0.8)
---     --   return {
---     --     border = require("lir.float.helper").make_border_opts({
---     --       "+", "─", "+", "│", "+", "─", "+", "│",
---     --     }, "Normal"),
---     --     width = width,
---     --     height = height,
---     --     row = 1,
---     --     col = math.floor((vim.o.columns - width) / 2),
---     --   }
---     -- end,
---   },
--- }
 
 -- custom folder icon
 require'nvim-web-devicons'.setup({
@@ -732,10 +426,10 @@ require('nvim-tree').setup({
     width = 60
   }
 })
-map('n', '\\', ':NvimTreeToggle<CR>', {silent=true})
+vim.keymap.set('n', '\\', ':NvimTreeToggle<CR>', {silent=true})
 
-map('n', 'gq', ':bd!<CR>')
-map('n', '<leader>w', ':w<CR>')
+vim.keymap.set('n', 'gq', ':bd!<CR>')
+vim.keymap.set('n', '<leader>w', ':w<CR>')
 
 vim.cmd('iabbrev :tup: 👍')
 vim.cmd('iabbrev :tdo: 👎')
@@ -743,22 +437,6 @@ vim.cmd('iabbrev :smi: 😊')
 vim.cmd('iabbrev :sad: 😔')
 vim.cmd('iabbrev darkred #8b0000')
 vim.cmd('iabbrev darkgreen #006400')
-
--- p00f/nvim-ts-rainbow
--- require'nvim-treesitter.configs'.setup {
---   rainbow = {
---     enable = true,
---     extended_mode = true,
---     max_file_lines = nil
---   }
--- }
-
--- map('n', '<s-k>', ':lua require"tree-mover".up()<CR>')
--- map('n', '<s-j>', ':lua require"tree-mover".down()<CR>')
--- map('n', '<s-l>', ':lua require"tree-mover".right()<CR>')
--- map('n', '<s-h>', ':lua require"tree-mover".left()<CR>')
--- map('n', '<s-y>', ':lua require"tree-mover".current()<CR>')
-
 
 _G.term_buf_of_tab = _G.term_buf_of_tab or {}
 _G.term_buf_max_nmb = _G.term_buf_max_nmb or 0
@@ -773,7 +451,7 @@ function spawn_terminal()
   vim.cmd(':startinsert')
 end
 
-_G.toggle_terminal = function()
+function toggle_terminal()
   local cur_tab = vim.api.nvim_get_current_tabpage()
   local term_buf = term_buf_of_tab[cur_tab]
   if term_buf ~= nil then
@@ -786,17 +464,12 @@ _G.toggle_terminal = function()
    end
   else
     spawn_terminal()
-    -- vim.cmd('vs | terminal')
-    -- local cur_buf = vim.api.nvim_get_current_buf()
-    -- _G.term_buf_max_nmb = _G.term_buf_max_nmb + 1
-    -- vim.api.nvim_buf_set_name(cur_buf, "Terminal " .. _G.term_buf_max_nmb)
-    -- table.insert(term_buf_of_tab, cur_tab, cur_buf)
     vim.cmd(':startinsert')
   end
 end
-map('n', '<c-y>', ':lua toggle_terminal()<CR>')
-map('i', '<c-y>', '<ESC>:lua toggle_terminal()<CR>')
-map('t', '<c-y>', '<c-\\><c-n>:lua toggle_terminal()<CR>')
+vim.keymap.set('n', '<c-y>', toggle_terminal)
+vim.keymap.set('i', '<c-y>', '<ESC>:lua toggle_terminal()<CR>')
+vim.keymap.set('t', '<c-y>', '<c-\\><c-n>:lua toggle_terminal()<CR>')
 cmd([[
 if has('nvim')
    au! TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
@@ -818,7 +491,7 @@ _G.send_line_to_terminal = function()
   vim.api.nvim_chan_send(chan_id, curr_line .. '\n')
 end
 
-map('n', '<leader>x', ':lua send_line_to_terminal()<CR>')
+vim.keymap.set('n', '<leader>x', ':lua send_line_to_terminal()<CR>')
 
 require "nvim-treesitter.configs".setup {
   playground = {
@@ -826,24 +499,8 @@ require "nvim-treesitter.configs".setup {
   }
 }
 
-map('n', '<c-o>', '<c-o>zz')
-map('n', '<c-i>', '<c-i>zz')
-
-
--- -- TimUntersberger/neogit
--- local neogit = require('neogit')
--- neogit.setup {
---   disable_commit_confirmation = true,
---   disable_signs = true,
---   auto_refresh = false,
---   disable_builtin_notifications = true,
---   integrations = {
---     diffview = true
---   }
--- }
--- map('n', '<leader>gg', ':Neogit<cr>')
---
---
+vim.keymap.set('n', '<c-o>', '<c-o>zz')
+vim.keymap.set('n', '<c-i>', '<c-i>zz')
 
 -- 'L3MON4D3/LuaSnip'
 local has_words_before = function()
@@ -919,7 +576,7 @@ vim.api.nvim_set_keymap('i', '<c-k>', 'v:lua.expand_back()', { expr = true })
 vim.api.nvim_set_keymap('s', '<c-j>', 'v:lua.expand()', { expr = true })
 vim.api.nvim_set_keymap('s', '<c-k>', 'v:lua.expand_back()', { expr = true })
 
-map('n', '<leader>ls', '<cmd>source ~/.config/nvim/after/plugin/luasnip.lua<CR>')
+vim.keymap.set('n', '<leader>ls', '<cmd>source ~/.config/nvim/after/plugin/luasnip.lua<CR>')
 
 _G.test_dap = function()
   local dap = require'dap'
