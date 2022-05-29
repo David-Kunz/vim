@@ -31,8 +31,8 @@ require('packer').startup(function(use)
   use 'L3MON4D3/LuaSnip'
   use 'saadparwaiz1/cmp_luasnip'
   use 'voldikss/vim-floaterm'
-  use 'ldelossa/litee.nvim'
-  use 'ldelossa/gh.nvim'
+  -- use 'ldelossa/litee.nvim'
+  -- use 'ldelossa/gh.nvim'
   use 'nvim-telescope/telescope-ui-select.nvim'
   end
 )
@@ -608,10 +608,10 @@ end
 
 
 -- ldelossa/gh.nvim
-require('litee.lib').setup()
-require('litee.gh').setup({
-  prefer_https_remote = true
-})
+-- require('litee.lib').setup()
+-- require('litee.gh').setup({
+--   prefer_https_remote = true
+-- })
 
 
 -- nvim-telescope/telescope-ui-select.nvim
