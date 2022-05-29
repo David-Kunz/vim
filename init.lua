@@ -25,7 +25,6 @@ require('packer').startup(function(use)
   use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/cmp-buffer'
   use 'hrsh7th/nvim-cmp'
-  use 'onsails/lspkind-nvim'
   use 'David-Kunz/cmp-npm'
   use 'marko-cerovac/material.nvim'
 	use 'mfussenegger/nvim-dap'
@@ -43,6 +42,7 @@ require('packer').startup(function(use)
   
 -- default options
 opt.completeopt = {'menu', 'menuone', 'noselect'}
+opt.laststatus = 3
 opt.mouse = 'a'
 opt.splitright = true
 opt.splitbelow = true
@@ -225,7 +225,7 @@ vim.keymap.set('n', 'gD', function() vim.lsp.buf.implementation() end)
 vim.keymap.set('n', '<c-k>', function() vim.lsp.buf.signature_help() end)
 vim.keymap.set('n', 'gr', function() vim.lsp.buf.references() end)
 vim.keymap.set('n', 'gR', function() vim.lsp.buf.rename() end)
-vim.keymap.set('n', 'ga', ':Telescope lsp_code_actions<CR>')
+vim.keymap.set('n', 'ga', function() vim.lsp.buf.code_action() end)
 vim.keymap.set('n', 'gA', ':Telescope lsp_range_code_actions<CR>')
  
 -- CDS
@@ -274,8 +274,7 @@ vim.cmd 'colorscheme tokyonight'
 
 vim.g.floaterm_width = 0.95
 vim.g.floaterm_height = 0.95
-vim.keymap.set('n', '<leader>gi', ':FloatermNew lazygit<CR>')
-vim.keymap.set('n', '<leader>gg', ':Telescope git_status<CR>')
+vim.keymap.set('n', '<leader>g', ':FloatermNew lazygit<CR>')
 
 
 cmd('set foldmethod=expr')
@@ -488,10 +487,10 @@ end
 vim.keymap.set('n', '<c-y>', toggle_terminal)
 vim.keymap.set('i', '<c-y>', '<ESC>:lua toggle_terminal()<CR>')
 vim.keymap.set('t', '<c-y>', '<c-\\><c-n>:lua toggle_terminal()<CR>')
-cmd([[
-if has('nvim')
-   au! TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
-endif]])
+-- cmd([[
+-- if has('nvim')
+--    au! TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
+-- endif]])
 
 _G.send_line_to_terminal = function()
   local curr_line = vim.api.nvim_get_current_line()
@@ -528,7 +527,6 @@ end
 
 local ls = require("luasnip")
 local cmp = require("cmp")
-local lspkind = require('lspkind')
 
 cmp.setup({
   snippet = {
@@ -541,7 +539,8 @@ cmp.setup({
     ['<CR>'] = cmp.mapping.confirm({ select = false }),
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
-
+    ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+    ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
     ["<Tab>"] = cmp.mapping(function(fallback)
       if ls.expand_or_jumpable() then
         ls.expand_or_jump()
@@ -564,9 +563,9 @@ cmp.setup({
     { name = 'nvim_lsp' },
     { name = 'buffer', keyword_length = 5 },
   },
-  formatting = {
-    format = lspkind.cmp_format({with_text = false, maxwidth = 50})
-  }
+  -- formatting = {
+  --   format = lspkind.cmp_format({with_text = false, maxwidth = 50})
+  -- }
 })
 
 local t = function(str)
