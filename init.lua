@@ -32,6 +32,11 @@ require('packer').startup(function(use)
   use 'L3MON4D3/LuaSnip'
   use 'saadparwaiz1/cmp_luasnip'
   use 'voldikss/vim-floaterm'
+  -- use 'ldelossa/litee.nvim'
+  -- use 'ldelossa/gh.nvim'
+  use 'nvim-telescope/telescope-ui-select.nvim'
+  use 'folke/tokyonight.nvim'
+  use 'ggandor/leap.nvim'
   end
 )
 
@@ -250,8 +255,21 @@ vim.keymap.set('n', 'gA', ':Telescope lsp_range_code_actions<CR>')
 
 vim.keymap.set('n', '<leader><esc><esc>', ':tabclose<CR>')
 
-vim.g.material_style = "darker"
-vim.cmd 'colorscheme material'
+-- vim.g.material_style = "darker"
+-- vim.cmd 'colorscheme material'
+vim.opt.fillchars = {
+  horiz     = '█',
+  horizup   = '█',
+  horizdown = '█',
+  vert      = '█',
+  vertleft  = '█',
+  vertright = '█',
+  verthoriz = '█',
+}
+vim.cmd 'colorscheme tokyonight'
+-- vim.cmd 'colorscheme gruvbox'
+-- vim.cmd 'colorscheme github_dark'
+
 
 
 vim.g.floaterm_width = 0.95
@@ -601,3 +619,21 @@ _G.test_dap = function()
       })
     -- end)
 end
+
+
+-- ldelossa/gh.nvim
+-- require('litee.lib').setup()
+-- require('litee.gh').setup({
+--   prefer_https_remote = true
+-- })
+
+
+-- nvim-telescope/telescope-ui-select.nvim
+require("telescope").load_extension("ui-select")
+
+
+-- require("github-theme").setup({
+--   theme_style = "dark",
+-- })
+
+require('leap').set_default_keymaps()
