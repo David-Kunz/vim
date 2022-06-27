@@ -630,7 +630,6 @@ end
 -- nvim-telescope/telescope-ui-select.nvim
 require("telescope").load_extension("ui-select")
 
-
 -- require("github-theme").setup({
 --   theme_style = "dark",
 -- })
