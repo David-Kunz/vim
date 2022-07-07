@@ -36,6 +36,7 @@ require('packer').startup(function(use)
   use 'nvim-telescope/telescope-ui-select.nvim'
   use 'folke/tokyonight.nvim'
   use 'ggandor/leap.nvim'
+  use 'windwp/nvim-autopairs'
   end
 )
 
@@ -635,3 +636,4 @@ require("telescope").load_extension("ui-select")
 -- })
 
 require('leap').set_default_keymaps()
+require("nvim-autopairs").setup {}
