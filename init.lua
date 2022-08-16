@@ -35,8 +35,6 @@ require('packer').startup(function(use)
   -- use 'ldelossa/gh.nvim'
   use 'nvim-telescope/telescope-ui-select.nvim'
   use 'folke/tokyonight.nvim'
-  use 'ggandor/leap.nvim'
-  use 'windwp/nvim-autopairs'
   end
 )
 
@@ -203,7 +201,7 @@ vim.keymap.set('n', '<leader>ff', ':Telescope live_grep<CR>')
 vim.keymap.set('n', '<leader>fn', ':Telescope find_files<CR>')
 vim.keymap.set('n', '<leader>fr', ':Telescope resume<CR>')
 vim.keymap.set('n', '<leader>fg', ':Telescope git_branches<CR>')
-vim.keymap.set('n', '<leader>fj', ':Telescope buffers<CR>')
+vim.keymap.set('n', '<c-\\>', ':Telescope buffers<CR>')
 vim.keymap.set('n', '<leader>fs', ':Telescope lsp_document_symbols<CR>')
 vim.keymap.set('n', '<leader>ff', ':Telescope live_grep<CR>')
 vim.keymap.set('n', '<leader>FF', ':Telescope grep_string<CR>')
@@ -404,9 +402,17 @@ vim.keymap.set('n', '[b', ':bnext<CR>')
 vim.keymap.set('n', ']b', ':bprev<CR>')
 
 -- David-Kunz/treesitter-unit
+vim.keymap.set('x', 'u', ':<c-u>lua require"treesitter-unit".select()<CR>')
+vim.keymap.set('o', 'u', ':<c-u>lua require"treesitter-unit".select()<CR>')
 vim.keymap.set('x', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
 vim.keymap.set('o', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
 -- require"treesitter-unit".enable_highlighting()
+
+-- local tunit = require'treesitter-unit'
+-- vim.keymap.set('x', 'iu', function() require'treesitter-unit'.select() end)
+-- vim.keymap.set('x', 'au', function() require'treesitter-unit'.select(true) end)
+-- vim.keymap.set('o', 'iu', function() require'treesitter-unit'.select() end)
+-- vim.keymap.set('o', 'au', function() require'treesitter-unit'.select(true) end)
 
 -- custom folder icon
 require'nvim-web-devicons'.setup({
@@ -635,5 +641,11 @@ require("telescope").load_extension("ui-select")
 --   theme_style = "dark",
 -- })
 
-require('leap').set_default_keymaps()
-require("nvim-autopairs").setup {}
+vim.keymap.set('i', '<c-o>', '<esc><s-o>')
+vim.keymap.set('n', '<leader>p', ':PackerSync<CR>')
+-- vim.api.nvim_create_autocmd('BufHidden',  {
+--     pattern  = '[dap-terminal]*',
+--     callback = function(arg)
+--       vim.schedule(function() vim.api.nvim_buf_delete(arg.buf, { force = true }) end)
+--     end
+-- })
