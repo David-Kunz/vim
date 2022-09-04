@@ -509,8 +509,8 @@ function toggle_terminal()
          return
        end
      end
-     term_buf_of_tab[cur_tab] = nil
-     toggle_terminal()
+     vim.cmd('vert sb' .. term_buf)
+     vim.cmd(':startinsert')
    end
   else
     spawn_terminal()
