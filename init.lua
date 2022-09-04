@@ -4,6 +4,11 @@ local opt = vim.opt
 
 g.mapleader = " "
 
+require('packer').init({
+  display = {
+    open_cmd = 'vnew \\[packer\\]',
+  }
+})
 vim.cmd [[packadd packer.nvim]]
 require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
@@ -31,6 +36,8 @@ require('packer').startup(function(use)
   use 'L3MON4D3/LuaSnip'
   use 'saadparwaiz1/cmp_luasnip'
   use 'voldikss/vim-floaterm'
+  -- use 'p00f/nvim-ts-rainbow'
+  use 'rcarriga/nvim-dap-ui'
   -- use 'ldelossa/litee.nvim'
   -- use 'ldelossa/gh.nvim'
   use 'nvim-telescope/telescope-ui-select.nvim'
@@ -195,12 +202,15 @@ vim.keymap.set('n', '<leader>fD', function() telescope_live_grep_in_path() end)
 vim.keymap.set('n', '<leader><space>', function() telescope_files_or_git_files() end)
 vim.keymap.set('n', '<leader>fd', function() telescope_find_files_in_path() end)
 vim.keymap.set('n', '<leader>ft', function() telescope_find_files_in_path("./tests") end)
+vim.keymap.set('n', '<leader>fc', function() telescope_find_files_in_path("./node_modules/@sap/cds") end)
+vim.keymap.set('n', '<leader>fC', function() telescope_live_grep_in_path("./node_modules/@sap/cds") end)
 vim.keymap.set('n', '<leader>fT', function() telescope_live_grep_in_path("./tests") end)
 vim.keymap.set('n', '<leader>ff', ':Telescope live_grep<CR>')
 -- vim.keymap.set('n', '<leader>fo', ':Telescope file_browser<CR>')
 vim.keymap.set('n', '<leader>fn', ':Telescope find_files<CR>')
 vim.keymap.set('n', '<leader>fr', ':Telescope resume<CR>')
-vim.keymap.set('n', '<leader>fg', ':Telescope git_branches<CR>')
+vim.keymap.set('n', '<leader>fG', ':Telescope git_branches<CR>')
+vim.keymap.set('n', '<leader>fg', ':Telescope git_status<CR>')
 vim.keymap.set('n', '<c-\\>', ':Telescope buffers<CR>')
 vim.keymap.set('n', '<leader>fs', ':Telescope lsp_document_symbols<CR>')
 vim.keymap.set('n', '<leader>ff', ':Telescope live_grep<CR>')
@@ -297,6 +307,10 @@ require'nvim-treesitter.configs'.setup {
   highlight = {
     enable = true,
   },
+  -- rainbow = {
+  --   enable = true,
+  --   extended_mode = true
+  -- }
   -- indent = {
   --   enable = true
   -- },
@@ -455,6 +469,8 @@ vim.keymap.set('n', '\\', ':NvimTreeToggle<CR>', {silent=true})
 vim.keymap.set('n', 'gq', ':bd!<CR>')
 vim.keymap.set('n', '<leader>w', ':w<CR>')
 
+vim.keymap.set('t', '<Esc>', '<C-\\><C-n>')
+
 vim.cmd('iabbrev :tup: 👍')
 vim.cmd('iabbrev :tdo: 👎')
 vim.cmd('iabbrev :smi: 😊')
@@ -475,6 +491,7 @@ function spawn_terminal()
   vim.cmd(':startinsert')
 end
 
+
 function toggle_terminal()
   local cur_tab = vim.api.nvim_get_current_tabpage()
   local term_buf = term_buf_of_tab[cur_tab]
@@ -483,8 +500,17 @@ function toggle_terminal()
    if cur_buf == term_buf then
      vim.cmd('q')
    else
-     vim.cmd('vert sb' .. term_buf)
-     vim.cmd(':startinsert')
+     local win_list = vim.api.nvim_tabpage_list_wins(cur_tab)
+     for _, win in ipairs(win_list) do
+       local win_buf = vim.api.nvim_win_get_buf(win)
+       if win_buf == term_buf then
+         vim.api.nvim_set_current_win(win)
+         vim.cmd(':startinsert')
+         return
+       end
+     end
+     term_buf_of_tab[cur_tab] = nil
+     toggle_terminal()
    end
   else
     spawn_terminal()
@@ -649,3 +675,20 @@ vim.keymap.set('n', '<leader>p', ':PackerSync<CR>')
 --       vim.schedule(function() vim.api.nvim_buf_delete(arg.buf, { force = true }) end)
 --     end
 -- })
+
+vim.keymap.set('n', '<leader>?', 'orequire("/usr/local/lib/node_modules/derive-type/")(...arguments)<esc>')
+
+
+local dap, dapui = require("dap"), require("dapui")
+dapui.setup()
+vim.keymap.set('n', '<leader>do', function() require("dapui").open() end)
+vim.keymap.set('n', '<leader>dC', function() require("dapui").close() end)
+-- dap.listeners.after.event_initialized["dapui_config"] = function()
+--   dapui.open()
+-- end
+dap.listeners.before.event_terminated["dapui_config"] = function()
+  dapui.close()
+end
+dap.listeners.before.event_exited["dapui_config"] = function()
+  dapui.close()
+end
