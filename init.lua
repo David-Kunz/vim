@@ -1,7 +1,7 @@
  local cmd = vim.cmd
  local g = vim.g
  local opt = vim.opt
- 
+
  g.mapleader = " "
 -- require('packer').init({
 --  display = {
@@ -25,35 +25,38 @@ require('packer').startup(function(use)
  	use 'ryanoasis/vim-devicons'
  	use 'David-Kunz/jester'
  	use 'David-Kunz/markid'
-   use 'kyazdani42/nvim-tree.lua'
-   use 'David-Kunz/treesitter-unit'
-   use 'hrsh7th/cmp-nvim-lsp'
-   use 'hrsh7th/cmp-buffer'
-   use 'hrsh7th/nvim-cmp'
-   use 'David-Kunz/cmp-npm'
-   use 'marko-cerovac/material.nvim'
+  use 'kyazdani42/nvim-tree.lua'
+  use 'David-Kunz/treesitter-unit'
+  use 'hrsh7th/cmp-nvim-lsp'
+  use 'hrsh7th/cmp-buffer'
+  use 'hrsh7th/nvim-cmp'
+  use 'David-Kunz/cmp-npm'
+  use 'marko-cerovac/material.nvim'
  	use 'mfussenegger/nvim-dap'
-   use 'L3MON4D3/LuaSnip'
-   use 'saadparwaiz1/cmp_luasnip'
-   use 'voldikss/vim-floaterm'
-   use 'rcarriga/nvim-dap-ui'
-   -- use 'ldelossa/litee.nvim'
-   -- use 'ldelossa/gh.nvim'
-   use 'nvim-telescope/telescope-ui-select.nvim'
-   use 'folke/tokyonight.nvim'
-   use 'nvim-treesitter/playground'
-   use 'norcalli/nvim-colorizer.lua'
-   use 'mxsdev/nvim-dap-vscode-js'
-   use {
+  use 'L3MON4D3/LuaSnip'
+  use 'saadparwaiz1/cmp_luasnip'
+  use 'voldikss/vim-floaterm'
+  use 'rcarriga/nvim-dap-ui'
+  -- use 'ldelossa/litee.nvim'
+  -- use 'ldelossa/gh.nvim'
+  use 'nvim-telescope/telescope-ui-select.nvim'
+  use 'folke/tokyonight.nvim'
+  use 'nvim-treesitter/playground'
+  use 'norcalli/nvim-colorizer.lua'
+  use 'mxsdev/nvim-dap-vscode-js'
+  use {
      "microsoft/vscode-js-debug",
      opt = true,
      run = "npm install --legacy-peer-deps && npm run compile" 
    }
-   use {
+  use {
      "microsoft/vscode-node-debug2",
      opt = true,
      run = "npm install && NODE_OPTIONS=--no-experimental-fetch npm run build" 
    }
+  use { 'ggandor/leap.nvim', config = function() 
+    require('leap').add_default_mappings()
+  end }
  end
  )
 
@@ -714,7 +717,7 @@ require("dap-vscode-js").setup({
  
  vim.keymap.set('n', '<leader>?', 'orequire("/usr/local/lib/node_modules/derive-type/")(...arguments)<esc>')
  
- 
+
  local dap, dapui = require("dap"), require("dapui")
  dapui.setup()
  vim.keymap.set('n', '<leader>do', function() require("dapui").open() end)
