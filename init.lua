@@ -3,12 +3,7 @@ local g = vim.g
 local opt = vim.opt
 
 g.mapleader = " "
--- require('packer').init({
---  display = {
---    open_cmd = 'vnew \\[packer\\]',
---  }
--- })
--- TODO remove this line
+
 require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
     use 'tpope/vim-commentary'
@@ -27,6 +22,7 @@ require('packer').startup(function(use)
     use 'David-Kunz/markid'
     use 'kyazdani42/nvim-tree.lua'
     use 'David-Kunz/treesitter-unit'
+    use 'David-Kunz/ts-quickfix'
     use 'hrsh7th/cmp-nvim-lsp'
     use 'hrsh7th/cmp-buffer'
     use 'hrsh7th/nvim-cmp'
@@ -72,7 +68,6 @@ opt.splitright = true
 opt.splitbelow = true
 opt.expandtab = true
 opt.tabstop = 2
--- TODO: Don't do this
 opt.shiftwidth = 2
 opt.number = true
 opt.ignorecase = true
@@ -732,41 +727,10 @@ require("mason-lspconfig").setup_handlers {
     end,
     ["sumneko_lua"] = function()
         require("lspconfig").sumneko_lua.setup({
-          settings = {Lua = {diagnostics = {globals = {'vim'}}}}
+            settings = {Lua = {diagnostics = {globals = {'vim'}}}}
         })
     end
 }
 
-local function todo()
-    -- local lang = vim.bo.filetype
-    -- ...TODO this is perfect!
-    local buf = vim.api.nvim_get_current_buf()
-    local parsers = require('nvim-treesitter.parsers')
-    local parser = parsers.get_parser(0)
-    if not parser then return end
 
-    local tree = parser:parse()[1]
-    local root = tree:root()
-
-    local ok, query = pcall(vim.treesitter.parse_query, parser:lang(),
-                            [[(comment) @comment]])
-    if not ok then return end
-    local qf_table = {}
-    local regex = vim.regex('TODO')
-    for id, node in query:iter_captures(root, 0) do
-        local text = vim.treesitter.query.get_node_text(node, 0)
-        if regex:match_str(text) then
-            local start_row, start_col = node:range()
-            table.insert(qf_table, {
-                bufnr = buf,
-                lnum = start_row + 1,
-                col = start_col,
-                text = text
-            })
-        end
-    end
-    vim.fn.setqflist(qf_table)
-    vim.cmd('copen')
-end
-
-vim.api.nvim_create_user_command('Todo', todo, {})
+vim.api.nvim_create_user_command('Todo', require('ts-quickfix').todo, {})
