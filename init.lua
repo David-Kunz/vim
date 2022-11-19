@@ -16,13 +16,12 @@ require('packer').startup(function(use)
     use 'lewis6991/gitsigns.nvim'
     use 'nvim-telescope/telescope-dap.nvim'
     use 'theHamsta/nvim-dap-virtual-text'
-    use 'kyazdani42/nvim-web-devicons'
     use 'ryanoasis/vim-devicons'
     use 'David-Kunz/jester'
     use 'David-Kunz/markid'
-    use 'kyazdani42/nvim-tree.lua'
+    use {'nvim-tree/nvim-tree.lua', requires = {'nvim-tree/nvim-web-devicons'}}
     use 'David-Kunz/treesitter-unit'
-    use 'David-Kunz/ts-quickfix'
+    -- use 'David-Kunz/ts-quickfix'
     use 'hrsh7th/cmp-nvim-lsp'
     use 'hrsh7th/cmp-buffer'
     use 'hrsh7th/nvim-cmp'
@@ -50,10 +49,10 @@ require('packer').startup(function(use)
         opt = true,
         run = "npm install && NODE_OPTIONS=--no-experimental-fetch npm run build"
     }
-    use {
-        'ggandor/leap.nvim',
-        config = function() require('leap').add_default_mappings() end
-    }
+    -- use {
+    --     'ggandor/leap.nvim',
+    --     config = function() require('leap').add_default_mappings() end
+    -- }
     use {
         "williamboman/mason.nvim", "williamboman/mason-lspconfig.nvim",
         "neovim/nvim-lspconfig"
@@ -306,6 +305,7 @@ local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
 parser_config.cds = {
     install_info = {
         -- local path or git repo
+        -- url = "~/apps/tree-sitter-cds",
         url = "~/apps/tree-sitter-cds",
         files = {"src/parser.c", "src/scanner.c"}
     },
@@ -316,7 +316,7 @@ parser_config.cds = {
 
 require'nvim-treesitter.configs'.setup {
     highlight = {enable = true},
-    markid = {enable = true}
+    markid = {enable = false}
 }
 
 -- mxsdev/nvim-dap-vscode-js
@@ -385,9 +385,9 @@ vim.keymap.set('n', '<leader>db', ':Telescope dap list_breakpoints<CR>')
 require('nvim-dap-virtual-text').setup()
 
 -- David-Kunz/jester
--- require'jester'.setup({ path_to_jest = "./node_modules/.bin/jest", dap = { type = 'pwa-node', cwd = "/Users/d065023/tmp/node-test", rootPath = "/Users/d065023/tmp/node-test" } })
 require'jester'.setup({path_to_jest = "/opt/homebrew/bin/jest"})
--- require'jester'.setup({ dap = { type = 'pwa-node',     runtimeArgs = {'--inspect-brk', '$path_to_jest', '-c', '/Users/d065023/tmp/node-test/jest.config.js', '--no-coverage', '-t', '$result', '--', '$file'} } })
+-- require'jester'.setup({ dap = { type = 'pwa-node'}})
+-- require'jester'.setup({ path_to_jest = "/opt/homebrew/bin/jest", dap = { type = 'pwa-node' } })
 vim.keymap.set('n', '<leader>tt', function() require"jester".run() end)
 vim.keymap.set('n', '<leader>t_', function() require"jester".run_last() end)
 vim.keymap.set('n', '<leader>tf', function() require"jester".run_file() end)
@@ -733,4 +733,102 @@ require("mason-lspconfig").setup_handlers {
 }
 
 
-vim.api.nvim_create_user_command('Todo', require('ts-quickfix').todo, {})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
