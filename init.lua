@@ -19,6 +19,7 @@ require('packer').startup(function(use)
     use 'ryanoasis/vim-devicons'
     use 'David-Kunz/jester'
     use 'David-Kunz/markid'
+    use 'David-Kunz/spotlight'
     use {'nvim-tree/nvim-tree.lua', requires = {'nvim-tree/nvim-web-devicons'}}
     use 'David-Kunz/treesitter-unit'
     -- use 'David-Kunz/ts-quickfix'
@@ -72,6 +73,7 @@ opt.number = true
 opt.ignorecase = true
 opt.smartcase = true
 opt.incsearch = true
+opt.so = 10
 -- opt.relativenumber = true
 vim.cmd('set nonumber')
 vim.cmd('set norelativenumber')
@@ -141,6 +143,16 @@ require('formatter').setup({
     logging = false,
     filetype = {
         javascript = {
+            -- prettierd
+            function()
+                return {
+                    exe = "prettierd",
+                    args = {vim.api.nvim_buf_get_name(0)},
+                    stdin = true
+                }
+            end
+        },
+        json = {
             -- prettierd
             function()
                 return {
@@ -351,10 +363,10 @@ vim.keymap.set('n', '<leader>dh',
                function() require"dap".toggle_breakpoint() end)
 vim.keymap.set('n', '<leader>dH',
                ":lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>")
-vim.keymap.set('n', '<A-k>', function() require"dap".step_out() end)
-vim.keymap.set('n', "<A-l>", function() require"dap".step_into() end)
-vim.keymap.set('n', '<A-j>', function() require"dap".step_over() end)
-vim.keymap.set('n', '<A-h>', function() require"dap".continue() end)
+vim.keymap.set({'n', 't'}, '<A-k>', function() require"dap".step_out() end)
+vim.keymap.set({'n', 't'}, "<A-l>", function() require"dap".step_into() end)
+vim.keymap.set({'n', 't'}, '<A-j>', function() require"dap".step_over() end)
+vim.keymap.set({'n', 't'}, '<A-h>', function() require"dap".continue() end)
 vim.keymap.set('n', '<leader>dn', function() require"dap".run_to_cursor() end)
 vim.keymap.set('n', '<leader>dc', function() require"dap".terminate() end)
 vim.keymap.set('n', '<leader>dR',
@@ -513,7 +525,7 @@ vim.cmd('iabbrev darkgreen #006400')
 _G.term_buf_of_tab = _G.term_buf_of_tab or {}
 _G.term_buf_max_nmb = _G.term_buf_max_nmb or 0
 
-function spawn_terminal()
+local function spawn_terminal()
     local cur_tab = vim.api.nvim_get_current_tabpage()
     vim.cmd('vs | terminal')
     local cur_buf = vim.api.nvim_get_current_buf()
@@ -523,7 +535,7 @@ function spawn_terminal()
     vim.cmd(':startinsert')
 end
 
-function toggle_terminal()
+function Toggle_terminal()
     local cur_tab = vim.api.nvim_get_current_tabpage()
     local term_buf = term_buf_of_tab[cur_tab]
     if term_buf ~= nil then
@@ -548,15 +560,15 @@ function toggle_terminal()
         vim.cmd(':startinsert')
     end
 end
-vim.keymap.set('n', '<c-y>', toggle_terminal)
-vim.keymap.set('i', '<c-y>', '<ESC>:lua toggle_terminal()<CR>')
-vim.keymap.set('t', '<c-y>', '<c-\\><c-n>:lua toggle_terminal()<CR>')
+vim.keymap.set('n', '<c-y>', Toggle_terminal)
+vim.keymap.set('i', '<c-y>', '<ESC>:lua Toggle_terminal()<CR>')
+vim.keymap.set('t', '<c-y>', '<c-\\><c-n>:lua Toggle_terminal()<CR>')
 -- cmd([[
 -- if has('nvim')
 --    au! TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
 -- endif]])
 
-_G.send_line_to_terminal = function()
+Send_line_to_terminal = function()
     local curr_line = vim.api.nvim_get_current_line()
     local cur_tab = vim.api.nvim_get_current_tabpage()
     local term_buf = term_buf_of_tab[cur_tab]
@@ -570,7 +582,7 @@ _G.send_line_to_terminal = function()
     vim.api.nvim_chan_send(chan_id, curr_line .. '\n')
 end
 
-vim.keymap.set('n', '<leader>x', ':lua send_line_to_terminal()<CR>')
+vim.keymap.set('n', '<leader>x', ':lua Send_line_to_terminal()<CR>')
 
 require"nvim-treesitter.configs".setup {playground = {enable = true}}
 
@@ -731,104 +743,15 @@ require("mason-lspconfig").setup_handlers {
         })
     end
 }
+-- vim.api.nvim_create_autocmd("CursorHold", {callback = vim.lsp.buf.document_highlight})
+-- vim.api.nvim_create_autocmd("CursorMoved", {callback = vim.lsp.buf.clear_references})
 
+vim.api.nvim_create_autocmd("CursorMoved", {callback = require'spotlight'.run})
 
+function Test()
+    package.loaded.NeovimConf = nil
+    require('NeovimConf').todo()
+end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+vim.api.nvim_create_user_command("Test", Test, {})
 
