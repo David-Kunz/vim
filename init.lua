@@ -58,6 +58,7 @@ require('packer').startup(function(use)
         "williamboman/mason.nvim", "williamboman/mason-lspconfig.nvim",
         "neovim/nvim-lspconfig"
     }
+    use 'Eandrju/cellular-automaton.nvim'
 end)
 
 -- default options
@@ -747,11 +748,36 @@ require("mason-lspconfig").setup_handlers {
 -- vim.api.nvim_create_autocmd("CursorMoved", {callback = vim.lsp.buf.clear_references})
 
 vim.api.nvim_create_autocmd("CursorMoved", {callback = require'spotlight'.run})
+vim.keymap.set("n", "<leader>E", "<cmd>CellularAutomaton make_it_rain<CR>", {})
 
-function Test()
-    package.loaded.NeovimConf = nil
-    require('NeovimConf').todo()
-end
 
-vim.api.nvim_create_user_command("Test", Test, {})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
