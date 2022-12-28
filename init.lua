@@ -18,6 +18,10 @@ local opt = vim.opt
 g.mapleader = " "
 
 require('lazy').setup({
+    { 'folke/tokyonight.nvim', lazy = false, priority = 1000, config = function()
+      require('tokyonight').setup({styles = {functions = 'bold', keywords = 'italic'}})
+      vim.cmd.colorscheme("tokyonight")
+    end },
     'tpope/vim-commentary',
     'mhartington/formatter.nvim',
     -- use 'neovim/nvim-lspconfig',
@@ -48,7 +52,6 @@ require('lazy').setup({
     -- use 'ldelossa/litee.nvim',
     -- use 'ldelossa/gh.nvim',
     'nvim-telescope/telescope-ui-select.nvim',
-    'folke/tokyonight.nvim',
     'nvim-treesitter/playground',
     'norcalli/nvim-colorizer.lua',
     'mxsdev/nvim-dap-vscode-js',
@@ -366,10 +369,6 @@ vim.opt.fillchars = {
     vertright = '█',
     verthoriz = '█'
 }
-require('tokyonight').setup({styles = {functions = 'bold', keywords = 'italic'}})
-vim.cmd 'colorscheme tokyonight'
--- vim.cmd 'colorscheme gruvbox'
--- vim.cmd 'colorscheme github_dark'
 
 vim.g.floaterm_width = 0.95
 vim.g.floaterm_height = 0.95
