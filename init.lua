@@ -1,13 +1,9 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "--single-branch",
-    "https://github.com/folke/lazy.nvim.git",
-    lazypath,
-  })
+    vim.fn.system({
+        "git", "clone", "--filter=blob:none", "--single-branch",
+        "https://github.com/folke/lazy.nvim.git", lazypath
+    })
 end
 vim.opt.runtimepath:prepend(lazypath)
 
@@ -18,59 +14,46 @@ local opt = vim.opt
 g.mapleader = " "
 
 require('lazy').setup({
-    { 'folke/tokyonight.nvim', lazy = false, priority = 1000, config = function()
-      require('tokyonight').setup({styles = {functions = 'bold', keywords = 'italic'}})
-      vim.cmd.colorscheme("tokyonight")
-    end },
-    'tpope/vim-commentary',
-    'mhartington/formatter.nvim',
+    {
+        'folke/tokyonight.nvim',
+        lazy = false,
+        priority = 1000,
+        config = function()
+            require('tokyonight').setup({
+                styles = {functions = 'bold', keywords = 'italic'}
+            })
+            vim.cmd.colorscheme("tokyonight")
+        end
+    }, 'tpope/vim-commentary', 'mhartington/formatter.nvim',
     -- use 'neovim/nvim-lspconfig',
     {'nvim-treesitter/nvim-treesitter', build = ':TSUpdate'},
-    'nvim-telescope/telescope.nvim',
-    'nvim-lua/plenary.nvim',
-    'nvim-lua/popup.nvim',
-    'lewis6991/gitsigns.nvim',
-    'nvim-telescope/telescope-dap.nvim',
-    'theHamsta/nvim-dap-virtual-text',
-    'ryanoasis/vim-devicons',
-    'David-Kunz/jester',
-    'David-Kunz/markid',
+    'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim',
+    'nvim-lua/popup.nvim', 'lewis6991/gitsigns.nvim',
+    'nvim-telescope/telescope-dap.nvim', 'theHamsta/nvim-dap-virtual-text',
+    'ryanoasis/vim-devicons', 'David-Kunz/jester', 'David-Kunz/markid',
     'David-Kunz/spotlight',
     {'nvim-tree/nvim-tree.lua', dependencies = {'nvim-tree/nvim-web-devicons'}},
-    'David-Kunz/treesitter-unit',
-    -- use 'David-Kunz/ts-quickfix',
-    'hrsh7th/cmp-nvim-lsp',
-    'hrsh7th/cmp-buffer',
-    'hrsh7th/nvim-cmp',
-    'David-Kunz/cmp-npm',
-    'marko-cerovac/material.nvim',
-    'mfussenegger/nvim-dap',
-    'L3MON4D3/LuaSnip',
-    'saadparwaiz1/cmp_luasnip',
-    'voldikss/vim-floaterm',
-    'rcarriga/nvim-dap-ui',
+    'David-Kunz/treesitter-unit', -- use 'David-Kunz/ts-quickfix',
+    'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/nvim-cmp',
+    'David-Kunz/cmp-npm', 'marko-cerovac/material.nvim',
+    'mfussenegger/nvim-dap', 'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip',
+    'voldikss/vim-floaterm', 'rcarriga/nvim-dap-ui',
     -- use 'ldelossa/litee.nvim',
     -- use 'ldelossa/gh.nvim',
-    'nvim-telescope/telescope-ui-select.nvim',
-    'nvim-treesitter/playground',
-    'norcalli/nvim-colorizer.lua',
-    'mxsdev/nvim-dap-vscode-js',
-    {
+    'nvim-telescope/telescope-ui-select.nvim', 'nvim-treesitter/playground',
+    'norcalli/nvim-colorizer.lua', 'mxsdev/nvim-dap-vscode-js', {
         "microsoft/vscode-js-debug",
         -- lazy = true,
         build = "npm install --legacy-peer-deps && npm run compile"
-    },
-    {
+    }, {
         "microsoft/vscode-node-debug2",
         -- lazy = true,
         build = "npm install && NODE_OPTIONS=--no-experimental-fetch npm run build"
-    },
-    -- use {
+    }, -- use {
     --     'ggandor/leap.nvim',
     --     config = function() require('leap').add_default_mappings() end
     -- }
-    "williamboman/mason.nvim",
-    "williamboman/mason-lspconfig.nvim",
+    "williamboman/mason.nvim", "williamboman/mason-lspconfig.nvim",
     "neovim/nvim-lspconfig"
 })
 
@@ -338,22 +321,26 @@ vim.keymap.set('n', 'gA', ':Telescope lsp_range_code_actions<CR>')
 --      autocmd BufReadPre,FileReadPre *.cds set ft=cds
 -- augroup END
 -- ]])
-local lspconfig = require'lspconfig'
-local configs = require'lspconfig.configs'
+local lspconfig = require 'lspconfig'
+local configs = require 'lspconfig.configs'
 if not configs.sapcds_lsp then
-  configs.sapcds_lsp = {
-    default_config = {
-      cmd = {vim.fn.expand("/Users/d065023/apps/cds-lsp/node_modules/.bin/cds-lsp"), '--stdio'};
-      filetypes = {'cds'};
-      root_dir = lspconfig.util.root_pattern('.git', 'package.json'),
-      settings = {};
-    };
-  }
+    configs.sapcds_lsp = {
+        default_config = {
+            cmd = {
+                vim.fn.expand(
+                    "/Users/d065023/apps/cds-lsp/node_modules/.bin/cds-lsp"),
+                '--stdio'
+            },
+            filetypes = {'cds'},
+            root_dir = lspconfig.util.root_pattern('.git', 'package.json'),
+            settings = {}
+        }
+    }
 end
 if lspconfig.sapcds_lsp.setup then
-  lspconfig.sapcds_lsp.setup{
-    -- capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
-  }
+    lspconfig.sapcds_lsp.setup {
+        -- capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+    }
 end
 
 vim.keymap.set('n', '<leader><esc><esc>', ':tabclose<CR>')
@@ -389,11 +376,11 @@ parser_config.cds = {
     },
     filetype = "cds",
     -- additional filetypes that use this parser
-    used_by = {"cdl", "hdbcds"},
+    used_by = {"cdl", "hdbcds"}
 }
 
 require'nvim-treesitter.configs'.setup {
-    highlight = {enable = true},
+    highlight = {enable = true}
     -- markid = {enable = true}
 }
 
@@ -411,9 +398,8 @@ dap.adapters.node2 = {
     type = 'executable',
     command = 'node',
     args = {
-        os.getenv('HOME') ..
-            -- '/.local/share/nvim/site/pack/packer/opt/vscode-node-debug2/out/src/nodeDebug.js'
-            '~/.local/share/nvim/lazy/vscode-node-debug2/'
+        os.getenv('HOME') .. -- '/.local/share/nvim/site/pack/packer/opt/vscode-node-debug2/out/src/nodeDebug.js'
+        '~/.local/share/nvim/lazy/vscode-node-debug2/'
     }
 }
 
