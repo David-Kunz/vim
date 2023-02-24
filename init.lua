@@ -16,7 +16,6 @@ g.mapleader = " "
 require('lazy').setup({
     {
         'folke/tokyonight.nvim',
-        lazy = false,
         priority = 1000,
         config = function()
             require('tokyonight').setup({
@@ -30,8 +29,8 @@ require('lazy').setup({
     'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim',
     'nvim-lua/popup.nvim', 'lewis6991/gitsigns.nvim',
     'nvim-telescope/telescope-dap.nvim', 'theHamsta/nvim-dap-virtual-text',
-    'ryanoasis/vim-devicons', 'David-Kunz/jester', 'David-Kunz/markid',
-    'David-Kunz/spotlight',
+    'ryanoasis/vim-devicons', 'David-Kunz/jester',
+    {'David-Kunz/markid', dev = false}, 'David-Kunz/spotlight',
     {'nvim-tree/nvim-tree.lua', dependencies = {'nvim-tree/nvim-web-devicons'}},
     'David-Kunz/treesitter-unit', -- use 'David-Kunz/ts-quickfix',
     'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/nvim-cmp',
@@ -54,9 +53,19 @@ require('lazy').setup({
     --     config = function() require('leap').add_default_mappings() end
     -- }
     "williamboman/mason.nvim", "williamboman/mason-lspconfig.nvim",
-    "neovim/nvim-lspconfig"
-})
+    "neovim/nvim-lspconfig", 
+    { 'echasnovski/mini.bracketed', version = false, config = function() require('mini.bracketed').setup() end }
+    -- {
+    --     'Exafunction/codeium.vim',
+    -- }
+}, {dev = {path = "/Users/d065023/projects/nvim"}})
 
+-- vim.g.codeium_enabled = false
+-- vim.g.codeium_disable_bindings = true
+-- vim.keymap.set('i', '<c-;>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true })
+-- vim.keymap.set('i', '<c-,>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true })
+-- vim.keymap.set('i', '<c-x>', function() return vim.fn['codeium#Clear']() end, { expr = true })
+-- vim.keymap.set('i', '<c-cr>', function() return vim.fn['codeium#Accept']() end, { expr = true })
 -- require('packer').startup(function(use)end)
 --     use 'wbthomason/packer.nvim'
 --     use 'tpope/vim-commentary'
@@ -301,7 +310,7 @@ vim.keymap.set('n', '<leader>ff', ':Telescope live_grep<CR>')
 vim.keymap.set('n', '<leader>FF', ':Telescope grep_string<CR>')
 
 -- David-Kunz/cmp-npm
-require('cmp-npm').setup({ignore = {"beta", "rc"}})
+require('cmp-npm').setup({only_latest_version = true})
 
 vim.keymap.set('n', 'gd', function() vim.lsp.buf.definition() end)
 vim.keymap.set('n', 'gh', function() vim.lsp.buf.hover() end)
@@ -379,8 +388,9 @@ parser_config.cds = {
     used_by = {"cdl", "hdbcds"}
 }
 
+require('markid')
 require'nvim-treesitter.configs'.setup {
-    highlight = {enable = true}
+    highlight = {enable = true},
     -- markid = {enable = true}
 }
 
@@ -399,7 +409,7 @@ dap.adapters.node2 = {
     command = 'node',
     args = {
         os.getenv('HOME') .. -- '/.local/share/nvim/site/pack/packer/opt/vscode-node-debug2/out/src/nodeDebug.js'
-        '~/.local/share/nvim/lazy/vscode-node-debug2/'
+            '/.local/share/nvim/lazy/vscode-node-debug2/out/src/nodeDebug.js'
     }
 }
 
@@ -508,8 +518,8 @@ vim.keymap.set('n', '<leader>dd', function() require"jester".debug() end)
 --   },
 -- }
 
-vim.keymap.set('n', '[b', ':bnext<CR>')
-vim.keymap.set('n', ']b', ':bprev<CR>')
+-- vim.keymap.set('n', '[b', ':bnext<CR>')
+-- vim.keymap.set('n', ']b', ':bprev<CR>')
 
 -- David-Kunz/treesitter-unit
 vim.keymap.set('x', 'u', ':<c-u>lua require"treesitter-unit".select()<CR>')
@@ -652,6 +662,28 @@ local has_words_before = function()
 end
 
 local ls = require("luasnip")
+
+ls.add_snippets("cds", {
+    ls.snippet("field", ls.text_node("YY1_CrByIncidentMgmt_SDH")),
+    ls.snippet("topic", ls.text_node(
+                   "sap/cap/incidents/ce/sap/s4/beh/salesorder/v1/SalesOrder/Changed/v1"))
+})
+ls.add_snippets("json", {
+    ls.snippet("path", ls.text_node('/sap/opu/odata/sap/API_SALES_ORDER_SRV'))
+})
+ls.add_snippets("javascript", {
+    ls.snippet("block", ls.text_node("DeliveryBlockReason")),
+    ls.snippet("payload", ls.text_node({
+        " {", "    SalesOrderType: 'OR',", "    SalesOrganization: '1710',",
+        "   DistributionChannel: '10',", "   OrganizationDivision: '00',",
+        "   SoldToParty: '17100002',",
+        "   PurchaseOrderByCustomer: 'Incident: ' + title,",
+        "   YY1_CrByIncidentMgmt_SDH: true,", "   to_Item: orders.map(o => ({",
+        "     Material: o.product,", "     RequestedQuantity: o.quantity,",
+        "     RequestedQuantityUnit: o.unitOfMeasure", "   }))", " }"
+    }))
+})
+
 local cmp = require("cmp")
 
 cmp.setup({
@@ -790,8 +822,8 @@ require("mason-lspconfig").setup_handlers {
     function(server_name) -- default handler (optional)
         require("lspconfig")[server_name].setup {}
     end,
-    ["sumneko_lua"] = function()
-        require("lspconfig").sumneko_lua.setup({
+    ["lua_ls"] = function()
+        require("lspconfig").lua_ls.setup({
             settings = {Lua = {diagnostics = {globals = {'vim'}}}}
         })
     end
