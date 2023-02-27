@@ -23,8 +23,7 @@ require('lazy').setup({
             })
             vim.cmd.colorscheme("tokyonight")
         end
-    }, 'tpope/vim-commentary', 'mhartington/formatter.nvim',
-    -- use 'neovim/nvim-lspconfig',
+    }, 'mhartington/formatter.nvim', -- use 'neovim/nvim-lspconfig',
     {'nvim-treesitter/nvim-treesitter', build = ':TSUpdate'},
     'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim',
     'nvim-lua/popup.nvim', 'lewis6991/gitsigns.nvim',
@@ -33,9 +32,9 @@ require('lazy').setup({
     {'David-Kunz/markid', dev = false}, 'David-Kunz/spotlight',
     {'nvim-tree/nvim-tree.lua', dependencies = {'nvim-tree/nvim-web-devicons'}},
     'David-Kunz/treesitter-unit', -- use 'David-Kunz/ts-quickfix',
-    'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/nvim-cmp',
-    'David-Kunz/cmp-npm', 'marko-cerovac/material.nvim',
-    'mfussenegger/nvim-dap', 'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip',
+    -- 'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/nvim-cmp',
+    -- 'David-Kunz/cmp-npm', 'marko-cerovac/material.nvim',
+    'mfussenegger/nvim-dap', -- 'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip',
     'voldikss/vim-floaterm', 'rcarriga/nvim-dap-ui',
     -- use 'ldelossa/litee.nvim',
     -- use 'ldelossa/gh.nvim',
@@ -53,8 +52,57 @@ require('lazy').setup({
     --     config = function() require('leap').add_default_mappings() end
     -- }
     "williamboman/mason.nvim", "williamboman/mason-lspconfig.nvim",
-    "neovim/nvim-lspconfig", 
-    { 'echasnovski/mini.bracketed', version = false, config = function() require('mini.bracketed').setup() end }
+    "neovim/nvim-lspconfig", {
+        'echasnovski/mini.completion',
+        version = false,
+        config = function() require('mini.completion').setup() end
+    }, {
+        'echasnovski/mini.bracketed',
+        version = false,
+        config = function() require('mini.bracketed').setup() end
+    }, {
+        'echasnovski/mini.comment',
+        version = false,
+        config = function() require('mini.comment').setup() end
+    }, {
+        'echasnovski/mini.pairs',
+        version = false,
+        config = function() require('mini.pairs').setup() end
+    }, {
+        'echasnovski/mini.surround',
+        version = false,
+        config = function() require('mini.surround').setup() end
+    }, {
+        'echasnovski/mini.ai',
+        version = false,
+        config = function() require('mini.ai').setup() end
+    }
+    -- {
+    --     'echasnovski/mini.base16',
+    --     version = false,
+    --     config = function()
+    --         require('mini.base16').setup({
+    --             palette = {
+    --                 base00 = "#181818",
+    --                 base01 = "#282828",
+    --                 base02 = "#383838",
+    --                 base03 = "#585858",
+    --                 base04 = "#b8b8b8",
+    --                 base05 = "#d8d8d8",
+    --                 base06 = "#e8e8e8",
+    --                 base07 = "#f8f8f8",
+    --                 base08 = "#ab4642",
+    --                 base09 = "#dc9656",
+    --                 base0A = "#f7ca88",
+    --                 base0B = "#a1b56c",
+    --                 base0C = "#86c1b9",
+    --                 base0D = "#7cafc2",
+    --                 base0E = "#ba8baf",
+    --                 base0F = "#a16946"
+    --             }
+    --         })
+    --     end
+    -- }
     -- {
     --     'Exafunction/codeium.vim',
     -- }
@@ -310,7 +358,7 @@ vim.keymap.set('n', '<leader>ff', ':Telescope live_grep<CR>')
 vim.keymap.set('n', '<leader>FF', ':Telescope grep_string<CR>')
 
 -- David-Kunz/cmp-npm
-require('cmp-npm').setup({only_latest_version = true})
+-- require('cmp-npm').setup({only_latest_version = true})
 
 vim.keymap.set('n', 'gd', function() vim.lsp.buf.definition() end)
 vim.keymap.set('n', 'gh', function() vim.lsp.buf.hover() end)
@@ -390,7 +438,7 @@ parser_config.cds = {
 
 require('markid')
 require'nvim-treesitter.configs'.setup {
-    highlight = {enable = true},
+    highlight = {enable = true}
     -- markid = {enable = true}
 }
 
@@ -653,101 +701,101 @@ vim.keymap.set('n', '<c-o>', '<c-o>zz')
 vim.keymap.set('n', '<c-i>', '<c-i>zz')
 
 -- 'L3MON4D3/LuaSnip'
-local has_words_before = function()
-    local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-    return col ~= 0 and
-               vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col,
-                                                                          col)
-                   :match("%s") == nil
-end
+-- local has_words_before = function()
+--     local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+--     return col ~= 0 and
+--                vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col,
+--                                                                           col)
+--                    :match("%s") == nil
+-- end
+--
+-- local ls = require("luasnip")
 
-local ls = require("luasnip")
+-- ls.add_snippets("cds", {
+--     ls.snippet("field", ls.text_node("YY1_CrByIncidentMgmt_SDH")),
+--     ls.snippet("topic", ls.text_node(
+--                    "sap/cap/incidents/ce/sap/s4/beh/salesorder/v1/SalesOrder/Changed/v1"))
+-- })
+-- ls.add_snippets("json", {
+--     ls.snippet("path", ls.text_node('/sap/opu/odata/sap/API_SALES_ORDER_SRV'))
+-- })
+-- ls.add_snippets("javascript", {
+--     ls.snippet("block", ls.text_node("DeliveryBlockReason")),
+--     ls.snippet("payload", ls.text_node({
+--         " {", "    SalesOrderType: 'OR',", "    SalesOrganization: '1710',",
+--         "   DistributionChannel: '10',", "   OrganizationDivision: '00',",
+--         "   SoldToParty: '17100002',",
+--         "   PurchaseOrderByCustomer: 'Incident: ' + title,",
+--         "   YY1_CrByIncidentMgmt_SDH: true,", "   to_Item: orders.map(o => ({",
+--         "     Material: o.product,", "     RequestedQuantity: o.quantity,",
+--         "     RequestedQuantityUnit: o.unitOfMeasure", "   }))", " }"
+--     }))
+-- })
 
-ls.add_snippets("cds", {
-    ls.snippet("field", ls.text_node("YY1_CrByIncidentMgmt_SDH")),
-    ls.snippet("topic", ls.text_node(
-                   "sap/cap/incidents/ce/sap/s4/beh/salesorder/v1/SalesOrder/Changed/v1"))
-})
-ls.add_snippets("json", {
-    ls.snippet("path", ls.text_node('/sap/opu/odata/sap/API_SALES_ORDER_SRV'))
-})
-ls.add_snippets("javascript", {
-    ls.snippet("block", ls.text_node("DeliveryBlockReason")),
-    ls.snippet("payload", ls.text_node({
-        " {", "    SalesOrderType: 'OR',", "    SalesOrganization: '1710',",
-        "   DistributionChannel: '10',", "   OrganizationDivision: '00',",
-        "   SoldToParty: '17100002',",
-        "   PurchaseOrderByCustomer: 'Incident: ' + title,",
-        "   YY1_CrByIncidentMgmt_SDH: true,", "   to_Item: orders.map(o => ({",
-        "     Material: o.product,", "     RequestedQuantity: o.quantity,",
-        "     RequestedQuantityUnit: o.unitOfMeasure", "   }))", " }"
-    }))
-})
+-- local cmp = require("cmp")
 
-local cmp = require("cmp")
+-- cmp.setup({
+--     snippet = {expand = function(args) ls.lsp_expand(args.body) end},
+--     mapping = {
+--         ['<C-Space>'] = cmp.mapping.complete(),
+--         ['<CR>'] = cmp.mapping.confirm({select = false}),
+--         ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+--         ['<C-f>'] = cmp.mapping.scroll_docs(4),
+--         ['<C-n>'] = cmp.mapping.select_next_item({
+--             behavior = cmp.SelectBehavior.Insert
+--         }),
+--         ['<C-p>'] = cmp.mapping.select_prev_item({
+--             behavior = cmp.SelectBehavior.Insert
+--         }),
+--         ["<Tab>"] = cmp.mapping(function(fallback)
+--             if ls.expand_or_jumpable() then
+--                 ls.expand_or_jump()
+--             else
+--                 fallback()
+--             end
+--         end, {"i", "s"}),
 
-cmp.setup({
-    snippet = {expand = function(args) ls.lsp_expand(args.body) end},
-    mapping = {
-        ['<C-Space>'] = cmp.mapping.complete(),
-        ['<CR>'] = cmp.mapping.confirm({select = false}),
-        ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-        ['<C-f>'] = cmp.mapping.scroll_docs(4),
-        ['<C-n>'] = cmp.mapping.select_next_item({
-            behavior = cmp.SelectBehavior.Insert
-        }),
-        ['<C-p>'] = cmp.mapping.select_prev_item({
-            behavior = cmp.SelectBehavior.Insert
-        }),
-        ["<Tab>"] = cmp.mapping(function(fallback)
-            if ls.expand_or_jumpable() then
-                ls.expand_or_jump()
-            else
-                fallback()
-            end
-        end, {"i", "s"}),
+--         ["<S-Tab>"] = cmp.mapping(function(fallback)
+--             if ls.jumpable(-1) then
+--                 ls.jump(-1)
+--             else
+--                 fallback()
+--             end
+--         end, {"i", "s"})
+--     },
+--     sources = {
+--         {name = 'npm'}, {name = 'luasnip'}, {name = 'nvim_lsp'},
+--         {name = 'buffer', keyword_length = 5}
+--     }
+--     -- formatting = {
+--     --   format = lspkind.cmp_format({with_text = false, maxwidth = 50})
+--     -- }
+-- })
 
-        ["<S-Tab>"] = cmp.mapping(function(fallback)
-            if ls.jumpable(-1) then
-                ls.jump(-1)
-            else
-                fallback()
-            end
-        end, {"i", "s"})
-    },
-    sources = {
-        {name = 'npm'}, {name = 'luasnip'}, {name = 'nvim_lsp'},
-        {name = 'buffer', keyword_length = 5}
-    }
-    -- formatting = {
-    --   format = lspkind.cmp_format({with_text = false, maxwidth = 50})
-    -- }
-})
-
-local t = function(str)
-    return vim.api.nvim_replace_termcodes(str, true, true, true)
-end
-
-_G.expand = function()
-    -- print("hurray!!")
-    if ls.expand_or_jumpable() then return t("<Plug>luasnip-expand-or-jump") end
-    return ''
-end
-
-_G.expand_back = function()
-    -- print("hurray!!")
-    if ls.jumpable(-1) then return t("<Plug>luasnip-jump-prev") end
-    return ''
-end
-
-vim.api.nvim_set_keymap('i', '<c-j>', 'v:lua.expand()', {expr = true})
-vim.api.nvim_set_keymap('i', '<c-k>', 'v:lua.expand_back()', {expr = true})
-vim.api.nvim_set_keymap('s', '<c-j>', 'v:lua.expand()', {expr = true})
-vim.api.nvim_set_keymap('s', '<c-k>', 'v:lua.expand_back()', {expr = true})
-
-vim.keymap.set('n', '<leader>ls',
-               '<cmd>source ~/.config/nvim/after/plugin/luasnip.lua<CR>')
-
+-- local t = function(str)
+--     return vim.api.nvim_replace_termcodes(str, true, true, true)
+-- end
+--
+-- _G.expand = function()
+--     -- print("hurray!!")
+--     if ls.expand_or_jumpable() then return t("<Plug>luasnip-expand-or-jump") end
+--     return ''
+-- end
+--
+-- _G.expand_back = function()
+--     -- print("hurray!!")
+--     if ls.jumpable(-1) then return t("<Plug>luasnip-jump-prev") end
+--     return ''
+-- end
+--
+-- vim.api.nvim_set_keymap('i', '<c-j>', 'v:lua.expand()', {expr = true})
+-- vim.api.nvim_set_keymap('i', '<c-k>', 'v:lua.expand_back()', {expr = true})
+-- vim.api.nvim_set_keymap('s', '<c-j>', 'v:lua.expand()', {expr = true})
+-- vim.api.nvim_set_keymap('s', '<c-k>', 'v:lua.expand_back()', {expr = true})
+--
+-- vim.keymap.set('n', '<leader>ls',
+--                '<cmd>source ~/.config/nvim/after/plugin/luasnip.lua<CR>')
+--
 _G.test_dap = function()
     local dap = require 'dap'
     -- dap.terminate(nil, nil, function()
@@ -831,4 +879,4 @@ require("mason-lspconfig").setup_handlers {
 -- vim.api.nvim_create_autocmd("CursorHold", {callback = vim.lsp.buf.document_highlight})
 -- vim.api.nvim_create_autocmd("CursorMoved", {callback = vim.lsp.buf.clear_references})
 
-vim.api.nvim_create_autocmd("CursorMoved", {callback = require'spotlight'.run})
+-- vim.api.nvim_create_autocmd("CursorMoved", {callback = require'spotlight'.run})
