@@ -29,7 +29,8 @@ require('lazy').setup({
     'nvim-lua/popup.nvim', 'lewis6991/gitsigns.nvim',
     'nvim-telescope/telescope-dap.nvim', 'theHamsta/nvim-dap-virtual-text',
     'ryanoasis/vim-devicons', 'David-Kunz/jester',
-    {'David-Kunz/markid', dev = false}, 'David-Kunz/spotlight',
+    -- {'David-Kunz/markid', dev = false}, 
+    -- 'David-Kunz/spotlight',
     {'nvim-tree/nvim-tree.lua', dependencies = {'nvim-tree/nvim-web-devicons'}},
     'David-Kunz/treesitter-unit', -- use 'David-Kunz/ts-quickfix',
     -- 'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/nvim-cmp',
@@ -38,8 +39,10 @@ require('lazy').setup({
     'voldikss/vim-floaterm', 'rcarriga/nvim-dap-ui',
     -- use 'ldelossa/litee.nvim',
     -- use 'ldelossa/gh.nvim',
-    'nvim-telescope/telescope-ui-select.nvim', 'nvim-treesitter/playground',
-    'norcalli/nvim-colorizer.lua', 'mxsdev/nvim-dap-vscode-js', {
+    'nvim-telescope/telescope-ui-select.nvim', 
+    -- 'nvim-treesitter/playground',
+    -- 'norcalli/nvim-colorizer.lua', 
+    'mxsdev/nvim-dap-vscode-js', {
         "microsoft/vscode-js-debug",
         -- lazy = true,
         build = "npm install --legacy-peer-deps && npm run compile"
@@ -64,19 +67,20 @@ require('lazy').setup({
         'echasnovski/mini.comment',
         version = false,
         config = function() require('mini.comment').setup() end
-    }, {
-        'echasnovski/mini.pairs',
-        version = false,
-        config = function() require('mini.pairs').setup() end
-    }, {
-        'echasnovski/mini.surround',
-        version = false,
-        config = function() require('mini.surround').setup() end
-    }, {
-        'echasnovski/mini.ai',
-        version = false,
-        config = function() require('mini.ai').setup() end
-    }
+    },
+    -- {
+    --     'echasnovski/mini.pairs',
+    --     version = false,
+    --     config = function() require('mini.pairs').setup() end
+    -- }, {
+    --     'echasnovski/mini.surround',
+    --     version = false,
+    --     config = function() require('mini.surround').setup() end
+    -- }, {
+    --     'echasnovski/mini.ai',
+    --     version = false,
+    --     config = function() require('mini.ai').setup() end
+    -- }
     -- {
     --     'echasnovski/mini.base16',
     --     version = false,
@@ -436,7 +440,7 @@ parser_config.cds = {
     used_by = {"cdl", "hdbcds"}
 }
 
-require('markid')
+-- require('markid')
 require'nvim-treesitter.configs'.setup {
     highlight = {enable = true}
     -- markid = {enable = true}
