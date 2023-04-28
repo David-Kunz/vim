@@ -1,3 +1,4 @@
+-- vim.cmd("set shell=/bin/zsh")
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
     vim.fn.system({
@@ -22,6 +23,7 @@ require('lazy').setup({
                 styles = {functions = 'bold', keywords = 'italic'}
             })
             vim.cmd.colorscheme("tokyonight")
+            -- vim.cmd.colorscheme("tokyonight-day")
         end
     }, 'mhartington/formatter.nvim', -- use 'neovim/nvim-lspconfig',
     {'nvim-treesitter/nvim-treesitter', build = ':TSUpdate'},
@@ -29,7 +31,7 @@ require('lazy').setup({
     'nvim-lua/popup.nvim', 'lewis6991/gitsigns.nvim',
     'nvim-telescope/telescope-dap.nvim', 'theHamsta/nvim-dap-virtual-text',
     'ryanoasis/vim-devicons', 'David-Kunz/jester',
-    -- {'David-Kunz/markid', dev = false}, 
+    -- {'David-Kunz/markid', dev = false},
     -- 'David-Kunz/spotlight',
     {'nvim-tree/nvim-tree.lua', dependencies = {'nvim-tree/nvim-web-devicons'}},
     'David-Kunz/treesitter-unit', -- use 'David-Kunz/ts-quickfix',
@@ -42,11 +44,13 @@ require('lazy').setup({
     'nvim-telescope/telescope-ui-select.nvim', 
     -- 'nvim-treesitter/playground',
     -- 'norcalli/nvim-colorizer.lua', 
-    'mxsdev/nvim-dap-vscode-js', {
-        "microsoft/vscode-js-debug",
-        -- lazy = true,
-        build = "npm install --legacy-peer-deps && npm run compile"
-    }, {
+    'mxsdev/nvim-dap-vscode-js', 
+    -- {
+    --     "microsoft/vscode-js-debug",
+    --     -- lazy = true,
+    --     build = "npm install --legacy-peer-deps && npm run compile"
+    -- }, 
+    {
         "microsoft/vscode-node-debug2",
         -- lazy = true,
         build = "npm install && NODE_OPTIONS=--no-experimental-fetch npm run build"
@@ -59,11 +63,13 @@ require('lazy').setup({
         'echasnovski/mini.completion',
         version = false,
         config = function() require('mini.completion').setup() end
-    }, {
-        'echasnovski/mini.bracketed',
-        version = false,
-        config = function() require('mini.bracketed').setup() end
-    }, {
+    }, 
+    -- {
+    --     'echasnovski/mini.bracketed',
+    --     version = false,
+    --     config = function() require('mini.bracketed').setup() end
+    -- },
+    {
         'echasnovski/mini.comment',
         version = false,
         config = function() require('mini.comment').setup() end
@@ -208,6 +214,8 @@ g.markdown_fenced_languages = {'javascript', 'js=javascript', 'json=javascript'}
 vim.cmd([[set path=$PWD/**]])
 vim.keymap.set('n', '<leader>v', ':e $MYVIMRC<CR>')
 
+vim.opt.statusline = "%F Line:%l"
+
 -- lewis6991/gitsigns.nvim
 function diffThisBranch()
     local branch = vim.fn.input("Branch: ", "")
@@ -266,6 +274,16 @@ require('formatter').setup({
                 }
             end
         },
+        typescript = {
+            -- prettierd
+            function()
+                return {
+                    exe = "prettierd",
+                    args = {vim.api.nvim_buf_get_name(0)},
+                    stdin = true
+                }
+            end
+        },
         json = {
             -- prettierd
             function()
@@ -282,8 +300,8 @@ require('formatter').setup({
             -- prettierd
             function()
                 return {
-                    exe = "sqlformat",
-                    args = {vim.api.nvim_buf_get_name(0), '-a'},
+                    exe = "sql-formatter",
+                    args = {vim.api.nvim_buf_get_name(0)},
                     stdin = true
                 }
             end
@@ -361,10 +379,12 @@ vim.keymap.set('n', '<leader>fs', ':Telescope lsp_document_symbols<CR>')
 vim.keymap.set('n', '<leader>ff', ':Telescope live_grep<CR>')
 vim.keymap.set('n', '<leader>FF', ':Telescope grep_string<CR>')
 
+vim.keymap.set('n', '<leader>fy', ':let @"=expand("%")<CR>')
 -- David-Kunz/cmp-npm
 -- require('cmp-npm').setup({only_latest_version = true})
 
 vim.keymap.set('n', 'gd', function() vim.lsp.buf.definition() end)
+vim.keymap.set('n', 'gi', function() vim.lsp.buf.implementation() end)
 vim.keymap.set('n', 'gh', function() vim.lsp.buf.hover() end)
 vim.keymap.set('n', 'gD', function() vim.lsp.buf.implementation() end)
 vim.keymap.set('n', '<c-k>', function() vim.lsp.buf.signature_help() end)
@@ -442,7 +462,7 @@ parser_config.cds = {
 
 -- require('markid')
 require'nvim-treesitter.configs'.setup {
-    highlight = {enable = true}
+    highlight = {enable = true},
     -- markid = {enable = true}
 }
 
@@ -621,7 +641,8 @@ vim.cmd(
 require('nvim-tree').setup({
     hijack_cursor = true,
     update_focused_file = {enable = true},
-    view = {width = 60}
+    filters = { dotfiles = true },
+    view = {width = 20}
 })
 vim.keymap.set('n', '\\', ':NvimTreeToggle<CR>', {silent = true})
 
@@ -884,3 +905,7 @@ require("mason-lspconfig").setup_handlers {
 -- vim.api.nvim_create_autocmd("CursorMoved", {callback = vim.lsp.buf.clear_references})
 
 -- vim.api.nvim_create_autocmd("CursorMoved", {callback = require'spotlight'.run})
+--
+--
+
+
