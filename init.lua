@@ -34,6 +34,7 @@ require('lazy').setup({
     -- {'David-Kunz/markid', dev = false},
     -- 'David-Kunz/spotlight',
     {'nvim-tree/nvim-tree.lua', dependencies = {'nvim-tree/nvim-web-devicons'}},
+    { 'echasnovski/mini.base16', version = '*' },
     'David-Kunz/treesitter-unit', -- use 'David-Kunz/ts-quickfix',
     -- 'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/nvim-cmp',
     -- 'David-Kunz/cmp-npm', 'marko-cerovac/material.nvim',
@@ -45,11 +46,11 @@ require('lazy').setup({
     -- 'nvim-treesitter/playground',
     -- 'norcalli/nvim-colorizer.lua', 
     'mxsdev/nvim-dap-vscode-js', 
-    -- {
-    --     "microsoft/vscode-js-debug",
-    --     -- lazy = true,
-    --     build = "npm install --legacy-peer-deps && npm run compile"
-    -- }, 
+    {
+        "microsoft/vscode-js-debug",
+        -- lazy = true,
+        build = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out"
+    },
     {
         "microsoft/vscode-node-debug2",
         -- lazy = true,
@@ -442,8 +443,10 @@ vim.g.floaterm_width = 0.95
 vim.g.floaterm_height = 0.95
 vim.keymap.set('n', '<leader>g', ':FloatermNew lazygit<CR>')
 
-cmd('set foldmethod=expr')
-cmd('set foldexpr=nvim_treesitter#foldexpr()')
+-- cmd('set foldmethod=expr')
+-- cmd('set foldexpr=nvim_treesitter#foldexpr()')
+
+vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 
 vim.keymap.set('n', '<leader>n', ':tabe ~/tmp/notes.md<CR>')
 
@@ -467,12 +470,22 @@ require'nvim-treesitter.configs'.setup {
 }
 
 -- mxsdev/nvim-dap-vscode-js
-require("dap-vscode-js").setup({
-    adapters = {
-        'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal',
-        'pwa-extensionHost'
-    }
-})
+require('dap-vscode-js').setup({
+      debugger_path = os.getenv('HOME') .. '/.local/share/nvim/lazy/vscode-js-debug',
+      adapters = {
+        'pwa-node',
+        'pwa-chrome',
+        'pwa-msedge',
+        'node-terminal',
+        'pwa-extensionHost',
+      },
+    })
+-- require("dap-vscode-js").setup({
+--     adapters = {
+--         'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal',
+--         'pwa-extensionHost'
+--     }
+-- })
 
 -- mfussenegger/nvim-dap
 local dap = require('dap')
@@ -480,8 +493,7 @@ dap.adapters.node2 = {
     type = 'executable',
     command = 'node',
     args = {
-        os.getenv('HOME') .. -- '/.local/share/nvim/site/pack/packer/opt/vscode-node-debug2/out/src/nodeDebug.js'
-            '/.local/share/nvim/lazy/vscode-node-debug2/out/src/nodeDebug.js'
+        os.getenv('HOME') .. '/.local/share/nvim/lazy/vscode-node-debug2/out/src/nodeDebug.js'
     }
 }
 
@@ -532,7 +544,7 @@ vim.keymap.set('n', '<leader>db', ':Telescope dap list_breakpoints<CR>')
 require('nvim-dap-virtual-text').setup()
 
 -- David-Kunz/jester
-require'jester'.setup({path_to_jest = "/opt/homebrew/bin/jest"})
+require'jester'.setup({path_to_jest = "/opt/homebrew/bin/jest", dap = { type = 'pwa-node' }})
 -- require'jester'.setup({ dap = { type = 'pwa-node'}})
 -- require'jester'.setup({ path_to_jest = "/opt/homebrew/bin/jest", dap = { type = 'pwa-node' } })
 vim.keymap.set('n', '<leader>tt', function() require"jester".run() end)
@@ -642,7 +654,7 @@ require('nvim-tree').setup({
     hijack_cursor = true,
     update_focused_file = {enable = true},
     filters = { dotfiles = true },
-    view = {width = 20}
+    -- view = {width = 20}
 })
 vim.keymap.set('n', '\\', ':NvimTreeToggle<CR>', {silent = true})
 
@@ -908,4 +920,50 @@ require("mason-lspconfig").setup_handlers {
 --
 --
 
-
+-- require('mini.base16').setup({
+--   palette = {
+--     base00 = '#dee3ea', -- background
+--     base01 = '#dee3ea', -- borders,
+--     base01 = '#dee3ea', -- borders,
+--     base02 = '#ffffff', -- borders2 and visual
+--     base03 = '#4db1ff',
+--     base04 = '#0070F2', -- comments
+--     base05 = '#5b738b', -- text output
+--     base06 = '#0070f2', -- unknown
+--     base07 = '#0070f2', -- unknown
+--     base08 = '#0070F2', -- fields
+--     base09 = '#0070f2', -- unknown
+--     base0A = '#4db1ff', -- unknown
+--     base0B = '#188918', -- strings
+--     base0C = '#4db1ff', -- function calls
+--     base0D = '#0070f2', -- function calls 2
+--     base0E = '#7858FF', -- keywords
+--     base0F = '#d30f15', -- brackets
+--   }
+-- })
+--
+-- -- palette = {
+-- --   base00 = '#ffffff', -- background
+-- --   base01 = '#ffffff', -- borders,
+-- --   base01 = '#ffffff', -- borders,
+-- --   base02 = '#ffffff', -- borders2 and visual
+-- --   base03 = '#4db1ff',
+-- --   base04 = '#0070F2', -- comments
+-- --   base05 = '#0070F2', -- text output
+-- --   base06 = '#d30f15', -- unknown
+-- --   base07 = '#d30f15', -- unknown
+-- --   base08 = '#0070F2', -- fields
+-- --   base09 = '#d30f15', -- unknown
+-- --   base0A = '#4db1ff', -- unknown
+-- --   base0B = '#188918', -- strings
+-- --   base0C = '#4db1ff', -- function calls
+-- --   base0D = '#d30f15', -- function calls 2
+-- --   base0E = '#7858FF', -- keywords
+-- --   base0F = '#d30f15', -- brackets
+-- -- }
+--
+-- vim.o.ls = 0
+-- vim.o.ch = 0
+--
+--
+--
