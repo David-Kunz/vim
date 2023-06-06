@@ -25,7 +25,8 @@ require('lazy').setup({
             vim.cmd.colorscheme("tokyonight")
             -- vim.cmd.colorscheme("tokyonight-day")
         end
-    }, 'mhartington/formatter.nvim', -- use 'neovim/nvim-lspconfig',
+    },
+    'mhartington/formatter.nvim', -- use 'neovim/nvim-lspconfig',
     {'nvim-treesitter/nvim-treesitter', build = ':TSUpdate'},
     'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim',
     'nvim-lua/popup.nvim', 'lewis6991/gitsigns.nvim',
@@ -49,7 +50,7 @@ require('lazy').setup({
     {
         "microsoft/vscode-js-debug",
         -- lazy = true,
-        build = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out"
+        build = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && rm -rf out && mv dist out"
     },
     {
         "microsoft/vscode-node-debug2",
@@ -403,27 +404,29 @@ vim.keymap.set('n', 'gA', ':Telescope lsp_range_code_actions<CR>')
 --      autocmd BufReadPre,FileReadPre *.cds set ft=cds
 -- augroup END
 -- ]])
-local lspconfig = require 'lspconfig'
-local configs = require 'lspconfig.configs'
-if not configs.sapcds_lsp then
-    configs.sapcds_lsp = {
-        default_config = {
-            cmd = {
-                vim.fn.expand(
-                    "/Users/d065023/apps/cds-lsp/node_modules/.bin/cds-lsp"),
-                '--stdio'
-            },
-            filetypes = {'cds'},
-            root_dir = lspconfig.util.root_pattern('.git', 'package.json'),
-            settings = {}
-        }
-    }
-end
-if lspconfig.sapcds_lsp.setup then
-    lspconfig.sapcds_lsp.setup {
-        -- capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
-    }
-end
+--
+-- DISABLE FOR NOW
+-- local lspconfig = require 'lspconfig'
+-- local configs = require 'lspconfig.configs'
+-- if not configs.sapcds_lsp then
+--     configs.sapcds_lsp = {
+--         default_config = {
+--             cmd = {
+--                 vim.fn.expand(
+--                     "/Users/d065023/apps/cds-lsp/node_modules/.bin/cds-lsp"),
+--                 '--stdio'
+--             },
+--             filetypes = {'cds'},
+--             root_dir = lspconfig.util.root_pattern('.git', 'package.json'),
+--             settings = {}
+--         }
+--     }
+-- end
+-- if lspconfig.sapcds_lsp.setup then
+--     lspconfig.sapcds_lsp.setup {
+--         -- capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+--     }
+-- end
 
 vim.keymap.set('n', '<leader><esc><esc>', ':tabclose<CR>')
 
