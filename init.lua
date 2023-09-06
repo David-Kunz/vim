@@ -25,34 +25,29 @@ require('lazy').setup({
             vim.cmd.colorscheme("tokyonight")
             -- vim.cmd.colorscheme("tokyonight-day")
         end
-    },
-    'mhartington/formatter.nvim', -- use 'neovim/nvim-lspconfig',
+    }, 'mhartington/formatter.nvim', -- use 'neovim/nvim-lspconfig',
     {'nvim-treesitter/nvim-treesitter', build = ':TSUpdate'},
     'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim',
     'nvim-lua/popup.nvim', 'lewis6991/gitsigns.nvim',
     'nvim-telescope/telescope-dap.nvim', 'theHamsta/nvim-dap-virtual-text',
     'ryanoasis/vim-devicons', 'David-Kunz/jester',
-    -- {'David-Kunz/markid', dev = false},
+    -- {'David-Kunz/markid', dev = true},
     -- 'David-Kunz/spotlight',
     {'nvim-tree/nvim-tree.lua', dependencies = {'nvim-tree/nvim-web-devicons'}},
-    { 'echasnovski/mini.base16', version = '*' },
-    'David-Kunz/treesitter-unit', -- use 'David-Kunz/ts-quickfix',
+    {'echasnovski/mini.base16', version = '*'}, 'David-Kunz/treesitter-unit', -- use 'David-Kunz/ts-quickfix',
     -- 'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/nvim-cmp',
     -- 'David-Kunz/cmp-npm', 'marko-cerovac/material.nvim',
     'mfussenegger/nvim-dap', -- 'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip',
     'voldikss/vim-floaterm', 'rcarriga/nvim-dap-ui',
     -- use 'ldelossa/litee.nvim',
     -- use 'ldelossa/gh.nvim',
-    'nvim-telescope/telescope-ui-select.nvim', 
-    -- 'nvim-treesitter/playground',
+    'nvim-telescope/telescope-ui-select.nvim', -- 'nvim-treesitter/playground',
     -- 'norcalli/nvim-colorizer.lua', 
     'mxsdev/nvim-dap-vscode-js', 
-    {
         "microsoft/vscode-js-debug",
         -- lazy = true,
         build = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && rm -rf out && mv dist out"
-    },
-    {
+    , {
         "microsoft/vscode-node-debug2",
         -- lazy = true,
         build = "npm install && NODE_OPTIONS=--no-experimental-fetch npm run build"
@@ -65,8 +60,7 @@ require('lazy').setup({
         'echasnovski/mini.completion',
         version = false,
         config = function() require('mini.completion').setup() end
-    }, 
-    -- {
+    }, -- {
     --     'echasnovski/mini.bracketed',
     --     version = false,
     --     config = function() require('mini.bracketed').setup() end
@@ -75,7 +69,14 @@ require('lazy').setup({
         'echasnovski/mini.comment',
         version = false,
         config = function() require('mini.comment').setup() end
-    },
+    }, {
+        'echasnovski/mini.files',
+        version = false,
+        config = function()
+            require('mini.files').setup({mappings = {go_in_plus = 'l'}})
+        end
+
+    }
     -- {
     --     'echasnovski/mini.pairs',
     --     version = false,
@@ -406,27 +407,27 @@ vim.keymap.set('n', 'gA', ':Telescope lsp_range_code_actions<CR>')
 -- ]])
 --
 -- DISABLE FOR NOW
--- local lspconfig = require 'lspconfig'
--- local configs = require 'lspconfig.configs'
--- if not configs.sapcds_lsp then
---     configs.sapcds_lsp = {
---         default_config = {
---             cmd = {
---                 vim.fn.expand(
---                     "/Users/d065023/apps/cds-lsp/node_modules/.bin/cds-lsp"),
---                 '--stdio'
---             },
---             filetypes = {'cds'},
---             root_dir = lspconfig.util.root_pattern('.git', 'package.json'),
---             settings = {}
---         }
---     }
--- end
--- if lspconfig.sapcds_lsp.setup then
---     lspconfig.sapcds_lsp.setup {
---         -- capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
---     }
--- end
+local lspconfig = require 'lspconfig'
+local configs = require 'lspconfig.configs'
+if not configs.sapcds_lsp then
+    configs.sapcds_lsp = {
+        default_config = {
+            cmd = {
+                vim.fn.expand(
+                    "/Users/d065023/apps/cds-lsp/node_modules/.bin/cds-lsp"),
+                '--stdio'
+            },
+            filetypes = {'cds'},
+            root_dir = lspconfig.util.root_pattern('.git', 'package.json'),
+            settings = {}
+        }
+    }
+end
+if lspconfig.sapcds_lsp.setup then
+    lspconfig.sapcds_lsp.setup {
+        -- capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+    }
+end
 
 vim.keymap.set('n', '<leader><esc><esc>', ':tabclose<CR>')
 
@@ -468,21 +469,19 @@ parser_config.cds = {
 
 -- require('markid')
 require'nvim-treesitter.configs'.setup {
-    highlight = {enable = true},
+    highlight = {enable = true}
     -- markid = {enable = true}
 }
 
 -- mxsdev/nvim-dap-vscode-js
 require('dap-vscode-js').setup({
-      debugger_path = os.getenv('HOME') .. '/.local/share/nvim/lazy/vscode-js-debug',
-      adapters = {
-        'pwa-node',
-        'pwa-chrome',
-        'pwa-msedge',
-        'node-terminal',
-        'pwa-extensionHost',
-      },
-    })
+    debugger_path = os.getenv('HOME') ..
+        '/.local/share/nvim/lazy/vscode-js-debug',
+    adapters = {
+        'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal',
+        'pwa-extensionHost'
+    }
+})
 -- require("dap-vscode-js").setup({
 --     adapters = {
 --         'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal',
@@ -496,7 +495,8 @@ dap.adapters.node2 = {
     type = 'executable',
     command = 'node',
     args = {
-        os.getenv('HOME') .. '/.local/share/nvim/lazy/vscode-node-debug2/out/src/nodeDebug.js'
+        os.getenv('HOME') ..
+            '/.local/share/nvim/lazy/vscode-node-debug2/out/src/nodeDebug.js'
     }
 }
 
@@ -547,7 +547,10 @@ vim.keymap.set('n', '<leader>db', ':Telescope dap list_breakpoints<CR>')
 require('nvim-dap-virtual-text').setup()
 
 -- David-Kunz/jester
-require'jester'.setup({path_to_jest = "/opt/homebrew/bin/jest", dap = { type = 'pwa-node' }})
+require'jester'.setup({
+    path_to_jest = "/opt/homebrew/bin/jest",
+    dap = {type = 'pwa-node'}
+})
 -- require'jester'.setup({ dap = { type = 'pwa-node'}})
 -- require'jester'.setup({ path_to_jest = "/opt/homebrew/bin/jest", dap = { type = 'pwa-node' } })
 vim.keymap.set('n', '<leader>tt', function() require"jester".run() end)
@@ -653,13 +656,16 @@ vim.cmd(
     [[au TextYankPost * lua vim.highlight.on_yank {higroup="IncSearch", timeout=150, on_visual=true}]])
 
 -- kyazdani42/nvim-tree.lua
-require('nvim-tree').setup({
-    hijack_cursor = true,
-    update_focused_file = {enable = true},
-    filters = { dotfiles = true },
-    -- view = {width = 20}
-})
-vim.keymap.set('n', '\\', ':NvimTreeToggle<CR>', {silent = true})
+-- require('nvim-tree').setup({
+--     hijack_cursor = true,
+--     update_focused_file = {enable = true},
+--     filters = {dotfiles = true},
+--     view = {width = 50}
+-- })
+-- vim.keymap.set('n', '\\', ':NvimTreeToggle<CR>', {silent = true})
+vim.keymap.set('n', '\\',
+               ':lua if not MiniFiles.close() then MiniFiles.open() end<CR>',
+               {silent = true})
 
 vim.keymap.set('n', 'gq', ':bd!<CR>')
 vim.keymap.set('n', '<leader>w', ':w<CR>')
@@ -969,4 +975,4 @@ require("mason-lspconfig").setup_handlers {
 -- vim.o.ch = 0
 --
 --
---
+-- 
