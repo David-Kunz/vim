@@ -34,7 +34,8 @@ require('lazy').setup({
     -- {'David-Kunz/markid', dev = true},
     -- 'David-Kunz/spotlight',
     {'nvim-tree/nvim-tree.lua', dependencies = {'nvim-tree/nvim-web-devicons'}},
-    {'echasnovski/mini.base16', version = '*'}, 'David-Kunz/treesitter-unit', -- use 'David-Kunz/ts-quickfix',
+    -- {'echasnovski/mini.base16', version = '*'}
+    'David-Kunz/treesitter-unit', -- use 'David-Kunz/ts-quickfix',
     -- 'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/nvim-cmp',
     -- 'David-Kunz/cmp-npm', 'marko-cerovac/material.nvim',
     'mfussenegger/nvim-dap', -- 'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip',
@@ -60,11 +61,7 @@ require('lazy').setup({
         'echasnovski/mini.completion',
         version = false,
         config = function() require('mini.completion').setup() end
-    }, -- {
-    --     'echasnovski/mini.bracketed',
-    --     version = false,
-    --     config = function() require('mini.bracketed').setup() end
-    -- },
+    }, 
     {
         'echasnovski/mini.comment',
         version = false,
@@ -77,19 +74,6 @@ require('lazy').setup({
         end
 
     }
-    -- {
-    --     'echasnovski/mini.pairs',
-    --     version = false,
-    --     config = function() require('mini.pairs').setup() end
-    -- }, {
-    --     'echasnovski/mini.surround',
-    --     version = false,
-    --     config = function() require('mini.surround').setup() end
-    -- }, {
-    --     'echasnovski/mini.ai',
-    --     version = false,
-    --     config = function() require('mini.ai').setup() end
-    -- }
     -- {
     --     'echasnovski/mini.base16',
     --     version = false,
