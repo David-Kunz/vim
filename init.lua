@@ -25,12 +25,17 @@ require('lazy').setup({
             vim.cmd.colorscheme("tokyonight")
             -- vim.cmd.colorscheme("tokyonight-day")
         end
-    }, 'mhartington/formatter.nvim', -- use 'neovim/nvim-lspconfig',
+    },
+    'mhartington/formatter.nvim', -- use 'neovim/nvim-lspconfig',
     {'nvim-treesitter/nvim-treesitter', build = ':TSUpdate'},
-    'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim',
-    'nvim-lua/popup.nvim', 'lewis6991/gitsigns.nvim',
-    'nvim-telescope/telescope-dap.nvim', 'theHamsta/nvim-dap-virtual-text',
-    'ryanoasis/vim-devicons', 'David-Kunz/jester',
+    'nvim-telescope/telescope.nvim',
+    'nvim-lua/plenary.nvim',
+    'nvim-lua/popup.nvim',
+    'lewis6991/gitsigns.nvim',
+    'nvim-telescope/telescope-dap.nvim',
+    'theHamsta/nvim-dap-virtual-text',
+    'ryanoasis/vim-devicons',
+    'David-Kunz/jester',
     -- {'David-Kunz/markid', dev = true},
     -- 'David-Kunz/spotlight',
     {'nvim-tree/nvim-tree.lua', dependencies = {'nvim-tree/nvim-web-devicons'}},
@@ -39,16 +44,17 @@ require('lazy').setup({
     -- 'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/nvim-cmp',
     -- 'David-Kunz/cmp-npm', 'marko-cerovac/material.nvim',
     'mfussenegger/nvim-dap', -- 'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip',
-    'voldikss/vim-floaterm', 'rcarriga/nvim-dap-ui',
+    'voldikss/vim-floaterm',
+    'rcarriga/nvim-dap-ui',
     -- use 'ldelossa/litee.nvim',
     -- use 'ldelossa/gh.nvim',
     'nvim-telescope/telescope-ui-select.nvim', -- 'nvim-treesitter/playground',
     -- 'norcalli/nvim-colorizer.lua', 
-    'mxsdev/nvim-dap-vscode-js', 
-        "microsoft/vscode-js-debug",
-        -- lazy = true,
-        build = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && rm -rf out && mv dist out"
-    , {
+    'mxsdev/nvim-dap-vscode-js',
+    "microsoft/vscode-js-debug",
+    -- lazy = true,
+    build = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && rm -rf out && mv dist out",
+    {
         "microsoft/vscode-node-debug2",
         -- lazy = true,
         build = "npm install && NODE_OPTIONS=--no-experimental-fetch npm run build"
@@ -56,17 +62,20 @@ require('lazy').setup({
     --     'ggandor/leap.nvim',
     --     config = function() require('leap').add_default_mappings() end
     -- }
-    "williamboman/mason.nvim", "williamboman/mason-lspconfig.nvim",
-    "neovim/nvim-lspconfig", {
+    "williamboman/mason.nvim",
+    "williamboman/mason-lspconfig.nvim",
+    "neovim/nvim-lspconfig",
+    {
         'echasnovski/mini.completion',
         version = false,
         config = function() require('mini.completion').setup() end
-    }, 
+    },
     {
         'echasnovski/mini.comment',
         version = false,
         config = function() require('mini.comment').setup() end
-    }, {
+    },
+    {
         'echasnovski/mini.files',
         version = false,
         config = function()
