@@ -29,6 +29,13 @@ require('lazy').setup({
     'mhartington/formatter.nvim', -- use 'neovim/nvim-lspconfig',
     {'nvim-treesitter/nvim-treesitter', build = ':TSUpdate'},
     'nvim-telescope/telescope.nvim',
+    {
+        "nvim-telescope/telescope-frecency.nvim",
+        config = function()
+            require("telescope").load_extension "frecency"
+        end,
+        dependencies = {"kkharji/sqlite.lua"}
+    },
     'nvim-lua/plenary.nvim',
     'nvim-lua/popup.nvim',
     'lewis6991/gitsigns.nvim',
@@ -36,6 +43,7 @@ require('lazy').setup({
     'theHamsta/nvim-dap-virtual-text',
     'ryanoasis/vim-devicons',
     'David-Kunz/jester',
+    {'David-Kunz/gen.nvim', dev = true},
     -- {'David-Kunz/markid', dev = true},
     -- 'David-Kunz/spotlight',
     {'nvim-tree/nvim-tree.lua', dependencies = {'nvim-tree/nvim-web-devicons'}},
@@ -462,7 +470,15 @@ parser_config.cds = {
 
 -- require('markid')
 require'nvim-treesitter.configs'.setup {
-    highlight = {enable = true}
+    highlight = {enable = true},
+    incremental_selection = {
+        enable = true,
+        keymaps = {
+            init_selection = '<CR>',
+            node_incremental = '<CR>',
+            node_decremental = '<S-CR>'
+        }
+    }
     -- markid = {enable = true}
 }
 
@@ -657,7 +673,7 @@ vim.cmd(
 -- })
 -- vim.keymap.set('n', '\\', ':NvimTreeToggle<CR>', {silent = true})
 vim.keymap.set('n', '\\',
-               ':lua if not MiniFiles.close() then MiniFiles.open() end<CR>',
+               ':lua if not MiniFiles.close() then MiniFiles.open(vim.api.nvim_buf_get_name(0)) end<CR>',
                {silent = true})
 
 vim.keymap.set('n', 'gq', ':bd!<CR>')
@@ -915,6 +931,11 @@ require("mason-lspconfig").setup_handlers {
         })
     end
 }
+
+vim.keymap.set('v', '<leader>]', ':Gen<CR>')
+vim.keymap.set('n', '<leader>]', ':Gen<CR>')
+vim.keymap.set('n', '<leader>[', ':Gen Generate<CR>')
+
 -- vim.api.nvim_create_autocmd("CursorHold", {callback = vim.lsp.buf.document_highlight})
 -- vim.api.nvim_create_autocmd("CursorMoved", {callback = vim.lsp.buf.clear_references})
 
@@ -969,3 +990,12 @@ require("mason-lspconfig").setup_handlers {
 --
 --
 -- 
+--
+--
+--
+
+require('gen').prompts['Make_Style'] = {
+    prompt = 'Transform the following text into the style of $input1: $text',
+    replace = true
+}
+
