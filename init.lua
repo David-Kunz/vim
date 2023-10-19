@@ -359,8 +359,8 @@ _G.telescope_files_or_git_files = function()
     end
 end
 vim.keymap.set('n', '<leader>fD', function() telescope_live_grep_in_path() end)
-vim.keymap.set('n', '<leader><space>',
-               function() telescope_files_or_git_files() end)
+-- vim.keymap.set('n', '<leader><space>',
+--                function() telescope_files_or_git_files() end)
 vim.keymap.set('n', '<leader>fd', function() telescope_find_files_in_path() end)
 vim.keymap.set('n', '<leader>ft',
                function() telescope_find_files_in_path("./tests") end)
@@ -380,8 +380,8 @@ vim.keymap.set('n', '<leader>fG', ':Telescope git_branches<CR>')
 vim.keymap.set('n', '<leader>fg', ':Telescope git_status<CR>')
 vim.keymap.set('n', '<c-\\>', ':Telescope buffers<CR>')
 vim.keymap.set('n', '<leader>fs', ':Telescope lsp_document_symbols<CR>')
-vim.keymap.set('n', '<leader>ff', ':Telescope live_grep<CR>')
 vim.keymap.set('n', '<leader>FF', ':Telescope grep_string<CR>')
+vim.keymap.set('n', '<leader><space>', ':Telescope frecency workspace=CWD<CR>')
 
 vim.keymap.set('n', '<leader>fy', ':let @"=expand("%")<CR>')
 -- David-Kunz/cmp-npm
@@ -935,6 +935,7 @@ require("mason-lspconfig").setup_handlers {
 vim.keymap.set('v', '<leader>]', ':Gen<CR>')
 vim.keymap.set('n', '<leader>]', ':Gen<CR>')
 vim.keymap.set('n', '<leader>[', ':Gen Generate<CR>')
+-- require('gen').model = 'mistral'
 
 -- vim.api.nvim_create_autocmd("CursorHold", {callback = vim.lsp.buf.document_highlight})
 -- vim.api.nvim_create_autocmd("CursorMoved", {callback = vim.lsp.buf.clear_references})
@@ -993,9 +994,13 @@ vim.keymap.set('n', '<leader>[', ':Gen Generate<CR>')
 --
 --
 --
-
-require('gen').prompts['Make_Style'] = {
-    prompt = 'Transform the following text into the style of $input1: $text',
-    replace = true
+require('gen').model = 'zephyr'
+require('gen').prompts['Elaborate_Text'] = {
+  prompt = "Elaborate the following text:\n$text",
+  replace = true
 }
-
+require('gen').prompts['Fix_Code'] = {
+  prompt = "Fix the following code. Only ouput the result in format ```$filetype\n...\n```:\n```$filetype\n$text\n```",
+  replace = true,
+  extract = "```$filetype\n(.-)```"
+}
