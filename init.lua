@@ -451,7 +451,7 @@ vim.keymap.set('n', '<leader>g', ':FloatermNew lazygit<CR>')
 -- cmd('set foldmethod=expr')
 -- cmd('set foldexpr=nvim_treesitter#foldexpr()')
 
-vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+-- vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 
 vim.keymap.set('n', '<leader>n', ':tabe ~/tmp/notes.md<CR>')
 
@@ -688,6 +688,7 @@ vim.cmd('iabbrev :sad: 😔')
 vim.cmd('iabbrev darkred #8b0000')
 vim.cmd('iabbrev darkgreen #006400')
 
+
 _G.term_buf_of_tab = _G.term_buf_of_tab or {}
 _G.term_buf_max_nmb = _G.term_buf_max_nmb or 0
 
@@ -729,10 +730,13 @@ end
 vim.keymap.set('n', '<c-y>', Toggle_terminal)
 vim.keymap.set('i', '<c-y>', '<ESC>:lua Toggle_terminal()<CR>')
 vim.keymap.set('t', '<c-y>', '<c-\\><c-n>:lua Toggle_terminal()<CR>')
--- cmd([[
--- if has('nvim')
---    au! TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
--- endif]])
+
+
+
+cmd([[
+if has('nvim')
+   au! TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
+endif]])
 
 Send_line_to_terminal = function()
     local curr_line = vim.api.nvim_get_current_line()
@@ -994,13 +998,13 @@ vim.keymap.set('n', '<leader>[', ':Gen Generate<CR>')
 --
 --
 --
-require('gen').model = 'zephyr'
-require('gen').prompts['Elaborate_Text'] = {
-  prompt = "Elaborate the following text:\n$text",
-  replace = true
-}
-require('gen').prompts['Fix_Code'] = {
-  prompt = "Fix the following code. Only ouput the result in format ```$filetype\n...\n```:\n```$filetype\n$text\n```",
-  replace = true,
-  extract = "```$filetype\n(.-)```"
-}
+-- require('gen').model = 'zephyr'
+-- require('gen').prompts['Elaborate_Text'] = {
+--   prompt = "Elaborate the following text:\n$text",
+--   replace = true
+-- }
+-- require('gen').prompts['Fix_Code'] = {
+--   prompt = "Fix the following code. Only ouput the result in format ```$filetype\n...\n```:\n```$filetype\n$text\n```",
+--   replace = true,
+--   extract = "```$filetype\n(.-)```"
+-- }
