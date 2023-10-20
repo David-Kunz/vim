@@ -46,7 +46,7 @@ require('lazy').setup({
     {'David-Kunz/gen.nvim', dev = true},
     -- {'David-Kunz/markid', dev = true},
     -- 'David-Kunz/spotlight',
-    {'nvim-tree/nvim-tree.lua', dependencies = {'nvim-tree/nvim-web-devicons'}},
+    -- {'nvim-tree/nvim-tree.lua', dependencies = {'nvim-tree/nvim-web-devicons'}},
     -- {'echasnovski/mini.base16', version = '*'}
     'David-Kunz/treesitter-unit', -- use 'David-Kunz/ts-quickfix',
     -- 'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/nvim-cmp',
@@ -634,31 +634,31 @@ vim.keymap.set('o', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
 -- vim.keymap.set('o', 'au', function() require'treesitter-unit'.select(true) end)
 
 -- custom folder icon
-require'nvim-web-devicons'.setup({
-    override = {
-        lir_folder_icon = {
-            icon = "",
-            color = "#7ebae4",
-            name = "LirFolderNode"
-        }
-    }
-})
+-- require'nvim-web-devicons'.setup({
+--     override = {
+--         lir_folder_icon = {
+--             icon = "",
+--             color = "#7ebae4",
+--             name = "LirFolderNode"
+--         }
+--     }
+-- })
 -- use visual mode
-function _G.LirSettings()
-    vim.api.nvim_buf_set_keymap(0, 'x', 'J',
-                                ':<C-u>lua require"lir.mark.actions".toggle_mark("v")<CR>',
-                                {noremap = true, silent = true})
-
-    -- echo cwd
-    vim.api.nvim_echo({{vim.fn.expand('%:p'), 'Normal'}}, false, {})
-end
-vim.cmd [[augroup lir-settings]]
-vim.cmd [[  autocmd!]]
-vim.cmd [[  autocmd Filetype lir :lua LirSettings()]]
-vim.cmd [[augroup END]]
+-- function _G.LirSettings()
+--     vim.api.nvim_buf_set_keymap(0, 'x', 'J',
+--                                 ':<C-u>lua require"lir.mark.actions".toggle_mark("v")<CR>',
+--                                 {noremap = true, silent = true})
+--
+--     -- echo cwd
+--     vim.api.nvim_echo({{vim.fn.expand('%:p'), 'Normal'}}, false, {})
+-- end
+-- vim.cmd [[augroup lir-settings]]
+-- vim.cmd [[  autocmd!]]
+-- vim.cmd [[  autocmd Filetype lir :lua LirSettings()]]
+-- vim.cmd [[augroup END]]
 
 -- global mark I for last edit
-vim.cmd [[autocmd InsertLeave * execute 'normal! mI']]
+-- vim.cmd [[autocmd InsertLeave * execute 'normal! mI']]
 
 -- highlight on yank
 vim.cmd(
@@ -1007,4 +1007,3 @@ vim.keymap.set('n', '<leader>[', ':Gen Generate<CR>')
 --   prompt = "Fix the following code. Only ouput the result in format ```$filetype\n...\n```:\n```$filetype\n$text\n```",
 --   replace = true,
 --   extract = "```$filetype\n(.-)```"
--- }
