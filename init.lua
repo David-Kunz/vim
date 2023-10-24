@@ -29,13 +29,13 @@ require('lazy').setup({
     'mhartington/formatter.nvim', -- use 'neovim/nvim-lspconfig',
     {'nvim-treesitter/nvim-treesitter', build = ':TSUpdate'},
     'nvim-telescope/telescope.nvim',
-    {
-        "nvim-telescope/telescope-frecency.nvim",
-        config = function()
-            require("telescope").load_extension "frecency"
-        end,
-        dependencies = {"kkharji/sqlite.lua"}
-    },
+    -- {
+    --     "nvim-telescope/telescope-frecency.nvim",
+    --     config = function()
+    --         require("telescope").load_extension "frecency"
+    --     end,
+    --     dependencies = {"kkharji/sqlite.lua"}
+    -- },
     'nvim-lua/plenary.nvim',
     'nvim-lua/popup.nvim',
     'lewis6991/gitsigns.nvim',
@@ -381,7 +381,8 @@ vim.keymap.set('n', '<leader>fg', ':Telescope git_status<CR>')
 vim.keymap.set('n', '<c-\\>', ':Telescope buffers<CR>')
 vim.keymap.set('n', '<leader>fs', ':Telescope lsp_document_symbols<CR>')
 vim.keymap.set('n', '<leader>FF', ':Telescope grep_string<CR>')
-vim.keymap.set('n', '<leader><space>', ':Telescope frecency workspace=CWD<CR>')
+vim.keymap.set('n', '<leader><space>', function() telescope_files_or_git_files() end)
+-- vim.keymap.set('n', '<leader><space>', ':Telescope frecency workspace=CWD<CR>')
 
 vim.keymap.set('n', '<leader>fy', ':let @"=expand("%")<CR>')
 -- David-Kunz/cmp-npm
