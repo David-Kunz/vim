@@ -38,6 +38,7 @@ require('lazy').setup({
     -- },
     'nvim-lua/plenary.nvim',
     'nvim-lua/popup.nvim',
+    'sindrets/diffview.nvim',
     'lewis6991/gitsigns.nvim',
     'nvim-telescope/telescope-dap.nvim',
     'theHamsta/nvim-dap-virtual-text',
@@ -380,6 +381,7 @@ vim.keymap.set('n', '<leader>fG', ':Telescope git_branches<CR>')
 vim.keymap.set('n', '<leader>fg', ':Telescope git_status<CR>')
 vim.keymap.set('n', '<c-\\>', ':Telescope buffers<CR>')
 vim.keymap.set('n', '<leader>fs', ':Telescope lsp_document_symbols<CR>')
+vim.keymap.set('n', '<leader>fw', ':Telescope lsp_dynamic_workspace_symbols<CR>')
 vim.keymap.set('n', '<leader>FF', ':Telescope grep_string<CR>')
 vim.keymap.set('n', '<leader><space>', function() telescope_files_or_git_files() end)
 -- vim.keymap.set('n', '<leader><space>', ':Telescope frecency workspace=CWD<CR>')
@@ -449,6 +451,7 @@ vim.g.floaterm_width = 0.95
 vim.g.floaterm_height = 0.95
 vim.keymap.set('n', '<leader>g', ':FloatermNew lazygit<CR>')
 
+cmd('set foldmethod=indent')
 -- cmd('set foldmethod=expr')
 -- cmd('set foldexpr=nvim_treesitter#foldexpr()')
 
@@ -940,7 +943,6 @@ require("mason-lspconfig").setup_handlers {
 vim.keymap.set('v', '<leader>]', ':Gen<CR>')
 vim.keymap.set('n', '<leader>]', ':Gen<CR>')
 vim.keymap.set('n', '<leader>[', ':Gen Generate<CR>')
--- require('gen').model = 'mistral'
 
 -- vim.api.nvim_create_autocmd("CursorHold", {callback = vim.lsp.buf.document_highlight})
 -- vim.api.nvim_create_autocmd("CursorMoved", {callback = vim.lsp.buf.clear_references})
@@ -999,7 +1001,7 @@ vim.keymap.set('n', '<leader>[', ':Gen Generate<CR>')
 --
 --
 --
--- require('gen').model = 'zephyr'
+require('gen').model = 'zephyr'
 -- require('gen').prompts['Elaborate_Text'] = {
 --   prompt = "Elaborate the following text:\n$text",
 --   replace = true
@@ -1008,3 +1010,10 @@ vim.keymap.set('n', '<leader>[', ':Gen Generate<CR>')
 --   prompt = "Fix the following code. Only ouput the result in format ```$filetype\n...\n```:\n```$filetype\n$text\n```",
 --   replace = true,
 --   extract = "```$filetype\n(.-)```"
+
+
+require("diffview").setup({
+  use_icons = false
+})
+
+
