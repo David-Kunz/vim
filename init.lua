@@ -44,7 +44,18 @@ require('lazy').setup({
     'theHamsta/nvim-dap-virtual-text',
     'ryanoasis/vim-devicons',
     'David-Kunz/jester',
-    {'David-Kunz/gen.nvim', dev = true},
+    {
+        'David-Kunz/gen.nvim',
+        dev = true,
+        opts = {
+            model = 'openhermes2.5-mistral',
+            -- show_model = true,
+            -- show_prompt = true,
+            -- start_up = function() print('start up') end,
+            -- display_mode = 'vsplit',
+            -- debug = 'true'
+        }
+    },
     -- {'David-Kunz/markid', dev = true},
     -- 'David-Kunz/spotlight',
     -- {'nvim-tree/nvim-tree.lua', dependencies = {'nvim-tree/nvim-web-devicons'}},
@@ -54,13 +65,14 @@ require('lazy').setup({
     -- 'David-Kunz/cmp-npm', 'marko-cerovac/material.nvim',
     'mfussenegger/nvim-dap', -- 'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip',
     'voldikss/vim-floaterm',
-    'rcarriga/nvim-dap-ui',
+    { 'rcarriga/nvim-dap-ui', dependencies = {"nvim-neotest/nvim-nio"} },
     -- use 'ldelossa/litee.nvim',
     -- use 'ldelossa/gh.nvim',
     'nvim-telescope/telescope-ui-select.nvim', -- 'nvim-treesitter/playground',
     -- 'norcalli/nvim-colorizer.lua', 
     'mxsdev/nvim-dap-vscode-js',
     "microsoft/vscode-js-debug",
+    'Marskey/telescope-sg',
     -- lazy = true,
     build = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && rm -rf out && mv dist out",
     {
@@ -198,7 +210,7 @@ opt.number = true
 opt.ignorecase = true
 opt.smartcase = true
 opt.incsearch = true
-opt.so = 10
+-- opt.so = 10
 -- opt.relativenumber = true
 vim.cmd('set nonumber')
 vim.cmd('set norelativenumber')
@@ -335,6 +347,16 @@ require('telescope').setup {
         grep_string = fixfolds,
         live_grep = fixfolds,
         oldfiles = fixfolds
+    },
+    extensions = {
+      ast_grep = {
+            command = {
+                "sg",
+                "--json=stream",
+            }, -- must have --json=stream
+            grep_open_files = false, -- search in opened files
+            lang = nil, -- string value, specify language for ast-grep `nil` for default
+        }
     }
 }
 
@@ -371,6 +393,7 @@ end)
 vim.keymap.set('n', '<leader>fC', function()
     telescope_live_grep_in_path("./node_modules/@sap/cds")
 end)
+vim.keymap.set('n', '<leader>ft', ':Telescope ast_grep<CR>')
 vim.keymap.set('n', '<leader>fT',
                function() telescope_live_grep_in_path("./tests") end)
 vim.keymap.set('n', '<leader>ff', ':Telescope live_grep<CR>')
@@ -381,9 +404,11 @@ vim.keymap.set('n', '<leader>fG', ':Telescope git_branches<CR>')
 vim.keymap.set('n', '<leader>fg', ':Telescope git_status<CR>')
 vim.keymap.set('n', '<c-\\>', ':Telescope buffers<CR>')
 vim.keymap.set('n', '<leader>fs', ':Telescope lsp_document_symbols<CR>')
-vim.keymap.set('n', '<leader>fw', ':Telescope lsp_dynamic_workspace_symbols<CR>')
+vim.keymap
+    .set('n', '<leader>fw', ':Telescope lsp_dynamic_workspace_symbols<CR>')
 vim.keymap.set('n', '<leader>FF', ':Telescope grep_string<CR>')
-vim.keymap.set('n', '<leader><space>', function() telescope_files_or_git_files() end)
+vim.keymap.set('n', '<leader><space>',
+               function() telescope_files_or_git_files() end)
 -- vim.keymap.set('n', '<leader><space>', ':Telescope frecency workspace=CWD<CR>')
 
 vim.keymap.set('n', '<leader>fy', ':let @"=expand("%")<CR>')
@@ -692,7 +717,6 @@ vim.cmd('iabbrev :sad: 😔')
 vim.cmd('iabbrev darkred #8b0000')
 vim.cmd('iabbrev darkgreen #006400')
 
-
 _G.term_buf_of_tab = _G.term_buf_of_tab or {}
 _G.term_buf_max_nmb = _G.term_buf_max_nmb or 0
 
@@ -734,8 +758,6 @@ end
 vim.keymap.set('n', '<c-y>', Toggle_terminal)
 vim.keymap.set('i', '<c-y>', '<ESC>:lua Toggle_terminal()<CR>')
 vim.keymap.set('t', '<c-y>', '<c-\\><c-n>:lua Toggle_terminal()<CR>')
-
-
 
 cmd([[
 if has('nvim')
@@ -916,7 +938,8 @@ vim.keymap.set('n', '<leader>p', ':Lazy<CR>')
 vim.keymap.set('n', '<leader>?',
                'orequire("/usr/local/lib/node_modules/derive-type/")(...arguments)<esc>')
 
-local dap, dapui = require("dap"), require("dapui")
+local dap = require("dap")
+local dapui = require("dapui")
 dapui.setup()
 vim.keymap.set('n', '<leader>do', function() require("dapui").open() end)
 vim.keymap.set('n', '<leader>dC', function() require("dapui").close() end)
@@ -940,9 +963,8 @@ require("mason-lspconfig").setup_handlers {
     end
 }
 
-vim.keymap.set('v', '<leader>]', ':Gen<CR>')
-vim.keymap.set('n', '<leader>]', ':Gen<CR>')
-vim.keymap.set('n', '<leader>[', ':Gen Generate<CR>')
+vim.keymap.set({ 'n', 'v' }, '<leader>]', ':Gen<CR>')
+vim.keymap.set('n', '<leader>[', ':Gen Chat<CR>')
 
 -- vim.api.nvim_create_autocmd("CursorHold", {callback = vim.lsp.buf.document_highlight})
 -- vim.api.nvim_create_autocmd("CursorMoved", {callback = vim.lsp.buf.clear_references})
@@ -1001,7 +1023,8 @@ vim.keymap.set('n', '<leader>[', ':Gen Generate<CR>')
 --
 --
 --
-require('gen').model = 'zephyr'
+-- require('gen').model = 'zephyr'
+-- require('gen').model = 'openhermes2.5-mistral'
 -- require('gen').prompts['Elaborate_Text'] = {
 --   prompt = "Elaborate the following text:\n$text",
 --   replace = true
@@ -1011,9 +1034,19 @@ require('gen').model = 'zephyr'
 --   replace = true,
 --   extract = "```$filetype\n(.-)```"
 
+require("diffview").setup({use_icons = false})
 
-require("diffview").setup({
-  use_icons = false
-})
+
+vim.api.nvim_create_user_command("ChangeModel", function()
+  vim.ui.input({ prompt = "Enter new model: " }, function(input)
+    if input and input ~= "" then
+      require("gen").model = input
+      print("Model changed to: " .. input)
+    else
+      print("No model name provided. Model not changed.")
+    end
+  end)
+end, {})
+
 
 
