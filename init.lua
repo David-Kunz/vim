@@ -15,17 +15,17 @@ local opt = vim.opt
 g.mapleader = " "
 
 require('lazy').setup({
-    {
-        'folke/tokyonight.nvim',
-        priority = 1000,
-        config = function()
-            require('tokyonight').setup({
-                styles = {functions = 'bold', keywords = 'italic'}
-            })
-            vim.cmd.colorscheme("tokyonight")
-            -- vim.cmd.colorscheme("tokyonight-day")
-        end
-    },
+    -- {
+    --     'folke/tokyonight.nvim',
+    --     priority = 1000,
+    --     config = function()
+    --         require('tokyonight').setup({
+    --             styles = {functions = 'bold', keywords = 'italic'}
+    --         })
+    --         -- vim.cmd.colorscheme("tokyonight")
+    --         -- vim.cmd.colorscheme("tokyonight-day")
+    --     end
+    -- },
     'mhartington/formatter.nvim', -- use 'neovim/nvim-lspconfig',
     {'nvim-treesitter/nvim-treesitter', build = ':TSUpdate'},
     'nvim-telescope/telescope.nvim',
@@ -37,18 +37,30 @@ require('lazy').setup({
     --     dependencies = {"kkharji/sqlite.lua"}
     -- },
     'nvim-lua/plenary.nvim',
+    'github/copilot.vim',
     'nvim-lua/popup.nvim',
     'sindrets/diffview.nvim',
+    {
+        'echasnovski/mini.icons',
+        version = false,
+        config = function() require('mini.icons').setup() end
+    },
+    -- { 'echasnovski/mini.diff' },
+
     'lewis6991/gitsigns.nvim',
     'nvim-telescope/telescope-dap.nvim',
-    'theHamsta/nvim-dap-virtual-text',
-    'ryanoasis/vim-devicons',
+    -- 'theHamsta/nvim-dap-virtual-text',
+    -- 'ryanoasis/vim-devicons',
     'David-Kunz/jester',
     {
         'David-Kunz/gen.nvim',
         dev = true,
         opts = {
-            model = 'openhermes2.5-mistral',
+            model = 'llama3:instruct',
+            display_mode = "split"
+            -- model = 'wizardlm2',
+            -- model = 'dolphin-mixtral:8x7b-v2.5-q3_K_S',
+            -- model = 'openhermes2.5-mistral',
             -- show_model = true,
             -- show_prompt = true,
             -- start_up = function() print('start up') end,
@@ -65,7 +77,7 @@ require('lazy').setup({
     -- 'David-Kunz/cmp-npm', 'marko-cerovac/material.nvim',
     'mfussenegger/nvim-dap', -- 'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip',
     'voldikss/vim-floaterm',
-    { 'rcarriga/nvim-dap-ui', dependencies = {"nvim-neotest/nvim-nio"} },
+    {'rcarriga/nvim-dap-ui', dependencies = {"nvim-neotest/nvim-nio"}},
     -- use 'ldelossa/litee.nvim',
     -- use 'ldelossa/gh.nvim',
     'nvim-telescope/telescope-ui-select.nvim', -- 'nvim-treesitter/playground',
@@ -86,16 +98,17 @@ require('lazy').setup({
     "williamboman/mason.nvim",
     "williamboman/mason-lspconfig.nvim",
     "neovim/nvim-lspconfig",
+    -- { 'echasnovski/mini-git' },
     {
         'echasnovski/mini.completion',
         version = false,
         config = function() require('mini.completion').setup() end
     },
-    {
-        'echasnovski/mini.comment',
-        version = false,
-        config = function() require('mini.comment').setup() end
-    },
+    -- {
+    --     'echasnovski/mini.comment',
+    --     version = false,
+    --     config = function() require('mini.comment').setup() end
+    -- },
     {
         'echasnovski/mini.files',
         version = false,
@@ -233,6 +246,12 @@ vim.keymap.set('n', '<leader>v', ':e $MYVIMRC<CR>')
 
 vim.opt.statusline = "%F Line:%l"
 
+-- require('mini.diff').setup()
+-- require('mini.git').setup()
+
+vim.keymap.set('n', '<leader>hd',
+               function() require('mini.diff').toggle_overlay() end)
+
 -- lewis6991/gitsigns.nvim
 function diffThisBranch()
     local branch = vim.fn.input("Branch: ", "")
@@ -349,13 +368,10 @@ require('telescope').setup {
         oldfiles = fixfolds
     },
     extensions = {
-      ast_grep = {
-            command = {
-                "sg",
-                "--json=stream",
-            }, -- must have --json=stream
+        ast_grep = {
+            command = {"sg", "--json=stream"}, -- must have --json=stream
             grep_open_files = false, -- search in opened files
-            lang = nil, -- string value, specify language for ast-grep `nil` for default
+            lang = nil -- string value, specify language for ast-grep `nil` for default
         }
     }
 }
@@ -417,7 +433,6 @@ vim.keymap.set('n', '<leader>fy', ':let @"=expand("%")<CR>')
 
 vim.keymap.set('n', 'gd', function() vim.lsp.buf.definition() end)
 vim.keymap.set('n', 'gi', function() vim.lsp.buf.implementation() end)
-vim.keymap.set('n', 'gh', function() vim.lsp.buf.hover() end)
 vim.keymap.set('n', 'gD', function() vim.lsp.buf.implementation() end)
 vim.keymap.set('n', '<c-k>', function() vim.lsp.buf.signature_help() end)
 vim.keymap.set('n', 'gr', function() vim.lsp.buf.references() end)
@@ -582,7 +597,7 @@ vim.keymap.set('n', '<leader>ds', ':Telescope dap frames<CR>')
 -- vim.keymap.set('n', '<leader>dc', ':Telescope dap commands<CR>')
 vim.keymap.set('n', '<leader>db', ':Telescope dap list_breakpoints<CR>')
 
-require('nvim-dap-virtual-text').setup()
+-- require('nvim-dap-virtual-text').setup()
 
 -- David-Kunz/jester
 require'jester'.setup({
@@ -960,10 +975,38 @@ require("mason-lspconfig").setup_handlers {
         require("lspconfig").lua_ls.setup({
             settings = {Lua = {diagnostics = {globals = {'vim'}}}}
         })
+    end,
+    ["tsserver"] = function()
+        require("lspconfig").tsserver.setup({
+            settings = {
+                typescript = {
+                    inlayHints = {
+                        includeInlayEnumMemberValueHints = true,
+                        includeInlayFunctionLikeReturnTypeHints = true,
+                        includeInlayFunctionParameterTypeHints = true,
+                        includeInlayParameterNameHints = 'all',
+                        includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+                        includeInlayPropertyDeclarationTypeHints = true,
+                        includeInlayVariableTypeHints = true
+                    }
+                },
+                javascript = {
+                    inlayHints = {
+                        includeInlayEnumMemberValueHints = true,
+                        includeInlayFunctionLikeReturnTypeHints = true,
+                        includeInlayFunctionParameterTypeHints = true,
+                        includeInlayParameterNameHints = 'all',
+                        includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+                        includeInlayPropertyDeclarationTypeHints = true,
+                        includeInlayVariableTypeHints = true
+                    }
+                }
+            }
+        })
     end
 }
-
-vim.keymap.set({ 'n', 'v' }, '<leader>]', ':Gen<CR>')
+-- typescript.inlayHints.parameterNames.enabled
+vim.keymap.set({'n', 'v'}, '<leader>]', ':Gen<CR>')
 vim.keymap.set('n', '<leader>[', ':Gen Chat<CR>')
 
 -- vim.api.nvim_create_autocmd("CursorHold", {callback = vim.lsp.buf.document_highlight})
@@ -1036,17 +1079,19 @@ vim.keymap.set('n', '<leader>[', ':Gen Chat<CR>')
 
 require("diffview").setup({use_icons = false})
 
-
 vim.api.nvim_create_user_command("ChangeModel", function()
-  vim.ui.input({ prompt = "Enter new model: " }, function(input)
-    if input and input ~= "" then
-      require("gen").model = input
-      print("Model changed to: " .. input)
-    else
-      print("No model name provided. Model not changed.")
-    end
-  end)
+    vim.ui.input({prompt = "Enter new model: "}, function(input)
+        if input and input ~= "" then
+            require("gen").model = input
+            print("Model changed to: " .. input)
+        else
+            print("No model name provided. Model not changed.")
+        end
+    end)
 end, {})
 
+vim.keymap.set('n', '<leader>h', function()
+    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+end)
 
-
+vim.keymap.set('n', '<D-l>', function() print('hurray') end)
