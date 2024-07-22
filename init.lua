@@ -941,7 +941,8 @@ require("telescope").load_extension("ui-select")
 --   theme_style = "dark",
 -- })
 
-vim.keymap.set('i', '<c-o>', '<esc><s-o>')
+-- vim.keymap.set('i', '<c-o>', '<esc><s-o>')
+-- use option shift o instead
 vim.keymap.set('n', '<leader>p', ':Lazy<CR>')
 -- vim.api.nvim_create_autocmd('BufHidden',  {
 --     pattern  = '[dap-terminal]*',
@@ -1094,4 +1095,10 @@ vim.keymap.set('n', '<leader>h', function()
     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end)
 
-vim.keymap.set('n', '<D-l>', function() print('hurray') end)
+vim.keymap.set('n', '<leader>D', ':DiffviewOpen main<CR>')
+
+
+vim.cmd('abb genuuid1 a11fb6f1-36ab-46ec-b00c-d379031e817a')
+vim.cmd('abb genuuid2 b22fb6f1-36ab-46ec-b00c-d379031e817a')
+vim.cmd('abb genuuid3 c33fb6f1-36ab-46ec-b00c-d379031e817a')
+vim.cmd('abb genuuid4 d44fb6f1-36ab-46ec-b00c-d379031e817a')
