@@ -382,13 +382,7 @@ require('telescope').setup {
     --     live_grep = fixfolds,
     --     oldfiles = fixfolds
     -- },
-    extensions = {
-        ast_grep = {
-            command = {"sg", "--json=stream"}, -- must have --json=stream
-            grep_open_files = false, -- search in opened files
-            lang = nil -- string value, specify language for ast-grep `nil` for default
-        }
-    }
+    extensions = {}
 }
 
 -- nvim-telescope/telescope.nvim
@@ -398,7 +392,8 @@ _G.telescope_find_files_in_path = function(path)
 end
 _G.telescope_live_grep_in_path = function(path)
     local _path = path or vim.fn.input("Dir: ", "", "dir")
-    require("telescope.builtin").live_grep({search_dirs = {_path}})
+    --require("telescope.builtin").live_grep({search_dirs = {_path}})
+    require('fzf-lua').files({ cwd = _path })
 end
 _G.telescope_files_or_git_files = function()
     local utils = require('telescope.utils')
@@ -424,22 +419,18 @@ end)
 vim.keymap.set('n', '<leader>fC', function()
     telescope_live_grep_in_path("./node_modules/@sap/cds")
 end)
-vim.keymap.set('n', '<leader>ft', ':Telescope ast_grep<CR>')
 vim.keymap.set('n', '<leader>fT',
                function() telescope_live_grep_in_path("./tests") end)
-vim.keymap.set('n', '<leader>ff', ':Telescope live_grep<CR>')
+vim.keymap.set('n', '<leader>ff', ':FzfLua live_grep<CR>')
 -- vim.keymap.set('n', '<leader>fo', ':Telescope file_browser<CR>')
-vim.keymap.set('n', '<leader>fn', ':Telescope find_files<CR>')
-vim.keymap.set('n', '<leader>fr', ':Telescope resume<CR>')
-vim.keymap.set('n', '<leader>fG', ':Telescope git_branches<CR>')
-vim.keymap.set('n', '<leader>fg', ':Telescope git_status<CR>')
-vim.keymap.set('n', '<c-\\>', ':Telescope buffers<CR>')
-vim.keymap.set('n', '<leader>fs', ':Telescope lsp_document_symbols<CR>')
-vim.keymap
-    .set('n', '<leader>fw', ':Telescope lsp_dynamic_workspace_symbols<CR>')
-vim.keymap.set('n', '<leader>FF', ':Telescope grep_string<CR>')
-vim.keymap.set('n', '<leader><space>',
-               function() telescope_files_or_git_files() end)
+--vim.keymap.set('n', '<leader>fn', ':Telescope find_files<CR>')
+vim.keymap.set('n', '<leader>fr', ':FzfLua resume<CR>')
+vim.keymap.set('n', '<leader>fG', ':FzfLua git_branches<CR>')
+vim.keymap.set('n', '<leader>fg', ':FzfLua git_status<CR>')
+vim.keymap.set('n', '<c-\\>', ':FzfLua buffers<CR>')
+vim.keymap.set('n', '<leader>fs', ':FzfLua lsp_document_symbols<CR>')
+-- vim.keymap.set('n', '<leader>FF', ':Telescope grep_string<CR>')
+vim.keymap.set('n', '<leader><space>', ':FzfLua files<CR>')
 -- vim.keymap.set('n', '<leader><space>', ':Telescope frecency workspace=CWD<CR>')
 
 vim.keymap.set('n', '<leader>fy', ':let @"=expand("%") . ":" . line(".") . ":" . col(".")<CR>')
@@ -455,7 +446,7 @@ vim.keymap.set('n', 'gR', function() vim.lsp.buf.rename() end)
 vim.keymap.set('n', 'ga', function() vim.lsp.buf.code_action() end)
 vim.keymap.set('n', 'ge', function() vim.diagnostic.goto_next() end)
 vim.keymap.set('n', 'gE', function() vim.diagnostic.goto_prev() end)
-vim.keymap.set('n', 'gA', ':Telescope lsp_range_code_actions<CR>')
+vim.keymap.set('n', 'gA', ':FzfLua lsp_code_actions<CR>')
 
 -- -- CDS
 -- cmd([[
@@ -676,9 +667,9 @@ vim.keymap.set('n', '<leader>du', ':lua require"dapui".toggle()<CR>')
 
 -- nvim-telescope/telescope-dap.nvim
 require('telescope').load_extension('dap')
-vim.keymap.set('n', '<leader>ds', ':Telescope dap frames<CR>')
+vim.keymap.set('n', '<leader>ds', ':FzfLua dap_frames<CR>')
 -- vim.keymap.set('n', '<leader>dc', ':Telescope dap commands<CR>')
-vim.keymap.set('n', '<leader>db', ':Telescope dap list_breakpoints<CR>')
+vim.keymap.set('n', '<leader>db', ':FzfLua dap_breakpoints<CR>')
 
 -- require('nvim-dap-virtual-text').setup()
 
