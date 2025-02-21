@@ -36,6 +36,14 @@ require('lazy').setup({
     --     end,
     --     dependencies = {"kkharji/sqlite.lua"}
     -- },
+    {
+      "ibhagwan/fzf-lua",
+      -- optional for icon support
+      dependencies = { "nvim-tree/nvim-web-devicons" },
+      -- or if using mini.icons/mini.nvim
+      -- dependencies = { "echasnovski/mini.icons" },
+      opts = {}
+    },
     'nvim-lua/plenary.nvim',
     'github/copilot.vim',
     'nvim-lua/popup.nvim',
@@ -51,13 +59,19 @@ require('lazy').setup({
     'nvim-telescope/telescope-dap.nvim',
     -- 'theHamsta/nvim-dap-virtual-text',
     -- 'ryanoasis/vim-devicons',
-    'David-Kunz/jester',
+    { 'David-Kunz/jester', dev = true },
     {
         'David-Kunz/gen.nvim',
         dev = true,
         opts = {
-            model = 'llama3:instruct',
-            display_mode = "split"
+            -- model = 'qwen2.5:14b',
+            -- model = 'vanilj/phi-4-unsloth',
+            -- model = 'deepseek-r1:14b',
+            model = 'mistral-small',
+            -- file = true,
+            -- hidden = true
+            -- display_mode = "split",
+            -- no_auto_close = true
             -- model = 'wizardlm2',
             -- model = 'dolphin-mixtral:8x7b-v2.5-q3_K_S',
             -- model = 'openhermes2.5-mistral',
@@ -65,7 +79,7 @@ require('lazy').setup({
             -- show_prompt = true,
             -- start_up = function() print('start up') end,
             -- display_mode = 'vsplit',
-            -- debug = 'true'
+            -- debug = true
         }
     },
     -- {'David-Kunz/markid', dev = true},
@@ -82,8 +96,8 @@ require('lazy').setup({
     -- use 'ldelossa/gh.nvim',
     'nvim-telescope/telescope-ui-select.nvim', -- 'nvim-treesitter/playground',
     -- 'norcalli/nvim-colorizer.lua', 
-    'mxsdev/nvim-dap-vscode-js',
-    "microsoft/vscode-js-debug",
+    -- 'mxsdev/nvim-dap-vscode-js',
+    -- "microsoft/vscode-js-debug",
     'Marskey/telescope-sg',
     -- lazy = true,
     build = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && rm -rf out && mv dist out",
@@ -297,6 +311,7 @@ require('gitsigns').setup({
 
 -- sbdchd/neoformat
 vim.keymap.set('n', '<leader>F', ':Format<CR>')
+vim.keymap.set('n', '<leader>fl', function() vim.lsp.buf.format() end)
 require('formatter').setup({
     logging = false,
     filetype = {
@@ -344,29 +359,29 @@ require('formatter').setup({
         }
     }
 })
-local telescope_actions = require("telescope.actions.set")
+-- local telescope_actions = require("telescope.actions.set")
 
-local fixfolds = {
-    hidden = true,
-    attach_mappings = function(_)
-        telescope_actions.select:enhance({
-            post = function() vim.cmd(":normal! zx") end
-        })
-        return true
-    end
-}
+-- local fixfolds = {
+--     hidden = true,
+--     attach_mappings = function(_)
+--         telescope_actions.select:enhance({
+--             post = function() vim.cmd(":normal! zx") end
+--         })
+--         return true
+--     end
+-- }
 
-local actions = require("telescope.actions")
+-- local actions = require("telescope.actions")
 
 require('telescope').setup {
-    pickers = {
-        buffers = fixfolds,
-        find_files = fixfolds,
-        git_files = fixfolds,
-        grep_string = fixfolds,
-        live_grep = fixfolds,
-        oldfiles = fixfolds
-    },
+    -- pickers = {
+    --     buffers = fixfolds,
+    --     find_files = fixfolds,
+    --     git_files = fixfolds,
+    --     grep_string = fixfolds,
+    --     live_grep = fixfolds,
+    --     oldfiles = fixfolds
+    -- },
     extensions = {
         ast_grep = {
             command = {"sg", "--json=stream"}, -- must have --json=stream
@@ -427,7 +442,7 @@ vim.keymap.set('n', '<leader><space>',
                function() telescope_files_or_git_files() end)
 -- vim.keymap.set('n', '<leader><space>', ':Telescope frecency workspace=CWD<CR>')
 
-vim.keymap.set('n', '<leader>fy', ':let @"=expand("%")<CR>')
+vim.keymap.set('n', '<leader>fy', ':let @"=expand("%") . ":" . line(".") . ":" . col(".")<CR>')
 -- David-Kunz/cmp-npm
 -- require('cmp-npm').setup({only_latest_version = true})
 
@@ -496,6 +511,13 @@ vim.keymap.set('n', '<leader>g', ':FloatermNew lazygit<CR>')
 -- cmd('set foldexpr=nvim_treesitter#foldexpr()')
 
 -- vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+--
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldtext = ""
+-- vim.opt.foldlevel = 99
+vim.opt.foldlevelstart = 99
+-- vim.opt.foldlevelstart = 0
 
 vim.keymap.set('n', '<leader>n', ':tabe ~/tmp/notes.md<CR>')
 
@@ -512,29 +534,30 @@ parser_config.cds = {
     used_by = {"cdl", "hdbcds"}
 }
 
+
 -- require('markid')
 require'nvim-treesitter.configs'.setup {
     highlight = {enable = true},
-    incremental_selection = {
-        enable = true,
-        keymaps = {
-            init_selection = '<CR>',
-            node_incremental = '<CR>',
-            node_decremental = '<S-CR>'
-        }
-    }
+   -- incremental_selection = {
+   --     enable = true,
+   --     keymaps = {
+   --         init_selection = '<CR>',
+   --         node_incremental = '<CR>',
+   --         node_decremental = '<S-CR>'
+   --     }
+   -- }
     -- markid = {enable = true}
 }
 
 -- mxsdev/nvim-dap-vscode-js
-require('dap-vscode-js').setup({
-    debugger_path = os.getenv('HOME') ..
-        '/.local/share/nvim/lazy/vscode-js-debug',
-    adapters = {
-        'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal',
-        'pwa-extensionHost'
-    }
-})
+-- require('dap-vscode-js').setup({
+--     debugger_path = os.getenv('HOME') ..
+--         '/.local/share/nvim/lazy/vscode-js-debug',
+--     adapters = {
+--         'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal',
+--         'pwa-extensionHost'
+--     }
+-- })
 -- require("dap-vscode-js").setup({
 --     adapters = {
 --         'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal',
@@ -553,6 +576,66 @@ dap.adapters.node2 = {
     }
 }
 
+dap.adapters["pwa-node"] = {
+  type = "server",
+  host = "localhost",
+  port = "${port}", --let both ports be the same for now...
+  executable = {
+    command = "node",
+    args = { vim.fn.stdpath('data') .. "/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js", "${port}" },
+  }
+}
+
+-- for _, language in ipairs({ "typescript", "javascript" }) do
+--   dap.configurations[language] = {
+--     {
+--       type = 'pwa-node',
+--       request = 'launch',
+--       name = 'Launch Current File (pwa-node)',
+--       cwd = "${workspaceFolder}", -- vim.fn.getcwd(),
+--       args = { '${file}' },
+--       sourceMaps = true,
+--       protocol = 'inspector',
+--     },
+--     {
+--       type = 'pwa-node',
+--       request = 'launch',
+--       name = 'Launch Current File (Typescript)',
+--       cwd = "${workspaceFolder}",
+--       runtimeArgs = { '--loader=ts-node/esm' },
+--       program = "${file}",
+--       runtimeExecutable = 'node',
+--       -- args = { '${file}' },
+--       sourceMaps = true,
+--       protocol = 'inspector',
+--       outFiles = { "${workspaceFolder}/**/**/*", "!**/node_modules/**" },
+--       skipFiles = { '<node_internals>/**', 'node_modules/**' },
+--       resolveSourceMapLocations = {
+--         "${workspaceFolder}/**",
+--         "!**/node_modules/**",
+--       },
+--     },
+--   }
+-- end
+
+-- doesn't seem to work:
+-- dap.adapters.node2 = {
+--     type = 'server',
+--     host = 'localhost',
+--     port = '${port}',
+--     executable = {
+--       command = 'node',
+--       args = {
+--         '/Users/d065023/apps/js-debug/src/dapDebugServer.js',
+--         '${port}',
+--       }
+--     }
+-- }
+
+-- args = {
+-- '/Users/d065023/apps/js-debug/src/dapDebugServer.js',
+--  os.getenv('HOME') ..
+--      '/.local/share/nvim/lazy/vscode-node-debug2/out/src/nodeDebug.js'
 -- require('dap').set_log_level('INFO')
 dap.defaults.fallback.terminal_win_cmd = '20split new'
 vim.fn.sign_define('DapBreakpoint',
@@ -602,6 +685,7 @@ vim.keymap.set('n', '<leader>db', ':Telescope dap list_breakpoints<CR>')
 -- David-Kunz/jester
 require'jester'.setup({
     path_to_jest = "/opt/homebrew/bin/jest",
+    --dap = {type = 'node2'}
     dap = {type = 'pwa-node'}
 })
 -- require'jester'.setup({ dap = { type = 'pwa-node'}})
@@ -716,9 +800,18 @@ vim.cmd(
 --     view = {width = 50}
 -- })
 -- vim.keymap.set('n', '\\', ':NvimTreeToggle<CR>', {silent = true})
-vim.keymap.set('n', '\\',
-               ':lua if not MiniFiles.close() then MiniFiles.open(vim.api.nvim_buf_get_name(0)) end<CR>',
-               {silent = true})
+-- vim.keymap.set('n', '\\',
+--                ':lua if not MiniFiles.close() then MiniFiles.open(vim.api.nvim_buf_get_name(0)) end<CR>',
+--                {silent = true})
+
+function MiniFilesSmartOpen()
+  if not MiniFiles.close() then 
+    local buf_name = vim.api.nvim_buf_get_name(0)
+    local path = vim.fn.filereadable(buf_name) == 1 and buf_name or vim.fn.getcwd()
+    MiniFiles.open(path)
+  end
+end
+vim.keymap.set('n', '\\', MiniFilesSmartOpen, {silent = true})
 
 vim.keymap.set('n', 'gq', ':bd!<CR>')
 vim.keymap.set('n', '<leader>w', ':w<CR>')
@@ -731,6 +824,10 @@ vim.cmd('iabbrev :smi: 😊')
 vim.cmd('iabbrev :sad: 😔')
 vim.cmd('iabbrev darkred #8b0000')
 vim.cmd('iabbrev darkgreen #006400')
+vim.cmd('iabbrev :demo: 💻 Demo')
+
+vim.cmd('iabbrev maxdepth require(\'util\').inspect.defaultOptions.depth = 9999')
+
 
 _G.term_buf_of_tab = _G.term_buf_of_tab or {}
 _G.term_buf_max_nmb = _G.term_buf_max_nmb or 0
@@ -977,8 +1074,8 @@ require("mason-lspconfig").setup_handlers {
             settings = {Lua = {diagnostics = {globals = {'vim'}}}}
         })
     end,
-    ["tsserver"] = function()
-        require("lspconfig").tsserver.setup({
+    ["vtsls"] = function()
+        require("lspconfig").vtsls.setup({
             settings = {
                 typescript = {
                     inlayHints = {
@@ -1069,10 +1166,36 @@ vim.keymap.set('n', '<leader>[', ':Gen Chat<CR>')
 --
 -- require('gen').model = 'zephyr'
 -- require('gen').model = 'openhermes2.5-mistral'
--- require('gen').prompts['Elaborate_Text'] = {
---   prompt = "Elaborate the following text:\n$text",
---   replace = true
+require('gen').prompts['Gen_Code'] = { 
+  prompt = "Generate the following $filetype code. Only ouput the result in format ```$filetype\n...\n```:\n```$filetype\n$text\n```, $input",
+  replace = true,
+  extract = "```$filetype\n(.-)```",
+  model = "qwen2.5-coder:14b"
+}
+
+require('gen').prompts['Code_Completion'] = { 
+  prompt = function()
+    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+    local before = vim.api.nvim_buf_get_text(0, 0, 0, row-1, col+1, {})
+    local after = vim.api.nvim_buf_get_text(0, row-1, col+1, -1, -1, {})
+    local prompt = '<|fim_prefix|>' .. table.concat(before, "\n") .. '<|fim_suffix|>' .. table.concat(after, "\n") .. '<|fim_middle|>only output the middle part, not the prefix/suffix, nothing else, just the missing code in between, do not repeate the provided text, include the $filetype code fence ```$filetype\n<resulting code>\n``` for example ```$filetype\nconsole.log("hello")\n```'
+    return prompt
+  end,
+  -- model = "qwen2.5-coder:32b",
+  extract = "```$filetype\n(.-)```"
+}
+vim.keymap.set('i', '<c-]>', '<esc>:Gen Code_Completion<CR>')
+
+-- require('gen').prompts['Yi_Code_Explain'] = { 
+--   prompt = "Explain the following $filetype code:\n\n $text",
+--   model = "yi-coder"
 -- }
+require('gen').prompts['hidden'] = { 
+  -- prompt = "Compare the following two texts:\n# Text 1:\n$register_a\n\n# Text2:\n$register_b",
+  prompt = function()
+    return "What is 1 + 1?"
+  end
+}
 -- require('gen').prompts['Fix_Code'] = {
 --   prompt = "Fix the following code. Only ouput the result in format ```$filetype\n...\n```:\n```$filetype\n$text\n```",
 --   replace = true,
@@ -1091,9 +1214,9 @@ vim.api.nvim_create_user_command("ChangeModel", function()
     end)
 end, {})
 
-vim.keymap.set('n', '<leader>h', function()
-    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-end)
+-- vim.keymap.set('n', '<leader>h', function()
+--     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+-- end)
 
 vim.keymap.set('n', '<leader>D', ':DiffviewOpen main<CR>')
 
