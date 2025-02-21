@@ -28,14 +28,6 @@ require('lazy').setup({
     -- },
     'mhartington/formatter.nvim', -- use 'neovim/nvim-lspconfig',
     {'nvim-treesitter/nvim-treesitter', build = ':TSUpdate'},
-    -- 'nvim-telescope/telescope.nvim',
-    -- {
-    --     "nvim-telescope/telescope-frecency.nvim",
-    --     config = function()
-    --         require("telescope").load_extension "frecency"
-    --     end,
-    --     dependencies = {"kkharji/sqlite.lua"}
-    -- },
     {
       "ibhagwan/fzf-lua",
       -- optional for icon support
@@ -62,9 +54,6 @@ require('lazy').setup({
     -- { 'echasnovski/mini.diff' },
 
     'lewis6991/gitsigns.nvim',
-    -- 'nvim-telescope/telescope-dap.nvim',
-    -- 'theHamsta/nvim-dap-virtual-text',
-    -- 'ryanoasis/vim-devicons',
     { 'David-Kunz/jester', dev = true },
     {
         'David-Kunz/gen.nvim',
@@ -100,12 +89,6 @@ require('lazy').setup({
     {'rcarriga/nvim-dap-ui', dependencies = {"nvim-neotest/nvim-nio"}},
     -- use 'ldelossa/litee.nvim',
     -- use 'ldelossa/gh.nvim',
-    -- 'nvim-telescope/telescope-ui-select.nvim', -- 'nvim-treesitter/playground',
-    -- 'norcalli/nvim-colorizer.lua', 
-    -- 'mxsdev/nvim-dap-vscode-js',
-    -- "microsoft/vscode-js-debug",
-    -- 'Marskey/telescope-sg',
-    -- lazy = true,
     build = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && rm -rf out && mv dist out",
     {
         "microsoft/vscode-node-debug2",
@@ -180,11 +163,9 @@ require('lazy').setup({
 --     use 'mhartington/formatter.nvim'
 --     -- use 'neovim/nvim-lspconfig'
 --     use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'}
---     use 'nvim-telescope/telescope.nvim'
 --     use 'nvim-lua/plenary.nvim'
 --     use 'nvim-lua/popup.nvim'
 --     use 'lewis6991/gitsigns.nvim'
---     use 'nvim-telescope/telescope-dap.nvim'
 --     use 'theHamsta/nvim-dap-virtual-text'
 --     use 'ryanoasis/vim-devicons'
 --     use 'David-Kunz/jester'
@@ -205,7 +186,6 @@ require('lazy').setup({
 --     use 'rcarriga/nvim-dap-ui'
 --     -- use 'ldelossa/litee.nvim'
 --     -- use 'ldelossa/gh.nvim'
---     use 'nvim-telescope/telescope-ui-select.nvim'
 --     use 'folke/tokyonight.nvim'
 --     use 'nvim-treesitter/playground'
 --     use 'norcalli/nvim-colorizer.lua'
@@ -365,40 +345,13 @@ require('formatter').setup({
         }
     }
 })
--- local telescope_actions = require("telescope.actions.set")
 
--- local fixfolds = {
---     hidden = true,
---     attach_mappings = function(_)
---         telescope_actions.select:enhance({
---             post = function() vim.cmd(":normal! zx") end
---         })
---         return true
---     end
--- }
-
--- local actions = require("telescope.actions")
-
--- require('telescope').setup {
---     -- pickers = {
---     --     buffers = fixfolds,
---     --     find_files = fixfolds,
---     --     git_files = fixfolds,
---     --     grep_string = fixfolds,
---     --     live_grep = fixfolds,
---     --     oldfiles = fixfolds
---     -- },
---     extensions = {}
--- }
-
--- nvim-telescope/telescope.nvim
 _G.fzflua_find_files_in_path = function(path)
     local _path = path or vim.fn.input("Dir: ", "", "dir")
     require('fzf-lua').live_grep({ cwd = _path })
 end
 _G.fzflua_live_grep_in_path = function(path)
     local _path = path or vim.fn.input("Dir: ", "", "dir")
-    --require("telescope.builtin").live_grep({search_dirs = {_path}})
     require('fzf-lua').files({ cwd = _path })
 end
 
@@ -414,8 +367,6 @@ require("fzf-lua").register_ui_select(function(_, items)
 end)
 
 vim.keymap.set('n', '<leader>fD', function() fzflua_live_grep_in_path() end)
--- vim.keymap.set('n', '<leader><space>',
---                function() telescope_files_or_git_files() end)
 vim.keymap.set('n', '<leader>fd', function() fzflua_find_files_in_path() end)
 vim.keymap.set('n', '<leader>ft',
                function() fzflua_find_files_in_path("./tests") end)
@@ -428,16 +379,12 @@ end)
 vim.keymap.set('n', '<leader>fT',
                function() fzflua_live_grep_in_path("./tests") end)
 vim.keymap.set('n', '<leader>ff', ':FzfLua live_grep<CR>')
--- vim.keymap.set('n', '<leader>fo', ':Telescope file_browser<CR>')
---vim.keymap.set('n', '<leader>fn', ':Telescope find_files<CR>')
 vim.keymap.set('n', '<leader>fr', ':FzfLua resume<CR>')
 vim.keymap.set('n', '<leader>fG', ':FzfLua git_branches<CR>')
 vim.keymap.set('n', '<leader>fg', ':FzfLua git_status<CR>')
 vim.keymap.set('n', '<c-\\>', ':FzfLua buffers<CR>')
 vim.keymap.set('n', '<leader>fs', ':FzfLua lsp_document_symbols<CR>')
--- vim.keymap.set('n', '<leader>FF', ':Telescope grep_string<CR>')
 vim.keymap.set('n', '<leader><space>', ':FzfLua files<CR>')
--- vim.keymap.set('n', '<leader><space>', ':Telescope frecency workspace=CWD<CR>')
 
 vim.keymap.set('n', '<leader>fy', ':let @"=expand("%") . ":" . line(".") . ":" . col(".")<CR>')
 -- David-Kunz/cmp-npm
@@ -671,10 +618,7 @@ vim.keymap.set('n', '<leader>dr',
                ':lua require"dap".repl.toggle({}, "vsplit")<CR><C-w>l')
 vim.keymap.set('n', '<leader>du', ':lua require"dapui".toggle()<CR>')
 
--- nvim-telescope/telescope-dap.nvim
--- require('telescope').load_extension('dap')
 vim.keymap.set('n', '<leader>ds', ':FzfLua dap_frames<CR>')
--- vim.keymap.set('n', '<leader>dc', ':Telescope dap commands<CR>')
 vim.keymap.set('n', '<leader>db', ':FzfLua dap_breakpoints<CR>')
 
 -- require('nvim-dap-virtual-text').setup()
@@ -1027,9 +971,6 @@ end
 -- require('litee.gh').setup({
 --   prefer_https_remote = true
 -- })
-
--- nvim-telescope/telescope-ui-select.nvim
--- require("telescope").load_extension("ui-select")
 
 -- require("github-theme").setup({
 --   theme_style = "dark",
