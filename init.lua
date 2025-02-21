@@ -28,7 +28,7 @@ require('lazy').setup({
     -- },
     'mhartington/formatter.nvim', -- use 'neovim/nvim-lspconfig',
     {'nvim-treesitter/nvim-treesitter', build = ':TSUpdate'},
-    'nvim-telescope/telescope.nvim',
+    -- 'nvim-telescope/telescope.nvim',
     -- {
     --     "nvim-telescope/telescope-frecency.nvim",
     --     config = function()
@@ -42,7 +42,13 @@ require('lazy').setup({
       dependencies = { "nvim-tree/nvim-web-devicons" },
       -- or if using mini.icons/mini.nvim
       -- dependencies = { "echasnovski/mini.icons" },
-      opts = {}
+      opts = {
+        keymap = {
+          fzf = {
+            ["ctrl-q"] = "select-all+accept",
+          },
+        },
+      }
     },
     'nvim-lua/plenary.nvim',
     'github/copilot.vim',
@@ -56,7 +62,7 @@ require('lazy').setup({
     -- { 'echasnovski/mini.diff' },
 
     'lewis6991/gitsigns.nvim',
-    'nvim-telescope/telescope-dap.nvim',
+    -- 'nvim-telescope/telescope-dap.nvim',
     -- 'theHamsta/nvim-dap-virtual-text',
     -- 'ryanoasis/vim-devicons',
     { 'David-Kunz/jester', dev = true },
@@ -94,11 +100,11 @@ require('lazy').setup({
     {'rcarriga/nvim-dap-ui', dependencies = {"nvim-neotest/nvim-nio"}},
     -- use 'ldelossa/litee.nvim',
     -- use 'ldelossa/gh.nvim',
-    'nvim-telescope/telescope-ui-select.nvim', -- 'nvim-treesitter/playground',
+    -- 'nvim-telescope/telescope-ui-select.nvim', -- 'nvim-treesitter/playground',
     -- 'norcalli/nvim-colorizer.lua', 
     -- 'mxsdev/nvim-dap-vscode-js',
     -- "microsoft/vscode-js-debug",
-    'Marskey/telescope-sg',
+    -- 'Marskey/telescope-sg',
     -- lazy = true,
     build = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && rm -rf out && mv dist out",
     {
@@ -373,54 +379,54 @@ require('formatter').setup({
 
 -- local actions = require("telescope.actions")
 
-require('telescope').setup {
-    -- pickers = {
-    --     buffers = fixfolds,
-    --     find_files = fixfolds,
-    --     git_files = fixfolds,
-    --     grep_string = fixfolds,
-    --     live_grep = fixfolds,
-    --     oldfiles = fixfolds
-    -- },
-    extensions = {}
-}
+-- require('telescope').setup {
+--     -- pickers = {
+--     --     buffers = fixfolds,
+--     --     find_files = fixfolds,
+--     --     git_files = fixfolds,
+--     --     grep_string = fixfolds,
+--     --     live_grep = fixfolds,
+--     --     oldfiles = fixfolds
+--     -- },
+--     extensions = {}
+-- }
 
 -- nvim-telescope/telescope.nvim
-_G.telescope_find_files_in_path = function(path)
+_G.fzflua_find_files_in_path = function(path)
     local _path = path or vim.fn.input("Dir: ", "", "dir")
-    require("telescope.builtin").find_files({search_dirs = {_path}})
+    require('fzf-lua').live_grep({ cwd = _path })
 end
-_G.telescope_live_grep_in_path = function(path)
+_G.fzflua_live_grep_in_path = function(path)
     local _path = path or vim.fn.input("Dir: ", "", "dir")
     --require("telescope.builtin").live_grep({search_dirs = {_path}})
     require('fzf-lua').files({ cwd = _path })
 end
-_G.telescope_files_or_git_files = function()
-    local utils = require('telescope.utils')
-    local builtin = require('telescope.builtin')
-    local _, ret, _ = utils.get_os_command_output({
-        'git', 'rev-parse', '--is-inside-work-tree'
-    })
-    if ret == 0 then
-        builtin.git_files()
-    else
-        builtin.find_files()
-    end
-end
-vim.keymap.set('n', '<leader>fD', function() telescope_live_grep_in_path() end)
+
+require("fzf-lua").register_ui_select(function(_, items)
+  local min_h, max_h = 0.15, 0.70
+  local h = (#items + 4) / vim.o.lines
+  if h < min_h then
+    h = min_h
+  elseif h > max_h then
+    h = max_h
+  end
+  return { winopts = { height = h, width = 0.60, row = 0.40 } }
+end)
+
+vim.keymap.set('n', '<leader>fD', function() fzflua_live_grep_in_path() end)
 -- vim.keymap.set('n', '<leader><space>',
 --                function() telescope_files_or_git_files() end)
-vim.keymap.set('n', '<leader>fd', function() telescope_find_files_in_path() end)
+vim.keymap.set('n', '<leader>fd', function() fzflua_find_files_in_path() end)
 vim.keymap.set('n', '<leader>ft',
-               function() telescope_find_files_in_path("./tests") end)
+               function() fzflua_find_files_in_path("./tests") end)
 vim.keymap.set('n', '<leader>fc', function()
-    telescope_find_files_in_path("./node_modules/@sap/cds")
+    fzflua_find_files_in_path("./node_modules/@sap/cds")
 end)
 vim.keymap.set('n', '<leader>fC', function()
-    telescope_live_grep_in_path("./node_modules/@sap/cds")
+    fzflua_live_grep_in_path("./node_modules/@sap/cds")
 end)
 vim.keymap.set('n', '<leader>fT',
-               function() telescope_live_grep_in_path("./tests") end)
+               function() fzflua_live_grep_in_path("./tests") end)
 vim.keymap.set('n', '<leader>ff', ':FzfLua live_grep<CR>')
 -- vim.keymap.set('n', '<leader>fo', ':Telescope file_browser<CR>')
 --vim.keymap.set('n', '<leader>fn', ':Telescope find_files<CR>')
@@ -666,7 +672,7 @@ vim.keymap.set('n', '<leader>dr',
 vim.keymap.set('n', '<leader>du', ':lua require"dapui".toggle()<CR>')
 
 -- nvim-telescope/telescope-dap.nvim
-require('telescope').load_extension('dap')
+-- require('telescope').load_extension('dap')
 vim.keymap.set('n', '<leader>ds', ':FzfLua dap_frames<CR>')
 -- vim.keymap.set('n', '<leader>dc', ':Telescope dap commands<CR>')
 vim.keymap.set('n', '<leader>db', ':FzfLua dap_breakpoints<CR>')
@@ -1023,7 +1029,7 @@ end
 -- })
 
 -- nvim-telescope/telescope-ui-select.nvim
-require("telescope").load_extension("ui-select")
+-- require("telescope").load_extension("ui-select")
 
 -- require("github-theme").setup({
 --   theme_style = "dark",
