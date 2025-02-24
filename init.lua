@@ -46,11 +46,11 @@ require('lazy').setup({
     'github/copilot.vim',
     'nvim-lua/popup.nvim',
     'sindrets/diffview.nvim',
-    {
-        'echasnovski/mini.icons',
-        version = false,
-        config = function() require('mini.icons').setup() end
-    },
+    -- {
+    --     'echasnovski/mini.icons',
+    --     version = false,
+    --     config = function() require('mini.icons').setup() end
+    -- },
     -- { 'echasnovski/mini.diff' },
 
     'lewis6991/gitsigns.nvim',
